@@ -6,8 +6,7 @@
   "plugins": [
     {
       "name": "dev-kit",
-      "source": "./dev-kit",
-      "description": "Personal issue- and doc-driven development workflow for Claude Code: backlog, grooming, triage, epics, roadmap, pull requests, retrospectives, and docs."
+      "source": "./dev-kit"
     }
   ]
 }

@@ -16,7 +16,7 @@ This repo is a single Claude Code plugin named `dev-kit`, defined by [dev-kit/.c
 
 **To use the skills in a project:**
 
-1. Add this repo as a plugin source for Claude Code (see the [Claude Code plugin docs](https://docs.claude.com/en/docs/claude-code) for the current mechanism — plugin installation UX evolves).
+1. Add this repo as a plugin marketplace source for Claude Code, using [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) (see the [Claude Code plugin docs](https://docs.claude.com/en/docs/claude-code) for the current installation mechanism — plugin installation UX evolves).
 2. Once installed, Claude Code will surface the skills in [dev-kit/skills](dev-kit/skills) automatically based on each skill's `description`/`when_to_use` frontmatter — you generally invoke them by describing the task ("groom the backlog", "update the README") rather than by memorizing skill names.
 
 **To use a persona (output style):**
@@ -30,16 +30,20 @@ There is no build step, package manager, or test suite for this repo itself — 
 
 ```
 dev-kit/
+├── .claude-plugin/
+│   └── marketplace.json        # marketplace manifest pointing at ./dev-kit
 ├── dev-kit/                    # the actual Claude Code plugin
 │   ├── .claude-plugin/
-│   │   └── plugin.json         # plugin manifest (name + description)
+│   │   └── plugin.json         # plugin manifest (name, description, version)
 │   └── skills/                 # one directory per skill, each with a SKILL.md
 │       ├── _docs/              # shared reference docs used by multiple skills
 │       ├── _partials/          # shared prompt fragments included by multiple skills
 │       └── <skill-name>/SKILL.md
 ├── output-styles/              # persona hats (user-level output styles, not plugin skills)
+├── docs/                       # ROADMAP, OBJECTIVES, ARCHITECTURE, GLOSSARY, adr/, requirements/
 ├── .github/                    # issue templates, PR template, CODE_OF_CONDUCT, CONTRIBUTING
 ├── .gitignore
+├── CHANGELOG.md
 └── README.md
 ```
 

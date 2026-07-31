@@ -4,6 +4,6 @@
 
 _None yet._
 
-## Recently Closed
+## Archived
 
 _None yet._

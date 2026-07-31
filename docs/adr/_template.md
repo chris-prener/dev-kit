@@ -1,10 +1,10 @@
+---
+status: proposed | accepted | superseded by ADR-MMMM
+date: YYYY-MM-DD
+source: <PR / issue / conversation that motivates this decision>
+---
+
 # ADR-NNNN: <Decision-shaped title>
-
-**Status:** proposed | accepted | superseded by ADR-MMMM
-
-**Date:** YYYY-MM-DD
-
-**Source(s):** <PR / issue / conversation that motivates this decision>
 
 ## Context
 
