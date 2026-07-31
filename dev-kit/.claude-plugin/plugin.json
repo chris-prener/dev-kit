@@ -1,4 +1,5 @@
 {
   "name": "dev-kit",
-  "description": "Personal issue- and doc-driven development workflow for Claude Code: backlog, grooming, triage, epics, roadmap, pull requests, retrospectives, and docs. Language-agnostic; R and Python developer behavior is provided as output-style hats. Single plugin; personas live as user-level output styles."
+  "description": "Personal issue- and doc-driven development workflow for Claude Code: backlog, grooming, triage, epics, roadmap, pull requests, retrospectives, and docs. Language-agnostic; R and Python developer behavior is provided as output-style hats. Single plugin; personas live as user-level output styles.",
+  "version": "0.1.0"
 }

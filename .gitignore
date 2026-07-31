@@ -7,6 +7,10 @@
 ###############################
 .claude/settings.local.json
 
+# dev-kit gate audit reports #
+###############################
+.github/audit-reports/
+
 # Compiled source #
 ###################
 *.com
