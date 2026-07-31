@@ -1,0 +1,12 @@
+{
+  "name": "dev-kit-marketplace",
+  "owner": {
+    "name": "Chris Prener"
+  },
+  "plugins": [
+    {
+      "name": "dev-kit",
+      "source": "./dev-kit"
+    }
+  ]
+}
