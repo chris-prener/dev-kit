@@ -28,7 +28,7 @@ This document scopes **what** needs to be true of the resulting model — not ho
 - **S5** — `dev-kit/skills/roadmap/SKILL.md` — Now/Next/Later/Recently Shipped horizon track, one entry per epic, ending in permanent closure.
 - **S6** — `dev-kit/skills/objectives/SKILL.md` and `dev-kit/skills/epic-retrospective/SKILL.md` §"KR impact" — Key Result progress is scored and persisted at epic-close time.
 - **S7** — `dev-kit/assets/github/LABELS.md` — `epic` label purpose text ("Parent issue for a thematic body of work; sub-issues linked"); no `sprint` label in the 22-label baseline.
-- **S8** — repo-wide grep for "sprint" across `dev-kit/skills/` and `dev-kit/assets/` (2026-07-30): single hit, a trigger phrase in `dev-kit/skills/showcase/SKILL.md`, no modeled concept.
+- **S8** — repo-wide grep for "sprint" across `dev-kit/skills/` and `dev-kit/assets/` (2026-07-30): two hits, both the same trigger phrase ("sprint review") in `dev-kit/skills/showcase/SKILL.md`'s frontmatter description and activation list, no modeled concept.
 
 ## Requirements
 
@@ -77,13 +77,14 @@ This document scopes **what** needs to be true of the resulting model — not ho
 
 ### R5 — Cross-blocking relationships move to the unit that actually blocks
 
-**Rationale:** `epic-dependency` models "Epic A blocked by Epic B." Under the new model, blocking is a property of discrete, finishable initiatives (sprints), not of durable ownership areas, which don't meaningfully block one another.
+**Rationale:** `epic-dependency` models "Epic A blocked by Epic B." Under the new model, the common case of blocking — one increment of delivery waiting on another — is a property of discrete, finishable initiatives (sprints), so that dimension moves there. A durable area *can* still be strategically blocked by another area in a way that outlives any single sprint (e.g., "Area B can't progress until Area A ships shared infrastructure"); that's a real but rarer relationship this requirement preserves as a lightweight, separate mechanism rather than folding it into the sprint-level graph.
 
 **Source(s):** S4
 
 **Acceptance criteria:**
-- [ ] Blocking-relationship tracking (the `## Dependencies` block and its rendered graph) is re-scoped to the time-boxed/initiative unit, not the area.
-- [ ] Existing epic-to-epic dependency data has a defined migration path (re-attach to the corresponding sprint, or explicitly drop if no longer meaningful) rather than silently breaking.
+- [ ] Blocking-relationship tracking (the `## Dependencies` block and its rendered graph) is re-scoped to the time-boxed/initiative unit, not the area, for the common finishable-work-blocks-finishable-work case.
+- [ ] A lightweight area-level "blocked by" relationship remains available for strategic, cross-area dependencies that outlive a single sprint (exact mechanism is an implementation decision for the follow-up ADR — it does not need the full graph/cycle-detection machinery `epic-dependency` provides today).
+- [ ] Existing epic-to-epic dependency data has a defined migration path (re-attach to the corresponding sprint, retain as an area-level strategic dependency, or explicitly drop if no longer meaningful) rather than silently breaking.
 
 ### R6 — Roadmap's horizon model is reconciled with the area/timebox split
 
