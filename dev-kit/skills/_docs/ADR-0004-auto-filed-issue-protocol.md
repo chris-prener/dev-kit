@@ -4,11 +4,11 @@
 
 ## Context
 
-Several skills (`run-repo-qc`, `documentation`, `readme`, `walkthrough`, `code-review`) surface findings mechanically — QC failures, doc staleness, review blockers — that should become tracked issues without a human retyping `gh issue create` by hand. Letting each skill invent its own filing logic invites drift: duplicate dedup heuristics, inconsistent labels, and fragile re-runs that silently double-file. The protocol needs to work for all of them plus the existing interactive `backlog` skill and `backlog-retrospective`, without watering down the DoR contract the interactive skill already enforces (Type label, Priority label, parent-epic linkage, structural template conformance).
+Several skills (`run-repo-qc`, `documentation`, `readme`, `walkthrough`, `code-review`, `documentation-audit-changes`, `docs-organization`, `playbooks`, `objectives`, `backlog-retrospective`) surface findings mechanically — QC failures, doc staleness, review blockers, at-risk KRs, unresolved outcome validations — that should become tracked issues without a human retyping `gh issue create` by hand. Letting each skill invent its own filing logic invites drift: duplicate dedup heuristics, inconsistent labels, and fragile re-runs that silently double-file. The protocol needs to work for all of them plus the existing interactive `backlog` skill, without watering down the DoR contract the interactive skill already enforces (Type label, Priority label, parent-epic linkage, structural template conformance).
 
 ## Decision
 
-A single shared **auto-filed issue protocol**, owned by the `backlog` skill's Auto-file mode, that every caller skill invokes. Five contract points:
+A single shared **auto-filed issue protocol**, owned by the `backlog` skill's Auto-file mode, that every caller skill invokes. Six contract points:
 
 ### 1. Template choice is caller-supplied and bounded
 
@@ -53,7 +53,7 @@ The `qc-fixed` label may be set on file when the caller fixed a finding in-place
 
 ### 6. Every caller must document its invocation contract
 
-Each caller skill includes an "Auto-file invocation contract" subsection at the step that invokes auto-file mode: a five-row input table (`template`, `title`, `body`, `labels`, `dedup_id`, `parent_epic`) followed by its own severity → priority mapping consistent with §4. The severity-vocabulary column may legitimately differ across callers (e.g. code review might use BLOCKER/HIGH/MEDIUM/NIT while a QC skill uses CRITICAL/HIGH/MEDIUM/LOW/INFO); the **priority column** stays fixed — severities mapping to filing always resolve to `priority/blocker`, `priority/high`, or `priority/medium`, and LOW/INFO/NIT/QUESTION never file. This makes the call site self-describing for anyone picking up the skill cold.
+Each caller skill includes an "Auto-file invocation contract" subsection at the step that invokes auto-file mode: a six-row input table (`template`, `title`, `body`, `labels`, `dedup_id`, `parent_epic`) followed by its own severity → priority mapping consistent with §4. The severity-vocabulary column may legitimately differ across callers (e.g. code review might use BLOCKER/HIGH/MEDIUM/NIT while a QC skill uses CRITICAL/HIGH/MEDIUM/LOW/INFO); the **priority column** stays fixed — severities mapping to filing always resolve to `priority/blocker`, `priority/high`, or `priority/medium`, and LOW/INFO/NIT/QUESTION never file. This makes the call site self-describing for anyone picking up the skill cold.
 
 ### Alternatives considered
 

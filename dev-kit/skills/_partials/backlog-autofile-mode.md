@@ -116,5 +116,5 @@ Each finding-producing caller skill is responsible for:
 ### Cross-references
 
 - `backlog-retrospective` — closes auto-filed issues via the normal PR `Closes #N` flow; never invoked directly by auto-file mode.
-- `run-repo-qc`, `documentation`, `readme`, `walkthrough`, `code-review` — the finding-producing callers.
+- `run-repo-qc`, `documentation`, `readme`, `walkthrough`, `code-review`, `documentation-audit-changes`, `docs-organization`, `playbooks`, `objectives`, `backlog-retrospective` — the finding-producing callers.
 - [`../_docs/ADR-0004-auto-filed-issue-protocol.md`](../_docs/ADR-0004-auto-filed-issue-protocol.md) — durable record of the protocol contract.

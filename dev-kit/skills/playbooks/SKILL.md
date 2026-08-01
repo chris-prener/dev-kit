@@ -66,14 +66,37 @@ Invoke when:
 
 ### 3. Audit (drift detection)
 
-| Finding | Class |
+**Check-ID inventory:**
+
+| Check-ID | Finding | Class |
+|---|---|---|
+| `playbooks/skill-not-found` | Playbook-referenced skill does NOT exist in the skill suite | BLOCKER |
+| `playbooks/path-not-resolved` | Playbook-referenced relative file path does NOT resolve | BLOCKER |
+| `playbooks/missing-last-updated` | Playbook missing its `last_updated` frontmatter field | WARNING |
+| `playbooks/stale-last-updated` | Playbook `last_updated` older than 180 days | WARNING |
+| `playbooks/command-drift` | Playbook references a command that no longer matches `--help` output of the named tool | INFO (manual-review only; the audit cannot reliably diff CLI surface; not auto-filed) |
+| `playbooks/not-in-catalog` | Playbook missing from `docs/playbooks/README.md` catalog | WARNING |
+
+BLOCKER/WARNING findings are offered for auto-filing via `backlog`'s auto-file mode.
+
+**Auto-file invocation contract:**
+
+| Input | Value |
 |---|---|
-| Playbook-referenced skill does NOT exist in the skill suite | BLOCKER |
-| Playbook-referenced relative file path does NOT resolve | BLOCKER |
-| Playbook missing its `last_updated` frontmatter field | WARNING |
-| Playbook `last_updated` older than 180 days | WARNING |
-| Playbook references a command that no longer matches `--help` output of the named tool | INFO (manual-review only; the audit cannot reliably diff CLI surface) |
-| Playbook missing from `docs/playbooks/README.md` catalog | WARNING |
+| `template` | `tech_debt` |
+| `title` | `Playbook drift: <one-line description> in <slug>`. |
+| `body` | Template-conformant body. MUST include the check-ID, the referenced skill/path, and the suggested fix. MUST include the `<!-- autofile-id: playbooks:<slug>:<check-id> -->` marker on its own line. |
+| `labels` | `["tech-debt", "<priority/*>"]` per the mapping below. |
+| `dedup_id` | `playbooks:<slug>:<check-id>` (matches the body marker). |
+| `parent_epic` | Supplied by the operator, or `standalone_reason` with a non-empty justification. |
+
+**Severity → Priority mapping:**
+
+| Class | Priority label | Auto-filed? |
+|---|---|---|
+| BLOCKER | `priority/blocker` | yes |
+| WARNING | `priority/medium` | yes |
+| INFO | — | no — surfaced in report only |
 
 ### 4. List
 

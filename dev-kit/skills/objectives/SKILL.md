@@ -116,6 +116,10 @@ The cross-objective sweep that drives the recurring KR rhythm. Use this — not 
    Append, never overwrite, prior `## KR check-in <date>` blocks. The most recent sweep stays at the top of `## Active`; older sweeps remain in chronological-reverse order. Trim sweeps older than 6 months at the operator's discretion (NOT automatically).
 4. **Bump per-objective `Last check-in`** for every objective touched, even those with no KR-status change (the sweep itself is the touch). This keeps op E (audit) honest — a swept objective is no longer "stale".
 5. **Hand off remediation** for every KR marked `at-risk` or `off-track`:
+
+   **Check-ID inventory:** `kr-checkin` — the single stable check-ID this op emits; the at-risk/off-track KR identity lives in `dedup_id`'s `<scope>` component (`O<n>-KR<n.m>`), not in a per-check-type ID, since every remediation issue from this op is the same kind of finding.
+
+   **Auto-file invocation contract:**
    - Invoke the `backlog` skill's auto-file mode with:
      - `template = tech_debt`
      - `parent_epic = <objective's first linked open epic, if any; else standalone with reason "objective-level remediation, not yet scoped to an epic">`

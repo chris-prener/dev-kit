@@ -159,6 +159,10 @@ V3. **Compose and post the validation comment** using exactly this template:
    Post via `gh issue comment <N> --body-file <path>` (tempfile under `/tmp/`, never inline `--body`).
 
 V4. **Hand off remediation** when outcome is `partial` or `not-achieved`:
+
+   **Check-ID inventory:** `outcome-validation` — the single stable check-ID this op emits; the original issue's identity lives in `dedup_id`'s `<scope>` component (`#<N>`), not in a per-check-type ID, since every remediation issue from V4 is the same kind of finding.
+
+   **Auto-file invocation contract:**
    - Invoke the `backlog` skill's auto-file mode with:
      - `template = tech_debt`
      - `parent_epic = <the issue's parent epic if it has one (gh api repos/.../issues/<N>/parent); else standalone with reason "outcome-validation follow-up; original issue #<N> not in an epic">`
