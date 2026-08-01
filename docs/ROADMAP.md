@@ -4,11 +4,11 @@
 
 ### Now
 
-_None yet._
+- [Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) — Keep dev-kit's shipped guidance free of known defects; currently draining a 35-finding baseline across six sprints. (milestone: —)
 
 ### Next
 
-- [Epic B: Audit remediation: resolve the outstanding full-repo audit findings](https://github.com/chris-prener/dev-kit/issues/16) — Drain the known audit findings so no open issue carries the audit-finding label. (milestone: —)
+_None yet._
 
 ### Later
 
