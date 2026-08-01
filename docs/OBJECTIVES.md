@@ -17,7 +17,7 @@ dev-kit's entire product surface is guidance: skills that other repos read and f
 - **KR1.1 — The known-defect backlog reaches zero.**
   - *Rationale:* Every open `audit-finding` issue is a documented defect that a user can hit today. Carrying them is a choice to ship known-broken guidance.
   - *Target:* 0 open issues labeled `audit-finding`.
-  - *Progress:* 13 open (baseline, 2026-08-01) — the twelve audit findings plus #21, which was found while clustering them and triaged into Epic B. Delivered by Epic B.
+  - *Progress:* 14 open (2026-08-01). Baseline was 12 when O1 was filed; #21 and #23 were found and triaged into Epic B the same day, which is the count moving for the right reason rather than the target slipping. Delivered by Epic B.
 
 - **KR1.2 — Every cross-reference in skill prose resolves, and a check proves it.**
   - *Rationale:* The largest single failure mode found by the audit was prose naming something that does not exist — a renamed skill (#1, 9 stale references), a template that was never vendored (#2, 6 references). These are mechanically detectable, which means they should never have survived to an audit. A check that runs is worth more than a fix that does not repeat.
