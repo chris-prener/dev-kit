@@ -53,7 +53,7 @@ Two fill strategies. **Stub** — a minimal starter (heading + one sentence); th
 | `docs/ARCHITECTURE.md` | `architecture-overview` | Stub | Skill has nothing to refresh |
 | `docs/qc-modifications.md` + `tests/` | `run-repo-qc` | — | Use `create-repo-qc` to scaffold these instead — not this skill's job |
 | `.github/LABELS.md` | most issue-filing skills | Vendor | They fall back to the baseline in `_partials/label-vocabulary.md`, but the repo has no editable local copy to specialize |
-| `.github/ISSUE_TEMPLATE/*.md` (5 files) | repo hygiene; no skill parses these | Vendor | GitHub falls back to a blank issue form |
+| `.github/ISSUE_TEMPLATE/*.md` (6 files) | `backlog`'s auto-file mode (`template` must match a filename here); `dor-preflight.md`'s per-template heading matrix checks bodies against these | Vendor | GitHub falls back to a blank issue form; auto-file mode has no template to validate `template` against |
 | `.github/PULL_REQUEST_TEMPLATE.md` | repo hygiene; no skill parses this | Vendor | GitHub falls back to a blank PR body |
 | `.github/CODE_OF_CONDUCT.md` | repo hygiene | Vendor | No stated community standard |
 | `.github/CONTRIBUTING.md` | repo hygiene | Vendor (with placeholder substitution) | No contribution guidance for outside contributors |
@@ -93,7 +93,7 @@ Not every repo needs every row — a repo with no epics doesn't need `docs/ROADM
 
 ## Out of scope
 
-- **Ongoing sync.** Vendoring here is one-shot and create-only — if `assets/github/LABELS.md` changes upstream in dev-kit, this skill does not detect drift or re-vendor it into repos that already have a copy. That's a manual, deliberate action.
+- **Ongoing sync.** Vendoring here is one-shot and create-only — if `assets/github/LABELS.md` changes upstream in dev-kit, this skill does not detect drift or re-vendor it into repos that already have a copy. That's a manual, deliberate action. This includes the 2026-08 `## `-heading rewrite of the `ISSUE_TEMPLATE` set (#23): repos already bootstrapped before that change keep their old bold-prompt templates and will fail `dor-preflight.md`'s heading check on every filed issue until someone manually re-vendors the six files. No automated migration path exists; re-vendoring is the same manual action as any other post-bootstrap drift.
 - **Vendoring anything outside `assets/github/`.** This skill's vendor rows are exactly the files in dev-kit's `assets/github/` directory — it's not a general file-sync tool.
 - **Scaffolding QC infrastructure** (`tests/`, `docs/qc-modifications.md`) — that's `create-repo-qc`.
 - **Project/domain scaffolding** (a new dataset, package, or app skeleton) — outside dev-kit's scope; use the project's own tooling.

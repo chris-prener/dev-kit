@@ -1,7 +1,7 @@
 ---
-name: Other inquiry
-about: Ask a question, or give feedback that isn't a bug or feature request
-labels: question
+name: QC finding
+about: A finding from an automated or independent QC / audit pass
+labels: qc
 ---
 
 **Before you open your issue:**
@@ -14,10 +14,10 @@ labels: question
 **I want** <capability>,
 **so that** <outcome>.
 
-## Question
+## Finding
 
-A clear and concise description of your question or feedback.
+What did the QC pass or audit find? Include the check ID, the file/location, and what's wrong.
 
-## Additional context
+## Acceptance criteria
 
-Add any other context here.
+- [ ] <falsifiable criterion>

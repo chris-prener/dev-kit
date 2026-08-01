@@ -8,8 +8,16 @@ labels: question
 * All issues and contributions are covered by the [Code of Conduct](/.github/CODE_OF_CONDUCT.md)
 * Please check out the [Contribution guidelines](/.github/CONTRIBUTING.md)
 
-**What's your question or feedback?**
-A clear and concise description. If it relates to a specific skill or output style, name it (e.g. `dev-kit/skills/triage`, `output-styles/developer.md`).
+## User story
 
-**Additional context**
+**As a** <role>,
+**I want** <capability>,
+**so that** <outcome>.
+
+## Question
+
+A clear and concise description of your question or feedback. If it relates to a specific skill or output style, name it (e.g. `dev-kit/skills/triage`, `output-styles/developer.md`).
+
+## Additional context
+
 Add any other context here.
