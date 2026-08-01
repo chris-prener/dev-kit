@@ -6,5 +6,5 @@ Three instruments, easily confused — see [the three-instrument model](2026-07-
 
 | Doc | Pass namespace(s) | Findings | Status | Related |
 |---|---|---|---|---|
-| [2026-08-01-pass-1b-scope-brief.md](2026-08-01-pass-1b-scope-brief.md) | `adversarial-review-2026-08-01` | — | scope brief; pass pending | #25, O1 KR1.1 |
-| [2026-07-29-full-repo-audit.md](2026-07-29-full-repo-audit.md) | `manual-repo-review-2026-07-29`, `session-review-2026-08-01` | 14 | complete; coverage partial (19/58 skills) | #16 (Epic B), O1 KR1.4 |
+| [2026-08-01-pass-1b-scope-brief.md](2026-08-01-pass-1b-scope-brief.md) | `adversarial-review-2026-08-01` | 21 | complete (2026-08-01); coverage full (58/58 skills + shared surfaces + personas); registry backfilled into the pass-one ledger | #25, O1 KR1.1 |
+| [2026-07-29-full-repo-audit.md](2026-07-29-full-repo-audit.md) | `manual-repo-review-2026-07-29`, `session-review-2026-08-01`, `adversarial-review-2026-08-01` | 35 | pass one complete (coverage partial, 19/58); pass 1b complete (union coverage full) | #16 (Epic B), #25, O1 KR1.4 |

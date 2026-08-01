@@ -81,9 +81,33 @@ Found opportunistically while filing O1 and Epic B, not by a systematic sweep. T
 | 21 | `missing-baseline-labels` | Environment drift | live repo label set vs. `_partials/label-vocabulary.md` (10 missing) | high |
 | 23 | `template-dor-schema-mismatch` | Internal contradiction | `assets/github/ISSUE_TEMPLATE/*` vs. `_partials/dor-preflight.md` heading matrix | high |
 
-### `adversarial-review-2026-08-01` (pass 1b — pending)
+### `adversarial-review-2026-08-01` (pass 1b — complete, 21 findings)
 
-Not yet run. Scope brief: [2026-08-01-pass-1b-scope-brief.md](2026-08-01-pass-1b-scope-brief.md). Backfill this table when the pass completes, and record its coverage in the section below.
+Run 2026-08-01 by a second reader (different model) against the pre-fix repo, per the [scope brief](2026-08-01-pass-1b-scope-brief.md). Full results, coverage table, and triage recommendation: [#25's coverage comment](https://github.com/chris-prener/dev-kit/issues/25). Three numbers: **14 known re-encountered (4 scope corrections posted on #23/#3/#9/#4) · 7 new in previously-covered ground · 13 new in first-coverage ground** (+1 in operator-added scope: personas).
+
+| # | Fingerprint slug | Class | Primary surface | Priority | Ground |
+|---|---|---|---|---|---|
+| 26 | `pr-orchestrator-close-before-gates` | Internal contradiction | `pr-orchestrator` step order | high | first-coverage |
+| 27 | `pr-orchestrator-closes-regex-drift` | Internal contradiction | `pr-orchestrator` SKILL vs reference | medium | first-coverage |
+| 28 | `pr-gate-changelog-dirty-tree-contract` | Internal contradiction | `pr-gate-changelog` ↔ `pr-orchestrator` | medium | first-coverage |
+| 29 | `skill-name-directory-mismatch` | Internal contradiction | 9 skills' frontmatter `name` vs directory | medium | covered |
+| 30 | `pr-gate-qc-persona-enum-incomplete` | Internal contradiction | `pr-gate-qc` sub-step d | medium | first-coverage |
+| 31 | `code-review-mode-vocabulary` | Internal contradiction | `code-review` ↔ `pr-gate-code-review` | medium | first-coverage |
+| 32 | `autofile-callers-missing-type-label` | Internal contradiction | `backlog-retrospective` V4, `objectives` op H vs ADR-0004 | high | covered |
+| 33 | `backlog-step4-plan-contract-collision` | Internal contradiction | `backlog` Step 4 ↔ `implementation-plan` | medium | covered |
+| 34 | `triage-duplicate-close-reason` | Internal contradiction | `triage` Route 3 vs close-reason model | medium | first-coverage |
+| 35 | `discovery-invalid-close-reason-flag` | Internal contradiction | `discovery` Op 3 (`--reason not-planned`) | medium | covered |
+| 36 | `post-merge-phantom-plan-md` | Dangling reference | `post-merge` (`plan.md`) | medium | first-coverage |
+| 37 | `r-testing-r-ci-coverage-contradiction` | Internal contradiction | `r-testing` ↔ `r-ci` (mirror of #5) | high | first-coverage |
+| 38 | `section-header-format-contradiction` | Internal contradiction | `r-code-style`/`r-documentation`/`r-pipeline-patterns` vs `_partials/inline-comment-standards.md` | medium | covered |
+| 39 | `r-data-validation-wrong-api-table` | Upstream drift | `r-data-validation` §5 (`col_count_match`, `matches`) | high | first-coverage |
+| 40 | `prefect-map-missing-unmapped` | Upstream drift | `python-pipeline-patterns` §4 | high | first-coverage |
+| 41 | `polars-read-excel-engine-stale` | Upstream drift | `python-data-io` §1 (fastexcel/xlsxwriter) | medium | first-coverage |
+| 42 | `usethis-use-github-actions-defunct` | Upstream drift | `r-package-structure` §5 | medium | first-coverage |
+| 43 | `lintr-no-tab-linter-defunct` | Upstream drift | `r-code-style` §2 | medium | covered |
+| 44 | `github-enforcement-403-main-hardcode` | Missing failure path | `github-enforcement` (403 / hardcoded `main`) | medium | first-coverage |
+| 45 | `persona-gate-flow-conflict` | Internal contradiction | `output-styles/*` ↔ `epic` gates | medium | added scope |
+| 46 | `python-ci-twine-not-installed` | Internal contradiction | `python-ci` publish workflow, `python-packaging` | medium | covered |
 
 ### Pre-existing backlog an auditor would plausibly re-find
 
@@ -104,6 +128,7 @@ Pass one's findings fall into five classes. Later passes classify their own find
 3. **Upstream drift** — a technical claim that was true when written and has since been overtaken. Decays without anyone touching the file. *KR1.3's target class.* (#7, #8, #9)
 4. **Duplication drift** — the same config or prose lives in two places and the copies have diverged. (#6, #10, #12)
 5. **Environment drift** — declared state (a vocabulary, a baseline) does not match the actual repo. (#4, #21)
+6. **Missing failure path** — a skill defines no behavior for an environment state its own stated audience routinely occupies; the guidance isn't wrong, it is silent. *Named by pass 1b per this section's instruction.* (#44)
 
 ## Coverage — what pass one actually examined
 
@@ -120,6 +145,14 @@ Plus these shared surfaces: `_partials/label-vocabulary.md`, `_partials/roxygen2
 `adr`, `architecture-overview`, `backlog-grooming`, `bootstrap-repo`, `changelog`, `code-review`, `create-local-skill`, `create-repo-qc`, `documentation`, `documentation-audit-changes`, `documentation-suite`, `epic-dependency`, `github-enforcement`, `glossary`, `implementation-plan`, `post-merge`, `pr-gate-changelog`, `pr-gate-code-review`, `pr-gate-qc`, `pr-orchestrator`, `python-data-io`, `python-dependencies`, `python-pipeline-patterns`, `python-typing`, `quick-capture`, `r-ci`, `r-data-io`, `r-data-validation`, `r-dependencies`, `r-documentation`, `r-package-structure`, `r-testing`, `readme`, `requirements`, `roadmap`, `session-start`, `showcase`, `triage`, `walkthrough`
 
 Note the shape of that list: the packs are only *partially* covered (7 of 11 `python-*`, 3 of 10 `r-*`), and the entire `pr-*` family is uncited despite #1 being a finding about the PR skill rename. That asymmetry is a strong hint pass one was not uniform — and it is the reason pass 1b records coverage explicitly, including files read and found clean.
+
+### Pass 1b coverage (2026-08-01) — baseline complete
+
+Pass 1b examined **all 58 skills** (every `SKILL.md` plus every `reference.md` / `TEMPLATE(S).md` companion), all 11 `_partials/`, `_docs/ADR-0004`, all of `assets/github/` (diffed against the repo's `.github/` copies), the repo docs (`ROADMAP`, `OBJECTIVES`, `GLOSSARY`, `ARCHITECTURE`, `adr/`, `requirements/`, `audits/`), live GitHub state (labels, branch protection, templates), and — operator-added scope beyond the brief — the 6 `output-styles/` personas, both plugin manifests, README, and CHANGELOG. Nothing in scope was skipped; the per-skill examined-clean / examined-with-findings table is on [#25](https://github.com/chris-prener/dev-kit/issues/25).
+
+The Pass 1 ∪ Pass 1b union therefore has a **fully documented denominator**: 58/58 skills plus all shared and repo surfaces. This is the coverage baseline KR1.4's pass 2 compares against. The pre-fix finding baseline is **35** (14 pass-one + 21 pass-1b).
+
+Procedure defects pass 1b logged against the brief (for the KR1.4 procedure's next draft): the auto-file output contract is unsatisfiable pre-fix (#2/#21/#23 — direct `gh issue create` per #25's AC is the documented fallback); the "58 skills" denominator understates the real guidance surface (partials, personas, assets, manifests); the taxonomy needed the sixth class above.
 
 ## Diff protocol for later passes
 
