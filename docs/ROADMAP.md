@@ -8,7 +8,7 @@ _None yet._
 
 ### Next
 
-_None yet._
+- [Epic B: Audit remediation: resolve the 12 findings from the 2026-07-30 full-repo audit](https://github.com/chris-prener/dev-kit/issues/16) — Drain the twelve known audit findings so no open issue carries the audit-finding label. (milestone: —)
 
 ### Later
 
