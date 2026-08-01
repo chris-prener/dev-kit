@@ -107,8 +107,8 @@ For each issue, present a numbered choice prompt. The five routes:
 ```
 1) Route to epic <N> (sub-issue link via gh api ... /sub_issues)
 2) Mark standalone (write Parent epic: standalone — <reason> into body)
-3) Mark as duplicate of #<M> (close --reason completed; label `duplicate`)
-4) Mark as not-planned (close --reason not-planned; label `not-planned`)
+3) Mark as duplicate of #<M> (close --reason "not planned"; label `duplicate`)
+4) Mark as not-planned (close --reason "not planned"; label `not-planned`)
 5) Propose-promote-to-epic (HAND OFF — see Step D; this skill does NOT promote directly)
 6) Defer (leave needs-triage in place; revisit later)
 ```
@@ -117,7 +117,7 @@ For routes 1–4, get explicit `[y/N]` confirmation before running any `gh` comm
 
 - **Route 1.** Verify parent epic via `${CLAUDE_SKILL_DIR}/../_partials/epic-linkage.md` validation. Run the sub-issue link with the database-id-not-issue-number caveat from that partial. Then `gh issue edit <N> --remove-label needs-triage` (and add a Type + Priority label if missing).
 - **Route 2.** Edit the body to insert / update the `**Parent epic:** standalone — <reason>` line per `${CLAUDE_SKILL_DIR}/../_partials/epic-linkage.md`. Then remove `needs-triage`.
-- **Route 3.** `gh issue edit <N> --add-label duplicate --remove-label needs-triage` then `gh issue close <N> --reason completed --comment "Duplicate of #<M>"`. Per the close-reason carve-out, the `duplicate` label is required *before* close.
+- **Route 3.** `gh issue edit <N> --add-label duplicate --remove-label needs-triage` then `gh issue close <N> --reason "not planned" --comment "Duplicate of #<M>"`. Per the close-reason carve-out, the `duplicate` label is required *before* close.
 - **Route 4.** See Step E (mark-as-not-planned).
 - **Route 5.** See Step D (propose-promote-to-epic).
 - **Route 6.** Print a one-line "deferred — re-runs of triage-inbox will surface this again." No mutation.
