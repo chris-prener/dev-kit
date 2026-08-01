@@ -162,7 +162,7 @@ V4. **Hand off remediation** when outcome is `partial` or `not-achieved`:
    - Invoke the `backlog` skill's auto-file mode with:
      - `template = tech_debt`
      - `parent_epic = <the issue's parent epic if it has one (gh api repos/.../issues/<N>/parent); else standalone with reason "outcome-validation follow-up; original issue #<N> not in an epic">`
-     - `labels = ["outcome-validation", "<priority/medium for partial | priority/high for not-achieved>"]` per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) severity mapping
+     - `labels = ["tech-debt", "<priority/medium for partial | priority/high for not-achieved>"]` per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) severity mapping
      - `dedup_id = outcome-validation:#<N>` (the **outcome status is NOT part of the dedup key** — same rationale as the `objectives` skill's op H: a re-validation that finds the situation worsened should not spam if the prior follow-up is still open, but should re-file if the prior follow-up was closed and the issue regressed)
      - Body with the literal marker `<!-- autofile-id: outcome-validation:#<N> -->` and `tech_debt.md` template headings; reference the original issue, the validation date, and the `## Outcome validation` comment URL.
    - `achieved` and `deferred` outcomes do not file follow-ups. (Deferred should be re-run later; it's not a remediation trigger.)
