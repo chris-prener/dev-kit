@@ -120,8 +120,8 @@ The cross-objective sweep that drives the recurring KR rhythm. Use this — not 
      - `template = tech_debt`
      - `parent_epic = <objective's first linked open epic, if any; else standalone with reason "objective-level remediation, not yet scoped to an epic">`
      - `labels = ["tech-debt", "<priority/medium for at-risk | priority/high for off-track>"]` per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) severity mapping
-     - `dedup_id = kr-checkin:O<n>:KR<n.m>` (status is **NOT** part of the dedup key — this prevents spam when a KR cycles between at-risk and recovered, and correctly re-files if a closed remediation issue's KR drifts back into trouble)
-     - Body with the literal marker `<!-- autofile-id: kr-checkin:O<n>:KR<n.m> -->` and `tech_debt.md` template headings; reference the sweep date and the prior status if applicable.
+     - `dedup_id = objectives:O<n>-KR<n.m>:kr-checkin` (status is **NOT** part of the dedup key — this prevents spam when a KR cycles between at-risk and recovered, and correctly re-files if a closed remediation issue's KR drifts back into trouble)
+     - Body with the literal marker `<!-- autofile-id: objectives:O<n>-KR<n.m>:kr-checkin -->` and `tech_debt.md` template headings; reference the sweep date and the prior status if applicable.
    - `done` and `on-track` KRs are not filed.
 6. **Output a console summary** for the operator: total KRs swept, count by status, list of issues filed (or skipped via dedup).
 
