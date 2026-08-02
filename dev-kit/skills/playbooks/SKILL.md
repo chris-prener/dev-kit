@@ -70,12 +70,12 @@ Invoke when:
 
 | Check-ID | Finding | Class |
 |---|---|---|
-| `playbooks/skill-not-found` | Playbook-referenced skill does NOT exist in the skill suite | BLOCKER |
-| `playbooks/path-not-resolved` | Playbook-referenced relative file path does NOT resolve | BLOCKER |
-| `playbooks/missing-last-updated` | Playbook missing its `last_updated` frontmatter field | WARNING |
-| `playbooks/stale-last-updated` | Playbook `last_updated` older than 180 days | WARNING |
-| `playbooks/command-drift` | Playbook references a command that no longer matches `--help` output of the named tool | INFO (manual-review only; the audit cannot reliably diff CLI surface; not auto-filed) |
-| `playbooks/not-in-catalog` | Playbook missing from `docs/playbooks/README.md` catalog | WARNING |
+| `skill-not-found` | Playbook-referenced skill does NOT exist in the skill suite | BLOCKER |
+| `path-not-resolved` | Playbook-referenced relative file path does NOT resolve | WARNING (per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) §4's fixed severity vocabulary, "broken link" maps to `priority/medium`, not blocker) |
+| `missing-last-updated` | Playbook missing its `last_updated` frontmatter field | WARNING |
+| `stale-last-updated` | Playbook `last_updated` older than 180 days | WARNING |
+| `command-drift` | Playbook references a command that no longer matches `--help` output of the named tool | INFO (manual-review only; the audit cannot reliably diff CLI surface; not auto-filed) |
+| `not-in-catalog` | Playbook missing from `docs/playbooks/README.md` catalog | WARNING |
 
 BLOCKER/WARNING findings are offered for auto-filing via `backlog`'s auto-file mode.
 

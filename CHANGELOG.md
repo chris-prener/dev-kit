@@ -16,6 +16,8 @@ All notable changes to this project are documented in this file, in the [Keep a 
 - The pass-one ledger now carries pass 1b's finding registry, its full coverage record (58/58 skills plus partials, ADRs, vendored assets, repo docs, live GitHub state, and the six output-style personas), and a sixth defect class — *missing failure path*, for a skill that defines no behavior for an environment state its own audience routinely occupies.
 - Six sprint issues ([#49–#54](https://github.com/chris-prener/dev-kit/issues/49)) and a `sprint` label — the first live exercise of the area/timebox model from [ADR-0001](docs/adr/ADR-0001-sprint-as-issue-backed-concept-mirroring-epic.md), filed by hand ahead of the `sprint` skill so the friction of doing it manually becomes that skill's specification. Sprints group the 35 findings by what the work touches (filing substrate → cross-reference integrity → PR/gate flow, plus three independent tracks) rather than by which audit pass found them.
 - A field report on [#13](https://github.com/chris-prener/dev-kit/issues/13#issuecomment-5153179276) recording what this restructure validated against the epic/sprint requirements (R1, R2, R4) and what it contradicted: **GitHub native sub-issues permit only one parent** (verified, HTTP 422), so R3's two independent linkage dimensions cannot both use the native mechanism. Area keeps native sub-issues; sprint membership uses a body task list for the pilot.
+- `qc_finding.md` issue template, vendored in both `dev-kit/assets/github/ISSUE_TEMPLATE/` and `.github/ISSUE_TEMPLATE/` — six files referenced it as the required template for QC-originated auto-filed issues, but it never existed ([#2](https://github.com/chris-prener/dev-kit/issues/2)).
+- The 10 baseline labels this repo was missing (`needs-triage`, `needs-grooming`, `in-progress`, `blocked`, `UAT`, `qc-fixed`, `qc`, `priority/blocker`, `not-planned`, `no-changelog`), created live against `_partials/label-vocabulary.md`'s baseline ([#21](https://github.com/chris-prener/dev-kit/issues/21)). `spike` admitted to the Type baseline as an 8th Type label — it was already live but undocumented ([#4](https://github.com/chris-prener/dev-kit/issues/4)).
 
 ### Changed
 
@@ -36,7 +38,14 @@ _None._
 
 ### Fixed
 
-_None._
+- Sprint 1 ("Filing substrate", [#49](https://github.com/chris-prener/dev-kit/issues/49)) of [Epic B](https://github.com/chris-prener/dev-kit/issues/16), draining all 8 membership findings:
+  - Label vocabulary drift resolved: `objectives`/`outcome-validation` dropped from the two auto-file call sites in favor of `tech-debt`; `sprint` recorded as a provisional deviation, not admitted to baseline, pending Epic A's (#13) sprint-mechanism decision ([#4](https://github.com/chris-prener/dev-kit/issues/4)).
+  - All six shipped issue templates (both vendor and repo copies) rewritten from bold-prompt sections to the `##`-heading schema `dor-preflight.md`'s matrix already required but no template produced; the matrix gained rows for `documentation.md` and `other_inquiry.md`, which previously had no spec to check against ([#23](https://github.com/chris-prener/dev-kit/issues/23)).
+  - Two auto-file `dedup_id`s reshaped to the required `<skill>:<scope>:<check-id>` form in `objectives` and `backlog-retrospective` ([#32](https://github.com/chris-prener/dev-kit/issues/32)).
+  - `triage` Route 3 no longer closes duplicates with `--reason completed`, which contradicted the close-reason carve-out model; `discovery`'s not-planned close path no longer passes an unquoted `--reason not-planned`, which `gh` rejects outright ([#34](https://github.com/chris-prener/dev-kit/issues/34), [#35](https://github.com/chris-prener/dev-kit/issues/35)).
+  - ADR-0004's caller registry reconciled with its 5 undocumented actual callers (`documentation-audit-changes`, `docs-organization`, `playbooks`, `objectives`, `backlog-retrospective`); `playbooks` and `docs-organization` gained the "Check-ID inventory" / "Auto-file invocation contract" subsections they never had; `objectives` and `backlog-retrospective` had theirs completed to the full six-row contract shape. Two internal miscounts in ADR-0004 itself corrected ("five contract points" → six; a "five-row" input table that lists six fields) ([#3](https://github.com/chris-prener/dev-kit/issues/3)).
+- `docs-organization`'s and `playbooks`' broken-link-class findings (`broken-link`, `path-not-resolved`) reclassified from BLOCKER to WARNING/`priority/medium`, matching ADR-0004 §4's fixed severity vocabulary rather than a caller-invented tier.
+- `discovery`'s spike-filing step no longer instructs creating the `spike` label inline — now that it's baseline, that contradicted `label-vocabulary.md`'s label-migration flow, which it already cited.
 
 ### Security
 

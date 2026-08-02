@@ -2,7 +2,7 @@
 
 This file is the source of truth for GitHub Issue / PR labels in this repository. The `backlog`, `triage`, `backlog-retrospective`, and related skills under `dev-kit/skills/` read this file when present; they fall back to the embedded baseline in [`_partials/label-vocabulary.md`](../dev-kit/skills/_partials/label-vocabulary.md) only when this file is absent.
 
-This repo *is* the canonical baseline — the vocabulary below mirrors `_partials/label-vocabulary.md` exactly, aside from one recorded deviation (see "Known deviations" below). Consuming repos that vendor a copy of this file may add their own "Repo customizations" section following the pattern in the "Vendoring" note at the bottom.
+This repo *is* the canonical baseline — the vocabulary below mirrors `_partials/label-vocabulary.md` exactly. One label exists live in this repo but is deliberately *not* admitted to the baseline below — see "Known deviations". Consuming repos that vendor a copy of this file may add their own "Repo customizations" section following the pattern in the "Vendoring" note at the bottom.
 
 ## Baseline (23 labels)
 
