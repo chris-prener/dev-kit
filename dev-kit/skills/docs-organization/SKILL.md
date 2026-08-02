@@ -95,7 +95,36 @@ Walk the `docs/` tree and produce a structured report:
 4. **Broken links** — relative links inside `docs/` that don't resolve to a file in the tree.
 5. **Naming drift** — top-level `docs/` files that should be ALL-CAPS per the table above but aren't, or subfolder files that aren't kebab-case.
 
-Classify each finding BLOCKER / WARNING / INFO. Print the report; for BLOCKER/WARNING findings, offer to auto-file via `backlog`'s auto-file mode with `template = tech_debt`, `dedup_id = docs-organization:<path>:<check-id>`, labels `["documentation", "<priority/*>"]` (blocker → `priority/blocker`, warning → `priority/medium`), and either `parent_epic` or `standalone_reason` supplied by the operator.
+**Check-ID inventory:**
+
+| Check-ID | Finding | Class |
+|---|---|---|
+| `docs-organization/orphan-doc` | Orphan docs | WARNING |
+| `docs-organization/missing-frontmatter` | Missing frontmatter | WARNING |
+| `docs-organization/stale-frontmatter` | Stale frontmatter | INFO — a nudge, not a mandate; not auto-filed |
+| `docs-organization/broken-link` | Broken links | BLOCKER |
+| `docs-organization/naming-drift` | Naming drift | WARNING |
+
+Print the report; for BLOCKER/WARNING findings, offer to auto-file via `backlog`'s auto-file mode.
+
+**Auto-file invocation contract:**
+
+| Input | Value |
+|---|---|
+| `template` | `tech_debt` |
+| `title` | `Docs: <one-line description> in <path>`. |
+| `body` | Template-conformant body. MUST include the check-ID, the affected path, and the drift evidence. MUST include the `<!-- autofile-id: docs-organization:<path>:<check-id> -->` marker on its own line. |
+| `labels` | `["documentation", "<priority/*>"]` per the mapping below. |
+| `dedup_id` | `docs-organization:<path>:<check-id>` (matches the body marker). |
+| `parent_epic` | Supplied by the operator, or `standalone_reason` with a non-empty justification. |
+
+**Severity → Priority mapping:**
+
+| Class | Priority label | Auto-filed? |
+|---|---|---|
+| BLOCKER | `priority/blocker` | yes |
+| WARNING | `priority/medium` | yes |
+| INFO | — | no — surfaced in report only |
 
 ### E. Refresh README
 

@@ -159,12 +159,16 @@ V3. **Compose and post the validation comment** using exactly this template:
    Post via `gh issue comment <N> --body-file <path>` (tempfile under `/tmp/`, never inline `--body`).
 
 V4. **Hand off remediation** when outcome is `partial` or `not-achieved`:
+
+   **Check-ID inventory:** `outcome-validation` — the single stable check-ID this op emits; the original issue's identity lives in `dedup_id`'s `<scope>` component (`#<N>`), not in a per-check-type ID, since every remediation issue from V4 is the same kind of finding.
+
+   **Auto-file invocation contract:**
    - Invoke the `backlog` skill's auto-file mode with:
      - `template = tech_debt`
      - `parent_epic = <the issue's parent epic if it has one (gh api repos/.../issues/<N>/parent); else standalone with reason "outcome-validation follow-up; original issue #<N> not in an epic">`
-     - `labels = ["outcome-validation", "<priority/medium for partial | priority/high for not-achieved>"]` per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) severity mapping
-     - `dedup_id = outcome-validation:#<N>` (the **outcome status is NOT part of the dedup key** — same rationale as the `objectives` skill's op H: a re-validation that finds the situation worsened should not spam if the prior follow-up is still open, but should re-file if the prior follow-up was closed and the issue regressed)
-     - Body with the literal marker `<!-- autofile-id: outcome-validation:#<N> -->` and `tech_debt.md` template headings; reference the original issue, the validation date, and the `## Outcome validation` comment URL.
+     - `labels = ["tech-debt", "<priority/medium for partial | priority/high for not-achieved>"]` per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) severity mapping
+     - `dedup_id = backlog-retrospective:#<N>:outcome-validation` (the **outcome status is NOT part of the dedup key** — same rationale as the `objectives` skill's op H: a re-validation that finds the situation worsened should not spam if the prior follow-up is still open, but should re-file if the prior follow-up was closed and the issue regressed)
+     - Body with the literal marker `<!-- autofile-id: backlog-retrospective:#<N>:outcome-validation -->` and `tech_debt.md` template headings; reference the original issue, the validation date, and the `## Outcome validation` comment URL.
    - `achieved` and `deferred` outcomes do not file follow-ups. (Deferred should be re-run later; it's not a remediation trigger.)
 
 V5. **Cleanup**: remove the tempfile.

@@ -4,9 +4,9 @@ This file is the source of truth for GitHub Issue / PR labels in this repository
 
 This is the unmodified cross-repo canonical baseline, vendored from [dev-kit](https://github.com/chris-prener/dev-kit). Add repo-specific labels or specialize a Purpose column under "Repo customizations" at the end — do not edit the baseline tables in place.
 
-## Baseline (22 labels)
+## Baseline (23 labels)
 
-7 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 22 labels.
+8 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 23 labels.
 
 ### Type — what kind of work is this (every issue gets at least one)
 
@@ -19,6 +19,7 @@ This is the unmodified cross-repo canonical baseline, vendored from [dev-kit](ht
 | `epic` | `#5319E7` | Parent issue for a thematic body of work; sub-issues linked |
 | `audit-finding` | `#B60205` | Issue identified during an audit |
 | `qc` | `#D93F0B` | QC finding from automated or independent audit |
+| `spike` | `#C5DEF5` | Time-boxed discovery spike; produces artifacts, not production code |
 
 ### Status — added/removed during the issue's lifetime
 

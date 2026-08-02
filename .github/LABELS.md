@@ -2,11 +2,11 @@
 
 This file is the source of truth for GitHub Issue / PR labels in this repository. The `backlog`, `triage`, `backlog-retrospective`, and related skills under `dev-kit/skills/` read this file when present; they fall back to the embedded baseline in [`_partials/label-vocabulary.md`](../dev-kit/skills/_partials/label-vocabulary.md) only when this file is absent.
 
-This repo *is* the canonical baseline — the vocabulary below mirrors `_partials/label-vocabulary.md` exactly, with no repo-specific customizations. Consuming repos that vendor a copy of this file may add their own "Repo customizations" section following the pattern in the "Vendoring" note at the bottom.
+This repo *is* the canonical baseline — the vocabulary below mirrors `_partials/label-vocabulary.md` exactly, aside from one recorded deviation (see "Known deviations" below). Consuming repos that vendor a copy of this file may add their own "Repo customizations" section following the pattern in the "Vendoring" note at the bottom.
 
-## Baseline (22 labels)
+## Baseline (23 labels)
 
-7 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 22 labels.
+8 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 23 labels.
 
 ### Type — what kind of work is this (every issue gets at least one)
 
@@ -19,6 +19,7 @@ This repo *is* the canonical baseline — the vocabulary below mirrors `_partial
 | `epic` | `#5319E7` | Parent issue for a thematic body of work; sub-issues linked |
 | `audit-finding` | `#B60205` | Issue identified during an audit |
 | `qc` | `#D93F0B` | QC finding from automated or independent audit |
+| `spike` | `#C5DEF5` | Time-boxed discovery spike; produces artifacts, not production code |
 
 ### Status — added/removed during the issue's lifetime
 
@@ -67,6 +68,10 @@ If found, delete them as part of label migration.
 - **Most new issues should also carry a Priority label.** Skip only for low-stakes or speculative items where priority is undecided.
 - **Status labels are added/removed during the issue's lifetime**, not at creation. `blocked` and `UAT` are particularly important to keep current.
 - **Close-reason labels are required for non-completed closes.** Add the appropriate label *before* `gh issue close --reason ...`. The retro skill checks for the label, not the reason.
+
+## Known deviations
+
+- **`sprint`** (`#1D76DB`) — created live for the Epic B / Epic A area-timebox pilot (issues #49–#54). Deliberately excluded from the baseline: whether sprints are issue-backed at all is Epic A's (#13) decision, and admitting the label now would bake in an answer #13 hasn't reached. Revisit when #13 resolves. See [#4](https://github.com/chris-prener/dev-kit/issues/4).
 
 ## Vendoring
 

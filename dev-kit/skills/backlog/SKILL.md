@@ -121,6 +121,8 @@ General guidelines: auto-detect the repo (ask if detection fails); use `gh` for 
 | `feature_request.md` | new capability, enhancement, UX improvement |
 | `tech_debt.md` | refactor, cleanup, scaling crack, internal quality |
 | `qc_finding.md` | explicit QC finding |
+| `documentation.md` | missing, unclear, or stale docs |
+| `other_inquiry.md` | a question or feedback, not actionable work |
 
 3. If the request is thin, nudge toward quick capture once:
 

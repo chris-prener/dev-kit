@@ -21,6 +21,7 @@
 | `epic` | `#5319E7` | Parent issue for a thematic body of work; sub-issues linked |
 | `audit-finding` | `#B60205` | Issue identified during an audit |
 | `qc` | `#D93F0B` | QC finding from automated or independent audit |
+| `spike` | `#C5DEF5` | Time-boxed discovery spike; produces artifacts, not production code |
 
 ### Status — added/removed during the issue's lifetime
 

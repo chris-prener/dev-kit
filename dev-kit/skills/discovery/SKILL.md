@@ -109,7 +109,7 @@ Closes the spike with a structured artifact-selection comment. **REQUIRES the op
 3. Post the comment via `gh issue comment`.
 4. Close the issue:
    - For requirements doc / scoped issues / ADR outputs: `gh issue close <N>` (default reason `completed`).
-   - For not-planned outputs: add a `not-planned` close-reason label first, then `gh issue close <N> --reason not-planned`.
+   - For not-planned outputs: add a `not-planned` close-reason label first, then `gh issue close <N> --reason "not planned"`.
 
 **Enforceability note (honest):** This skill enforces artifact selection only during its own `close-spike` op. A user running raw `gh issue close <N>` or closing through the GitHub UI bypasses this — there is no periodic auditor in this suite that catches it after the fact. Treat closure discipline as a habit, not a guarantee.
 

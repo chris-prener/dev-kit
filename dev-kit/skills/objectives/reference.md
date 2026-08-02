@@ -7,7 +7,7 @@ Contract and QA detail for the `objectives` skill. `SKILL.md` holds the procedur
 - Edited `${CLAUDE_PROJECT_DIR}/docs/OBJECTIVES.md`.
 - Optionally: cross-link edits in epic bodies (when linking).
 - Audit report (markdown text).
-- Cadence sweep: appended `## KR check-in <date>` block + bumped `Last check-in` fields + auto-filed remediation issues (one per at-risk/off-track KR, deduped on `kr-checkin:O<n>:KR<n.m>`) + console summary.
+- Cadence sweep: appended `## KR check-in <date>` block + bumped `Last check-in` fields + auto-filed remediation issues (one per at-risk/off-track KR, deduped on `objectives:O<n>-KR<n.m>:kr-checkin`) + console summary.
 
 ## Success criteria
 
@@ -16,7 +16,7 @@ Contract and QA detail for the `objectives` skill. `SKILL.md` holds the procedur
 - Link: epic number appears in `Linked epic(s):` and in the linked epic's body.
 - Audit: report enumerates stale check-ins and orphan objectives.
 - Close: objective moved to `## Archived` with final scoring + "What we learned."
-- Cadence sweep: `## KR check-in <date>` block at top of `## Active` listing every active KR with one of the four status values; every active objective's `Last check-in` matches the sweep date; remediation issues filed for every `at-risk` / `off-track` KR (deduped per `kr-checkin:O<n>:KR<n.m>`).
+- Cadence sweep: `## KR check-in <date>` block at top of `## Active` listing every active KR with one of the four status values; every active objective's `Last check-in` matches the sweep date; remediation issues filed for every `at-risk` / `off-track` KR (deduped per `objectives:O<n>-KR<n.m>:kr-checkin`).
 
 ## Out of scope
 

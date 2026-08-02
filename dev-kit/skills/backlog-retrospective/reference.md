@@ -11,7 +11,7 @@ Contract and QA detail for the `backlog-retrospective` skill. `SKILL.md` holds t
 
 **validate:**
 - One `## Outcome validation YYYY-MM-DD` comment on issue `<N>` (issue stays `CLOSED`).
-- For `partial` / `not-achieved`: one auto-filed remediation issue (deduped per `outcome-validation:#<N>`).
+- For `partial` / `not-achieved`: one auto-filed remediation issue (deduped per `backlog-retrospective:#<N>:outcome-validation`).
 - Tempfiles cleaned up.
 
 ## Success criteria
