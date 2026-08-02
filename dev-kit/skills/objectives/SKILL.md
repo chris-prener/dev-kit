@@ -120,13 +120,23 @@ The cross-objective sweep that drives the recurring KR rhythm. Use this — not 
    **Check-ID inventory:** `kr-checkin` — the single stable check-ID this op emits; the at-risk/off-track KR identity lives in `dedup_id`'s `<scope>` component (`O<n>-KR<n.m>`), not in a per-check-type ID, since every remediation issue from this op is the same kind of finding.
 
    **Auto-file invocation contract:**
-   - Invoke the `backlog` skill's auto-file mode with:
-     - `template = tech_debt`
-     - `parent_epic = <objective's first linked open epic, if any; else standalone with reason "objective-level remediation, not yet scoped to an epic">`
-     - `labels = ["tech-debt", "<priority/medium for at-risk | priority/high for off-track>"]` per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) severity mapping
-     - `dedup_id = objectives:O<n>-KR<n.m>:kr-checkin` (status is **NOT** part of the dedup key — this prevents spam when a KR cycles between at-risk and recovered, and correctly re-files if a closed remediation issue's KR drifts back into trouble)
-     - Body with the literal marker `<!-- autofile-id: objectives:O<n>-KR<n.m>:kr-checkin -->` and `tech_debt.md` template headings; reference the sweep date and the prior status if applicable.
-   - `done` and `on-track` KRs are not filed.
+
+   | Input | Value |
+   |---|---|
+   | `template` | `tech_debt` |
+   | `title` | `Objective remediation: O<n> KR<n.m> is <at-risk\|off-track>`. |
+   | `body` | Template-conformant body. MUST include the sweep date, the prior status if applicable, and the KR's rationale text from the check-in block. MUST include the `<!-- autofile-id: objectives:O<n>-KR<n.m>:kr-checkin -->` marker on its own line. |
+   | `labels` | `["tech-debt", "<priority/*>"]` per the mapping below. |
+   | `dedup_id` | `objectives:O<n>-KR<n.m>:kr-checkin` (status is **NOT** part of the dedup key — this prevents spam when a KR cycles between at-risk and recovered, and correctly re-files if a closed remediation issue's KR drifts back into trouble). This is a new dedup_id shape (fixing #32); no issue was ever filed under the old `kr-checkin:O<n>:KR<n.m>` form — every prior invocation errored at input validation before reaching the dedup search — so there is no historical marker to migrate. |
+   | `parent_epic` | Objective's first linked open epic, if any; else `standalone_reason` with "objective-level remediation, not yet scoped to an epic". |
+
+   **Severity → Priority mapping:**
+
+   | KR status | Priority label | Auto-filed? |
+   |---|---|---|
+   | at-risk | `priority/medium` | yes |
+   | off-track | `priority/high` | yes |
+   | on-track / done | — | no — not filed |
 6. **Output a console summary** for the operator: total KRs swept, count by status, list of issues filed (or skipped via dedup).
 
 ## Reference

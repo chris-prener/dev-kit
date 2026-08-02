@@ -49,7 +49,7 @@ Files a discovery issue with the `spike` Type label and the discovery template b
 1. Confirm the inputs above are populated. Refuse to proceed if the time-box, the question, or the artifact target is missing.
 2. Create the issue via `gh issue create` with:
    - Title: `Spike: <topic>`
-   - Labels: `spike` (Type — create this label if the repo doesn't have it yet; see [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md) for the label-migration flow). Optionally add a `priority/*` label. No other Type label is required — `spike` IS the Type for this issue.
+   - Labels: `spike` (Type — a baseline label per [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md); if the repo lacks it, follow that partial's label-migration flow rather than creating it inline). Optionally add a `priority/*` label. No other Type label is required — `spike` IS the Type for this issue.
    - Body: the discovery template (below).
 3. Print the new issue URL and remind the operator of the stated time-box and expiry date.
 

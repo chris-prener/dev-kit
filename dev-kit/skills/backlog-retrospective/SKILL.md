@@ -163,13 +163,23 @@ V4. **Hand off remediation** when outcome is `partial` or `not-achieved`:
    **Check-ID inventory:** `outcome-validation` — the single stable check-ID this op emits; the original issue's identity lives in `dedup_id`'s `<scope>` component (`#<N>`), not in a per-check-type ID, since every remediation issue from V4 is the same kind of finding.
 
    **Auto-file invocation contract:**
-   - Invoke the `backlog` skill's auto-file mode with:
-     - `template = tech_debt`
-     - `parent_epic = <the issue's parent epic if it has one (gh api repos/.../issues/<N>/parent); else standalone with reason "outcome-validation follow-up; original issue #<N> not in an epic">`
-     - `labels = ["tech-debt", "<priority/medium for partial | priority/high for not-achieved>"]` per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) severity mapping
-     - `dedup_id = backlog-retrospective:#<N>:outcome-validation` (the **outcome status is NOT part of the dedup key** — same rationale as the `objectives` skill's op H: a re-validation that finds the situation worsened should not spam if the prior follow-up is still open, but should re-file if the prior follow-up was closed and the issue regressed)
-     - Body with the literal marker `<!-- autofile-id: backlog-retrospective:#<N>:outcome-validation -->` and `tech_debt.md` template headings; reference the original issue, the validation date, and the `## Outcome validation` comment URL.
-   - `achieved` and `deferred` outcomes do not file follow-ups. (Deferred should be re-run later; it's not a remediation trigger.)
+
+   | Input | Value |
+   |---|---|
+   | `template` | `tech_debt` |
+   | `title` | `Outcome validation follow-up: #<N> <partial\|not-achieved>`. |
+   | `body` | Template-conformant body. MUST include the original issue reference, the validation date, and the `## Outcome validation` comment URL. MUST include the `<!-- autofile-id: backlog-retrospective:#<N>:outcome-validation -->` marker on its own line. |
+   | `labels` | `["tech-debt", "<priority/*>"]` per the mapping below. |
+   | `dedup_id` | `backlog-retrospective:#<N>:outcome-validation` (the **outcome status is NOT part of the dedup key** — same rationale as the `objectives` skill's op H: a re-validation that finds the situation worsened should not spam if the prior follow-up is still open, but should re-file if the prior follow-up was closed and the issue regressed). This is a new dedup_id shape (fixing #32); no issue was ever filed under the old `outcome-validation:#<N>` form — every prior invocation errored at input validation before reaching the dedup search — so there is no historical marker to migrate. |
+   | `parent_epic` | The issue's parent epic if it has one (`gh api repos/.../issues/<N>/parent`); else `standalone_reason` with "outcome-validation follow-up; original issue #<N> not in an epic". |
+
+   **Severity → Priority mapping:**
+
+   | Outcome | Priority label | Auto-filed? |
+   |---|---|---|
+   | partial | `priority/medium` | yes |
+   | not-achieved | `priority/high` | yes |
+   | achieved / deferred | — | no — not filed (deferred should be re-run later; it's not a remediation trigger) |
 
 V5. **Cleanup**: remove the tempfile.
 

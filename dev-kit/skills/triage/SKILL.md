@@ -102,7 +102,7 @@ Print the assessment as one fenced block per issue. Then propose **one** of the 
 
 ### C. Propose a route, confirm, execute
 
-For each issue, present a numbered choice prompt. The five routes:
+For each issue, present a numbered choice prompt. The six routes:
 
 ```
 1) Route to epic <N> (sub-issue link via gh api ... /sub_issues)

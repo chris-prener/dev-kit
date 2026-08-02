@@ -99,13 +99,13 @@ Walk the `docs/` tree and produce a structured report:
 
 | Check-ID | Finding | Class |
 |---|---|---|
-| `docs-organization/orphan-doc` | Orphan docs | WARNING |
-| `docs-organization/missing-frontmatter` | Missing frontmatter | WARNING |
-| `docs-organization/stale-frontmatter` | Stale frontmatter | INFO — a nudge, not a mandate; not auto-filed |
-| `docs-organization/broken-link` | Broken links | BLOCKER |
-| `docs-organization/naming-drift` | Naming drift | WARNING |
+| `orphan-doc` | Orphan docs | WARNING |
+| `missing-frontmatter` | Missing frontmatter | WARNING |
+| `stale-frontmatter` | Stale frontmatter | INFO — a nudge, not a mandate; not auto-filed |
+| `broken-link` | Broken links | WARNING (per [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) §4's fixed severity vocabulary, "broken link" maps to `priority/medium`, not blocker) |
+| `naming-drift` | Naming drift | WARNING |
 
-Print the report; for BLOCKER/WARNING findings, offer to auto-file via `backlog`'s auto-file mode.
+Print the report; for WARNING findings, offer to auto-file via `backlog`'s auto-file mode.
 
 **Auto-file invocation contract:**
 
@@ -122,7 +122,6 @@ Print the report; for BLOCKER/WARNING findings, offer to auto-file via `backlog`
 
 | Class | Priority label | Auto-filed? |
 |---|---|---|
-| BLOCKER | `priority/blocker` | yes |
 | WARNING | `priority/medium` | yes |
 | INFO | — | no — surfaced in report only |
 
