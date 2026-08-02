@@ -13,6 +13,7 @@ when_to_use: >
   language-agnostic workflow — those belong in dev-kit itself, ported
   by hand alongside its siblings.
 model: opus
+disable-model-invocation: true
 # persona: developer   — grouping metadata only; not read by Claude Code.
 ---
 

@@ -18,6 +18,7 @@ when_to_use: >
   not dev-kit's.
 model: opus
 allowed-tools: Bash(ls *), Bash(mkdir *), Bash(git *)
+disable-model-invocation: true
 # persona: developer   — grouping metadata only; not read by Claude Code.
 ---
 
