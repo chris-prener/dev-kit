@@ -13,6 +13,7 @@ when_to_use: >
   (`run-repo-qc`'s job).
 model: sonnet
 allowed-tools: Bash(mkdir *), Bash(ls *)
+disable-model-invocation: true
 # persona: developer   — grouping metadata only; not read by Claude Code.
 ---
 

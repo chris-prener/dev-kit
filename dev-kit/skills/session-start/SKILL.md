@@ -13,6 +13,7 @@ when_to_use: >
   mid-session refreshes.
 model: haiku
 allowed-tools: Bash(gh *)
+disable-model-invocation: true
 # No persona tag — session orientation is useful from any persona
 # window, not owned by one role.
 ---

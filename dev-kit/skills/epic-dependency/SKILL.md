@@ -11,6 +11,7 @@ when_to_use: >
   or single-issue blocker triage (`triage`).
 model: sonnet
 allowed-tools: Bash(gh *), Bash(git *)
+disable-model-invocation: true
 # persona: product-owner   — grouping metadata only; not read by Claude Code.
 ---
 

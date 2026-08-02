@@ -13,6 +13,7 @@ when_to_use: >
   protection and required checks.
 model: opus
 allowed-tools: Bash(gh *)
+disable-model-invocation: true
 # persona: developer   — grouping metadata only; not read by Claude Code.
 ---
 
