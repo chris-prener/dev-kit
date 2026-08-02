@@ -6,7 +6,7 @@
 
 - **Filed:** 2026-08-01
 - **Linked epic(s):** [#16 — Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) (area; execution sequenced by sprints [#49–#54](https://github.com/chris-prener/dev-kit/issues/49))
-- **Last check-in:** 2026-08-01
+- **Last check-in:** 2026-08-02
 
 **Why this matters**
 
@@ -17,7 +17,7 @@ dev-kit's entire product surface is guidance: skills that other repos read and f
 - **KR1.1 — The known-defect backlog reaches zero.**
   - *Rationale:* Every open `audit-finding` issue is a documented defect that a user can hit today. Carrying them is a choice to ship known-broken guidance.
   - *Target:* 0 open issues labeled `audit-finding`.
-  - *Progress:* 35 open (2026-08-01, after pass 1b). The count has moved twice, both times because the backlog got more honest rather than because the target slipped: 12 → 14 when #21 and #23 were found while filing O1, then 14 → 35 when [pass 1b](https://github.com/chris-prener/dev-kit/issues/25) — an adversarial second read of the *same unfixed* repo — surfaced 21 more (#26–#46). Pass 1b is baseline completion, not regression: nothing broke, a second reader simply looked at the 39 skills the first reader may never have opened. **This is now the complete pre-fix baseline over a fully documented denominator**, which it was not before. Delivered by Epic B (#16), which holds all 35 as a single durable area; execution is sequenced by sprints #49–#54 rather than by which audit pass found a finding.
+  - *Progress:* 28 open, 36 total (2026-08-02, after [Sprint 1](https://github.com/chris-prener/dev-kit/issues/49)). The count has moved three times: 12 → 14 when #21 and #23 were found while filing O1; 14 → 35 when [pass 1b](https://github.com/chris-prener/dev-kit/issues/25) — an adversarial second read of the *same unfixed* repo — surfaced 21 more (#26–#46); 35 → 36 when #55 was filed after the baseline was set. First real drawdown: Sprint 1 closed 8 findings (#4, #21, #2, #23, #3, #32, #34, #35) — the filing-substrate area of Epic B (#16) — shipped via [#57](https://github.com/chris-prener/dev-kit/pull/57)/[#58](https://github.com/chris-prener/dev-kit/pull/58). Remaining work is sequenced by sprints #50–#54.
 
 - **KR1.2 — Every cross-reference in skill prose resolves, and a check proves it.**
   - *Rationale:* The largest single failure mode found by the audit was prose naming something that does not exist — a renamed skill (#1, 9 stale references), a template that was never vendored (#2, 6 references). These are mechanically detectable, which means they should never have survived to an audit. A check that runs is worth more than a fix that does not repeat.
