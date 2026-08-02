@@ -232,9 +232,20 @@ measurement of dev-kit's *contribution*, not of the headroom remaining.
 
 ## Appendix — Sprint 1.5, proposed issue body
 
-Sprints live as GitHub issues (#49–#54), not as files. This appendix is the body ready to
+Sprints live as GitHub issues, not as files. This appendix is the body ready to
 file. It is a **proposal from a Product Manager window** — membership, sequencing, and
 filing are Product Owner calls.
+
+> **Filed 2026-08-02 as [#63](https://github.com/chris-prener/dev-kit/issues/63).** The
+> appendix below is kept as the original proposal; the issue is the live artifact. Three
+> Product Owner deviations, recorded here so the difference isn't mistaken for drift:
+> membership is **two** items ([#61](https://github.com/chris-prener/dev-kit/issues/61),
+> [#62](https://github.com/chris-prener/dev-kit/issues/62)) rather than three — "run
+> `/doctor` and record the budget" became an acceptance criterion of #61 instead of a
+> backlog item; the `pr-gate-*` demotion moved from the reduction issue into #61, because
+> "demote to a reference file" is a decomposition verdict; and `showcase` was excluded from
+> #62 for the same reason, dropping its saving from 4,436 to 3,448 characters. Those two
+> exclusions are what let #61 and #62 run in parallel.
 
 > **Note on form.** A purist reading of [ADR-0001](../adr/ADR-0001-sprint-as-issue-backed-concept-mirroring-epic.md)
 > says sprints are time-boxed *execution* inside an area epic, and this sprint's centre of

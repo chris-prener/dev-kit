@@ -5,7 +5,7 @@
 ### O1 — dev-kit's shipped guidance is trustworthy
 
 - **Filed:** 2026-08-01
-- **Linked epic(s):** [#16 — Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) (area; execution sequenced by sprints [#49–#54](https://github.com/chris-prener/dev-kit/issues/49))
+- **Linked epic(s):** [#16 — Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) (area; execution sequenced by sprints [#49–#54](https://github.com/chris-prener/dev-kit/issues/49), plus [#63](https://github.com/chris-prener/dev-kit/issues/63) and [#67](https://github.com/chris-prener/dev-kit/issues/67))
 - **Last check-in:** 2026-08-02
 
 **Why this matters**
@@ -17,7 +17,7 @@ dev-kit's entire product surface is guidance: skills that other repos read and f
 - **KR1.1 — The known-defect backlog reaches zero.**
   - *Rationale:* Every open `audit-finding` issue is a documented defect that a user can hit today. Carrying them is a choice to ship known-broken guidance.
   - *Target:* 0 open issues labeled `audit-finding`.
-  - *Progress:* 28 open, 36 total (2026-08-02, after [Sprint 1](https://github.com/chris-prener/dev-kit/issues/49)). The count has moved three times: 12 → 14 when #21 and #23 were found while filing O1; 14 → 35 when [pass 1b](https://github.com/chris-prener/dev-kit/issues/25) — an adversarial second read of the *same unfixed* repo — surfaced 21 more (#26–#46); 35 → 36 when #55 was filed after the baseline was set. First real drawdown: Sprint 1 closed 8 findings (#4, #21, #2, #23, #3, #32, #34, #35) — the filing-substrate area of Epic B (#16) — shipped via [#57](https://github.com/chris-prener/dev-kit/pull/57)/[#58](https://github.com/chris-prener/dev-kit/pull/58). Remaining work is sequenced by sprints #50–#54.
+  - *Progress:* 28 open, 36 total (2026-08-02, after [Sprint 1](https://github.com/chris-prener/dev-kit/issues/49)). The count has moved three times: 12 → 14 when #21 and #23 were found while filing O1; 14 → 35 when [pass 1b](https://github.com/chris-prener/dev-kit/issues/25) — an adversarial second read of the *same unfixed* repo — surfaced 21 more (#26–#46); 35 → 36 when #55 was filed after the baseline was set. First real drawdown: Sprint 1 closed 8 findings (#4, #21, #2, #23, #3, #32, #34, #35) — the filing-substrate area of Epic B (#16) — shipped via [#57](https://github.com/chris-prener/dev-kit/pull/57)/[#58](https://github.com/chris-prener/dev-kit/pull/58). Remaining work is sequenced by sprints #63 (Sprint 1.5, decomposition), #50–#54, and #67 (Sprint 7, filing/lifecycle substrate follow-ups). All 34 open sub-issues have a sprint home as of the 2026-08-02 grooming pass.
 
 - **KR1.2 — Every cross-reference in skill prose resolves, and a check proves it.**
   - *Rationale:* The largest single failure mode found by the audit was prose naming something that does not exist — a renamed skill (#1, 9 stale references), a template that was never vendored (#2, 6 references). These are mechanically detectable, which means they should never have survived to an audit. A check that runs is worth more than a fix that does not repeat.
