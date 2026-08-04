@@ -1,5 +1,5 @@
 ---
-name: requirements-author
+name: requirements
 description: >
   Drafts, amends, supersedes, and audits requirements documents under
   docs/requirements/. Requirements docs sit before epic creation in the

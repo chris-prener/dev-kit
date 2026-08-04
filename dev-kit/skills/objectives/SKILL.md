@@ -1,5 +1,5 @@
 ---
-name: objectives-curator
+name: objectives
 description: >
   Files, updates, links, audits, checks in on, and closes Objectives and
   Key Results in docs/OBJECTIVES.md, and drives the recurring

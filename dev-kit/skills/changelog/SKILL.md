@@ -1,5 +1,5 @@
 ---
-name: changelog-curator
+name: changelog
 description: >
   Maintains CHANGELOG.md in Keep a Changelog 1.1.0 format. Adds entries
   under [Unreleased], cuts releases, audits closed PRs without entries,

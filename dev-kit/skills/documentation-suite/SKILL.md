@@ -3,7 +3,7 @@ name: documentation-suite
 description: >
   Orchestrates three documentation skills in dependency order: (1)
   documentation (docstrings + inline comments), (2) walkthrough
-  (docs/walkthrough.md), (3) readme-maintenance (README.md sync). Each
+  (docs/walkthrough.md), (3) readme (README.md sync). Each
   phase completes fully before the next begins.
 when_to_use: >
   Use for a full documentation refresh spanning docstrings, the
@@ -37,7 +37,7 @@ You are a documentation orchestrator. Your job is to run three documentation ski
                            │ README links to walkthrough + pulls function table
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  Phase 3: readme-maintenance                                    │
+│  Phase 3: readme                                                │
 │  Syncs README.md with documented functions and walkthrough      │
 │  Output: accurate, placeholder-free README                      │
 └─────────────────────────────────────────────────────────────────┘
