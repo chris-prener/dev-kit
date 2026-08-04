@@ -88,7 +88,7 @@ Each check is namespaced as `<category>/<check-id>`.
 
 #### `governance/*` — repo-root docs
 
-- `governance/changelog-missing` — code changes are present but no `[Unreleased]` entry references any changed file or a `Closes #N` from the branch's commit messages → HIGH. (`pr-gate-changelog` runs a parallel check; this is the doc-side view and may overlap — if both fire, treat as one finding.)
+- `governance/changelog-missing` — code changes are present but no `[Unreleased]` entry references any changed file or a `Closes #N` from the branch's commit messages → HIGH. (`pr-orchestrator`'s changelog gate runs a parallel check; this is the doc-side view and may overlap — if both fire, treat as one finding.)
 
 ### Step 4 — Classify, suppress, file
 
@@ -186,7 +186,7 @@ In gate mode, ensure the report path is gitignored (`git check-ignore`) before w
 - `backlog` — auto-file mode.
 - `run-repo-qc` — sister gate-mode read-only audit.
 - `pr-orchestrator` — invokes this skill in `gate` mode.
-- `pr-gate-changelog` — parallel changelog check; see `governance/changelog-missing` above.
+- `pr-orchestrator`'s changelog gate — parallel changelog check; see `governance/changelog-missing` above.
 
 ## Check-ID inventory
 

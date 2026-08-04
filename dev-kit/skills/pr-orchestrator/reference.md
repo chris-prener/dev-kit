@@ -1,10 +1,23 @@
 # PR Orchestrator — reference
 
-Contract and QA detail for `pr-orchestrator` and its three gate skills (`pr-gate-code-review`, `pr-gate-changelog`, `pr-gate-qc`). `SKILL.md` holds the orchestrator's own procedure; this file holds the shared gate protocol, the PR-body marker grammar, the managed-fence contract, outputs, and success criteria.
+Contract and QA detail for `pr-orchestrator` and its three gates (`reference/gate-code-review.md`, `reference/gate-changelog.md`, `reference/gate-qc.md`) — reference files read and followed directly, not `Skill`-tool-dispatched skills (see [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)). `SKILL.md` holds the orchestrator's own procedure; this file holds the shared gate protocol, the PR-body marker grammar, the managed-fence contract, outputs, and success criteria.
+
+## Push-state check
+
+Invoked at two points — SKILL.md Step 1 (pre-flight) and again at the top of Step 6, immediately before `gh pr create` / `gh pr edit` — because gates 3–5 can produce local fix-up commits between the two, and a clean working tree does not imply the remote is current.
+
+1. Resolve the upstream ref for the current branch (`git rev-parse --abbrev-ref --symbolic-full-name @{u}`).
+2. **No upstream** (first push): `git push -u origin <branch>`, then proceed. This is the ordinary create-mode case, not an error.
+3. **Upstream exists**: compare `git rev-parse HEAD` to `git rev-parse @{u}`.
+   - Equal → proceed, nothing to do.
+   - Local ahead only → `git push`, then proceed.
+   - Diverged or local behind → halt: `"Local HEAD and origin/<branch> have diverged — resolve before continuing (do not force-push without operator confirmation)."` Do not auto-force-push.
+
+This check never substitutes for `post-merge`'s `git branch -d` "not fully merged" refusal — that backstop stays as-is; this check exists so the PR itself is never opened against stale remote content in the first place.
 
 ## Gate protocol
 
-Every gate skill is invoked with the same input object and must return the same shape of result.
+Every gate is followed with the same input object and must return the same shape of result.
 
 **Input** (built once in orchestrator Step 1, passed to every gate):
 
@@ -26,7 +39,18 @@ Every gate skill is invoked with the same input object and must return the same 
 | `body_amendments` | Optional lines to fold into the PR body's `## Notes` |
 | `chat_output` | One-paragraph human-readable summary |
 
-A gate skill that doesn't exist yet (not all writer/QC skills are ported) is treated as effective signal 0 with a `"⚠ Gate <slug> not found; skipping."` log line — never a hard failure.
+A gate reference file that doesn't exist (e.g. mid-migration) is treated as effective signal 0 with a `"⚠ Gate reference <path> not found; skipping."` log line — never a hard failure.
+
+## Closing-keyword grammar (canonical)
+
+Issue references use two distinct grammars, never conflated:
+
+| Grammar | Regex | Meaning |
+|---|---|---|
+| Closing keyword | `(Closes\|Fixes\|Resolves) #\d+` | Closes the referenced issue on merge; feeds `issue_refs`, `## Closes`, and the retro/close-out step |
+| Additive reference | `Refs #\d+` | Cross-references an issue without closing it; operator-added only, never produced by pre-flight, preserved verbatim wherever it sits |
+
+Both pre-flight (SKILL.md Step 1) and the `## Closes` carry-forward diff (below) use the closing-keyword regex exclusively. `Refs #N` lines are additive content the operator writes directly into the PR body — they are never detected from `git log`, never diffed, and never promoted to a closing keyword.
 
 ## PR-body markers (canonical grammar)
 
@@ -60,7 +84,7 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 **Update mode**: parses the body into `[pre-fence, managed, post-fence]` and re-emits `pre-fence + regenerated-managed + post-fence`. By default only `## Closes` and the `_updated:` marker regenerate; `## Summary` / `## Implementation` / `## Testing` and `## Notes` prose carry forward verbatim. Force full regeneration with `--update --regen-body` (per-section diff prompt).
 
 **Carry-forward rules:**
-- `## Closes`: diff the parsed `(Closes|Fixes|Refs) #\d+` lines against the live set from `git log <base>..HEAD`; surface adds/removes before regenerating. Operator-added `Refs #N` lines are preserved as additive.
+- `## Closes`: diff the parsed closing-keyword lines (`(Closes|Fixes|Resolves) #\d+` — see "Closing-keyword grammar" above) against the live set from `git log <base>..HEAD`; surface adds/removes before regenerating. Operator-added `Refs #N` lines are additive references, not closing keywords — they're preserved verbatim and never enter this diff.
 - `_no-*:_` markers: preserved verbatim wherever they sit in the body.
 - `_created:`: written once, never overwritten.
 - `_updated:`: rewritten every update run.
@@ -81,7 +105,8 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 - Every `Closes #N` references an issue that is `CLOSED` and carries a `## Retrospective` comment.
 - `CHANGELOG.md`'s `[Unreleased]` block has an entry referencing this PR or its closed issues, or the PR carries `no-changelog`.
 - The QC gate returned non-BLOCKER, or `## Notes` carries `_no-prep-gate: <justification>_`.
-- The working tree is clean immediately before `gh pr create` — no gate may dirty it (they write to gitignored `.github/audit-reports/`).
+- The working tree is clean immediately before `gh pr create` — every gate except the changelog gate writes only to gitignored `.github/audit-reports/`; the changelog gate's one tracked-file commit (see `reference/gate-changelog.md`'s "Tracked-file exception") is covered by the push-state check re-run below, not by staying clean.
+- Local `HEAD` matches `origin/<branch>` immediately before `gh pr create` / `gh pr edit` — the push-state check re-runs at that point, not just at pre-flight.
 - Re-running this skill on the same branch detects the open PR and dispatches to update mode rather than opening a duplicate.
 
 ## Out of scope
@@ -93,10 +118,11 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 
 ## Cross-references
 
-- `pr-gate-code-review` — gate 1.
-- `pr-gate-changelog` — gate 2.
-- `pr-gate-qc` — gate 3.
+- `reference/gate-code-review.md` — gate 1.
+- `reference/gate-changelog.md` — gate 2.
+- `reference/gate-qc.md` — gate 3.
 - `backlog-retrospective` — invoked inline per closing issue.
 - `implementation-plan` — `Transition` invoked inline when a plan comment exists.
 - `changelog` — drafts entries for the changelog gate.
+- [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md) — the decision demoting the three gates to reference files.
 - [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) — auto-file protocol used by the gates.

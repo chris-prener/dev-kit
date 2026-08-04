@@ -69,5 +69,5 @@ See [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-voc
 
 - `pr-orchestrator` — invokes `Transition` (to `shipped`) inline when closing an issue.
 - `code-review` — reads the plan's `### Approach`, `### Verification`, and `### Decisions made` sections as review context, when present.
-- `backlog-grooming` / `triage` — read the `in-progress` label only.
+- `backlog` (Groom / Triage operations) — read the `in-progress` label only.
 - `_partials/label-vocabulary.md` — `in-progress` / `blocked` Status labels.

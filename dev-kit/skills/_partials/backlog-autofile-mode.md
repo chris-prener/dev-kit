@@ -62,7 +62,7 @@ Examples:
    REPO=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
    gh issue list --repo "$REPO" --state open --search "in:body \"autofile-id: <dedup_id>\"" --json number,title,state,labels
    ```
-   - **Hit (1+ open issues)**: post a single comment on the most-recently-updated match — `"Still reproduces in <run_id> on <date>; see <report-path>."` — and **conditionally patch the dedup target's labels**: add `needs-triage` only if **all three** are true: (a) the label is absent today, (b) the issue carries no priority label (a triaged issue will have one), and (c) no comment authored on the issue contains the heading `## Triage` (the audit trail left by the `triage` skill). This guard prevents already-routed or in-progress issues from being yanked back into the triage queue by a re-firing finding. If patched, do so via `gh issue edit <existing-num> --add-label needs-triage`. Then return `{action: "deduped", issue: <existing-num>, label_patched: <bool>}` to the caller. Do NOT file a duplicate.
+   - **Hit (1+ open issues)**: post a single comment on the most-recently-updated match — `"Still reproduces in <run_id> on <date>; see <report-path>."` — and **conditionally patch the dedup target's labels**: add `needs-triage` only if **all three** are true: (a) the label is absent today, (b) the issue carries no priority label (a triaged issue will have one), and (c) no comment authored on the issue contains the heading `## Triage` (the audit trail left by `backlog`'s Triage operation). This guard prevents already-routed or in-progress issues from being yanked back into the triage queue by a re-firing finding. If patched, do so via `gh issue edit <existing-num> --add-label needs-triage`. Then return `{action: "deduped", issue: <existing-num>, label_patched: <bool>}` to the caller. Do NOT file a duplicate.
    - **Miss**: continue.
 
 3. **Dedup search (closed issues, advisory only).**
@@ -75,7 +75,7 @@ Examples:
 
 5. **Compose the final body.** Auto-file mode prepends (or verifies the presence of) the `**Parent epic:** #<N>` or `**Parent epic:** standalone — <reason>` line per Step E. The autofile-id marker stays where the caller placed it (typically near the top of the body, after the parent-epic line).
 
-6. **Post the issue.** Inject the `needs-triage` Status label into the labels list if not already present (auto-filed issues are routed through the `triage` skill — the label is the queue marker). Then:
+6. **Post the issue.** Inject the `needs-triage` Status label into the labels list if not already present (auto-filed issues are routed through `backlog`'s Triage operation — the label is the queue marker). Then:
    ```bash
    gh issue create --repo "$REPO" --title "<title>" --body "<body>" --label "<label1>,<label2>,...,needs-triage"
    ```

@@ -1,6 +1,6 @@
 # Label Vocabulary
 
-This file is the source of truth for GitHub Issue / PR labels in this repository. dev-kit skills that file or triage issues (`backlog`, `triage`, `backlog-retrospective`, and related) read this file when present; they fall back to the embedded baseline in dev-kit's `_partials/label-vocabulary.md` only when this file is absent.
+This file is the source of truth for GitHub Issue / PR labels in this repository. dev-kit skills that file or triage issues (`backlog` — including its Triage operation — `backlog-retrospective`, and related) read this file when present; they fall back to the embedded baseline in dev-kit's `_partials/label-vocabulary.md` only when this file is absent.
 
 This is the unmodified cross-repo canonical baseline, vendored from [dev-kit](https://github.com/chris-prener/dev-kit). Add repo-specific labels or specialize a Purpose column under "Repo customizations" at the end — do not edit the baseline tables in place.
 
@@ -28,8 +28,8 @@ This is the unmodified cross-repo canonical baseline, vendored from [dev-kit](ht
 | `qc-fixed` | `#0E8A16` | QC finding auto-fixed by tooling |
 | `blocked` | `#E11D48` | Cannot proceed — waiting on data, a decision, or another issue |
 | `UAT` | `#FBCA04` | Awaiting user acceptance testing |
-| `needs-grooming` | `#cfd3d7` | Quick-captured by the `quick-capture` skill; missing AC or parent epic. Cleared by `backlog-grooming` once the issue is fully baked. |
-| `needs-triage` | `#cfd3d7` | Auto-filed (by the `backlog` skill's auto-file mode) or freshly groomed; awaiting routing decision by `triage`. Cleared by triage. |
+| `needs-grooming` | `#cfd3d7` | Captured by `backlog`'s Capture operation; missing AC or parent epic. Cleared by `backlog`'s Groom operation once the issue is fully baked. |
+| `needs-triage` | `#cfd3d7` | Auto-filed (by `backlog`'s Auto-file mode) or freshly groomed; awaiting routing decision by `backlog`'s Triage operation. Cleared by triage. |
 | `in-progress` | `#0E8A16` | Issue has an active implementation plan in flight. Set by the `implementation-plan` skill on `Status: in-progress` transition; cleared on `ready-for-pr` / `shipped` / `blocked`. Read by session-orientation tooling (e.g. `session-start`) to surface in-flight work. |
 
 ### Priority — how urgent (most issues get one; descriptions may be specialized per repo)

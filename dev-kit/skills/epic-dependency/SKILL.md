@@ -8,7 +8,7 @@ description: >
 when_to_use: >
   Use to map or validate which epics block which other epics. Not for
   intra-epic sub-issue ordering (native GitHub sub-issues handle that)
-  or single-issue blocker triage (`triage`).
+  or single-issue blocker triage (`backlog`'s Triage operation).
 model: sonnet
 allowed-tools: Bash(gh *), Bash(git *)
 disable-model-invocation: true

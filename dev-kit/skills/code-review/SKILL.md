@@ -4,13 +4,13 @@ description: >
   Runs a rubber-duck-style AI code review pass against a diff (PR-bound
   or local) via an independent subagent, and produces a structured
   findings report. Invoked as the mandatory pre-PR gate by
-  `pr-gate-code-review`; can also be invoked ad hoc as `self-review`
-  before pushing.
+  `pr-orchestrator`'s code-review gate; can also be invoked ad hoc as
+  `self-review` before pushing.
 when_to_use: >
   Use for "review the diff", "rubber-duck this", "AI review my changes",
-  "self-review before push" — or let `pr-gate-code-review` invoke it
-  automatically. Not for merging PRs (that's github.com's job) or style
-  / formatting findings (lint's job).
+  "self-review before push" — or let `pr-orchestrator`'s code-review
+  gate invoke it automatically. Not for merging PRs (that's github.com's
+  job) or style / formatting findings (lint's job).
 model: opus
 allowed-tools: Bash(gh *), Bash(git *)
 # persona: developer   — grouping metadata only; not read by Claude Code.
@@ -25,7 +25,7 @@ The skill is **stateless and read-only**: it reads the diff + repo context, post
 ## Activation
 
 Activate when:
-- Invoked by `pr-gate-code-review` as the pre-PR gate. Mode: `review`.
+- Invoked by `pr-orchestrator`'s code-review gate as the pre-PR gate. Mode: `review`.
 - The user says "review the diff", "rubber-duck this", "AI review my changes", "self-review before push". Mode: `self-review`.
 - Re-running on a branch with prior findings — same `review` mode; dedup is automatic via auto-file markers.
 
@@ -36,14 +36,14 @@ Merging is out of scope — that happens on github.com, where branch-protection 
 ## Inputs
 
 - **Required**: a diff to review. Resolved by mode:
-  - `review` (default, called by `pr-gate-code-review`): `<base>..HEAD` for the current branch — caller passes base + head; the skill computes the unified diff via `git diff <base>...HEAD`.
+  - `review` (default, called by `pr-orchestrator`'s code-review gate): `<base>..HEAD` for the current branch — caller passes base + head; the skill computes the unified diff via `git diff <base>...HEAD`.
   - `self-review`: same, OR includes uncommitted changes if the user explicitly opts in (`git diff` plus `git diff --cached`).
-- **Required**: at least one issue reference for context. The skill reads the issue body via `gh issue view <n>` to extract acceptance criteria. PRs that don't close an issue are still reviewable, but review depth is reduced (no AC traceability).
+- **Optional, recommended**: at least one issue reference for context. The skill reads the issue body via `gh issue view <n>` to extract acceptance criteria. PRs that don't close an issue are still reviewable, but review depth is reduced (no AC traceability).
 - **Optional context (graceful when absent)**:
   - An `implementation-plan` comment on the issue, if one exists.
   - Recent ADRs: files under `docs/adr/` modified in the last ~30 commits, or ADRs cross-referenced from the issue body.
   - A glossary, if `docs/GLOSSARY.md` exists.
-- **Required for gate mode (`--mode=gate`)**: a writable `.github/audit-reports/` directory (gitignored).
+- **Required for `review` mode**: a writable `.github/audit-reports/` directory (gitignored).
 
 ## Steps
 

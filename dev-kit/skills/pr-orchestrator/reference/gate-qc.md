@@ -1,29 +1,10 @@
----
-name: pr-gate-qc
-description: >
-  Gate skill: pre-PR QC. Runs repo-level QC, a PR-scoped doc audit,
-  repo-specific extensions from CLAUDE.md, and a skill cross-reference
-  consistency check. Returns the gate protocol signal.
-when_to_use: >
-  Invoked only by `pr-orchestrator`, at gate position 3 of 3 (final).
-  Not triggered directly by the user.
-model: sonnet
-allowed-tools: Bash(git *)
-# persona: developer   — grouping metadata only; not read by Claude Code.
-# cluster: pr-gates    — grouping metadata only; not read by Claude Code.
----
+# Gate: Pre-PR QC
 
-# PR Gate: Pre-PR QC
-
-Gate skill invoked by `pr-orchestrator` at the final position in the gate ladder. Runs quality checks against the branch diff before the PR is created or updated.
-
-## Activation
-
-Invoked only by the orchestrator. Not triggered directly by the user.
+Read and followed directly by `pr-orchestrator` at its QC-gate step (final position). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
 
 ## Inputs
 
-Gate protocol inputs per the "Gate protocol" section in [`pr-orchestrator`'s reference.md](${CLAUDE_SKILL_DIR}/../pr-orchestrator/reference.md).
+Gate protocol inputs per the "Gate protocol" section in [`../reference.md`](../reference.md).
 
 ## Steps
 
@@ -62,7 +43,7 @@ Read `CLAUDE.md`'s "Pre-PR QC checklist" subsection, if present.
 If triggered, validate the touched skills:
 
 1. Every sister-skill referenced by kebab-name in prose actually exists as a skill directory.
-2. Every `# persona:` comment value is one of `product-owner` / `product-manager` / `developer` / `writer`, or the skill is deliberately ungated (no `# persona:` comment at all, like `session-start`).
+2. Every `# persona:` comment value is one of `product-owner` / `product-manager` / `developer` / `writer` / `python-developer` / `r-developer`, or the skill is deliberately ungated (no `# persona:` comment at all, like `session-start`).
 3. Every skill directory has a `SKILL.md`.
 
 **Severity: WARNING only.** Never returns signal 2. Findings are chat-surfaced, not auto-filed.
@@ -95,6 +76,7 @@ Gate protocol output: `signal`, `findings`, `body_amendments`, `chat_output`.
 - All four sub-steps execute in order (skipping missing skills gracefully).
 - BLOCKER from sub-steps a-c halts with three explicit choices.
 - Sub-step d never produces BLOCKER.
+- Sub-step d's persona enum matches the shipped persona set (six values, including the two language personas) — a conforming `python-*`/`r-*` skill never false-flags.
 - Re-runs dedup findings via the ADR-0004 body marker.
 
 ## Out of scope
@@ -104,7 +86,7 @@ Gate protocol output: `signal`, `findings`, `body_amendments`, `chat_output`.
 
 ## Cross-references
 
-- `pr-orchestrator` — the invoker.
+- `pr-orchestrator` — the caller; `SKILL.md` reads this file at the QC-gate step.
 - `run-repo-qc` — sub-step a.
 - `documentation-audit-changes` — sub-step b (writer group).
 - [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) — auto-file dedup.

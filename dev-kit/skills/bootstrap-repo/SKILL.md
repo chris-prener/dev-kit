@@ -46,7 +46,7 @@ Two fill strategies. **Stub** — a minimal starter (heading + one sentence); th
 
 | Path | Used by | Strategy | If missing |
 |---|---|---|---|
-| `CHANGELOG.md` (with an `[Unreleased]` section) | `pr-gate-changelog`, `run-repo-qc` | Stub | Gate degrades to "no entry found, please draft one" every time |
+| `CHANGELOG.md` (with an `[Unreleased]` section) | `pr-orchestrator`'s changelog gate, `run-repo-qc` | Stub | Gate degrades to "no entry found, please draft one" every time |
 | `docs/ROADMAP.md` | `roadmap`, `epic-dependency` | Stub | Those skills have nowhere to render output |
 | `docs/OBJECTIVES.md` | `objectives` | Stub | Skill has nowhere to file OKRs |
 | `docs/adr/README.md` + `docs/adr/_template.md` | `adr`, `epic` | Stub | `adr` creates these lazily on first file; this skill can pre-create them |

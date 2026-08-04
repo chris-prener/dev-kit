@@ -2,24 +2,23 @@
 name: pr-orchestrator
 description: >
   Opens or updates a GitHub PR with a consistent five-section body.
-  Dispatches to three independent gate skills (code review, changelog,
-  QC) and inline-closes each referenced issue with a retrospective and a
-  plan-status transition. Owns mode dispatch, pre-flight, body
-  composition, and `gh pr create` / `gh pr edit`.
+  Runs three gates (code review, changelog, QC) from reference files it
+  reads and follows directly, and inline-closes each referenced issue
+  with a retrospective and a plan-status transition. Owns mode dispatch,
+  pre-flight, body composition, and `gh pr create` / `gh pr edit`.
 when_to_use: >
   Use to open or update a PR ("open pr", "create pull request", "ship
   the branch", "update pr", "refresh pr body"). Not for reviewing or
   merging PRs (those happen on github.com) or for gate-specific logic
-  (each gate skill owns its own).
+  (each gate's own reference file under `reference/` owns that).
 model: sonnet
 allowed-tools: Bash(gh *), Bash(git *)
 # persona: developer   — grouping metadata only; not read by Claude Code.
-# cluster: pr-gates, cluster_role: orchestrator   — grouping metadata only.
 ---
 
 # PR Orchestrator
 
-Opens or updates a GitHub PR. Delegates validation to three independent gate skills, each following the standard protocol (signal 0/1/2 — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); this skill halts on BLOCKER.
+Opens or updates a GitHub PR. Validation runs through three gates — reference files under `reference/` this skill reads and follows directly, each returning the standard protocol shape (signal 0/1/2 — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); this skill halts on BLOCKER.
 
 ## Activation
 
@@ -45,8 +44,8 @@ Log `"=== pr-orchestrator mode: CREATE ==="` or `"=== pr-orchestrator mode: UPDA
 
 ### 1. Pre-flight
 
-- Confirm a clean tree; push if needed.
-- Detect issue refs from `git log <base>..HEAD` for `(Closes|Fixes|Resolves) #\d+`; confirm with the operator.
+- Confirm a clean tree. Run the push-state check ([`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); push or halt before proceeding.
+- Detect issue refs from `git log <base>..HEAD` using the closing-keyword grammar (`(Closes|Fixes|Resolves) #\d+` — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); confirm with the operator.
 - Scan all `_no-*:_` opt-out markers from the PR body (update mode) or the planned body.
 - Emit the branch-shape signal: `"Branch shape: <N> files changed, +<A> -<D> LOC, <K> commits."` Surface split advice if the branch is substantial but thin on commits.
 - Build the gate protocol input object (`issue_refs`, `diff_context`, `opt_out_markers`, `mode`, `pr_number`, `pr_body_managed`) — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md).
@@ -57,37 +56,40 @@ Compose the five-section PR body (Summary / Implementation / Testing / Closes / 
 
 ### 3. Gate 1 — Code review
 
-Invoke `pr-gate-code-review`. Mandatory, no opt-out marker.
+Read and follow [`reference/gate-code-review.md`](${CLAUDE_SKILL_DIR}/reference/gate-code-review.md). Mandatory, no opt-out marker.
 
-### 4. Retro + plan close-out (inline, not a gate)
+### 4. Gate 2 — Changelog
 
-For each issue in `issue_refs`:
+Read and follow [`reference/gate-changelog.md`](${CLAUDE_SKILL_DIR}/reference/gate-changelog.md). Opt out with the `no-changelog` marker or label.
+
+### 5. Gate 3 — QC
+
+Read and follow [`reference/gate-qc.md`](${CLAUDE_SKILL_DIR}/reference/gate-qc.md). Opt out with the `no-prep-gate` marker.
+
+None of the three gates are separately listed or `Skill`-tool-dispatchable skills — they're reference files this skill reads and follows inline, per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md).
+
+For each gate in steps 3, 4, 5:
+1. Check the reference file exists → if missing, log `"⚠ Gate reference <path> not found; skipping."`, effective signal 0.
+2. Follow its steps with the gate protocol inputs.
+3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not proceed to remaining gates. Do not create/update the PR. Do not run step 7 (retro + plan close-out) — it has not run yet at any gate position, so the halt is satisfiable from all three.
+4. Collect any `body_amendments` for insertion into `## Notes`.
+
+**Steps 3–5 are skipped entirely** in `--update --body-only` mode.
+
+### 6. Open or update the PR
+
+- **Re-run the push-state check** ([`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)) immediately before either `gh` call below. Gates 3–5 may have produced local fix-up commits since pre-flight ran; push state can only be trusted at the point of use, not carried forward from Step 1.
+- **Create**: `gh pr create --base <base> --head <head> --title "<prefix>: <title>" --body-file <tmp>`
+- **Update**: `gh pr edit <#> --body-file <tmp>`
+
+### 7. Retro + plan close-out (inline, not a gate)
+
+Runs only after all three gates have passed (or been opted out) and the PR exists. For each issue in `issue_refs`:
 
 1. **Post retrospective.** Invoke `backlog-retrospective` with the issue number. It no-ops if a `## Retrospective` comment already exists, and closes the issue as part of its flow. On error: halt with `"Retro failed for #<N>: <error>"`.
 2. **Transition the plan, if one exists.** Search the issue's comments for the `implementation-plan` locator. If found and not already `shipped`, invoke `implementation-plan` `Transition` with target `shipped` (allowed from `ready-for-pr` or `in-progress`). If no plan comment exists, skip silently — nothing to transition.
 
-This step runs for every issue regardless of gate markers; there's no opt-out, because closing the loop on an issue you're about to ship is not optional ceremony.
-
-### 5. Gate 2 — Changelog
-
-Invoke `pr-gate-changelog`. Opt out with the `no-changelog` marker or label.
-
-### 6. Gate 3 — QC
-
-Invoke `pr-gate-qc`. Opt out with the `no-prep-gate` marker.
-
-For each gate in steps 3, 5, 6:
-1. Check the gate skill exists → if missing, log `"⚠ Gate <slug> not found; skipping."`, effective signal 0.
-2. Invoke with the gate protocol inputs.
-3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not invoke remaining gates or step 4. Do not create/update the PR.
-4. Collect any `body_amendments` for insertion into `## Notes`.
-
-**Steps 3–6 are skipped entirely** in `--update --body-only` mode.
-
-### 7. Open or update the PR
-
-- **Create**: `gh pr create --base <base> --head <head> --title "<prefix>: <title>" --body-file <tmp>`
-- **Update**: `gh pr edit <#> --body-file <tmp>`
+This step runs for every issue regardless of gate markers; there's no opt-out, because closing the loop on an issue you're about to ship is not optional ceremony. It's skipped entirely in `--update --body-only` mode (see Step 0).
 
 ### 8. Confirm + cleanup
 

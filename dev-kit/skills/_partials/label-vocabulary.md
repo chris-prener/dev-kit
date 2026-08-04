@@ -30,8 +30,8 @@
 | `qc-fixed` | `#0E8A16` | QC finding auto-fixed by tooling |
 | `blocked` | `#E11D48` | Cannot proceed — waiting on data, a decision, or another issue |
 | `UAT` | `#FBCA04` | Awaiting user acceptance testing |
-| `needs-grooming` | `#cfd3d7` | Quick-captured by the `quick-capture` skill; missing AC or parent epic. Cleared by `backlog-grooming` once the issue is fully baked. |
-| `needs-triage` | `#cfd3d7` | Auto-filed (by the `backlog` skill's auto-file mode) or freshly groomed; awaiting routing decision by `triage`. Cleared by triage. |
+| `needs-grooming` | `#cfd3d7` | Captured by `backlog`'s Capture operation; missing AC or parent epic. Cleared by `backlog`'s Groom operation once the issue is fully baked. |
+| `needs-triage` | `#cfd3d7` | Auto-filed (by `backlog`'s Auto-file mode) or freshly groomed; awaiting routing decision by `backlog`'s Triage operation. Cleared by triage. |
 | `in-progress` | `#0E8A16` | Issue has an active implementation plan in flight. Set by the `implementation-plan` skill on `Status: in-progress` transition; cleared on `ready-for-pr` / `shipped` / `blocked`. Read by session-orientation tooling (e.g. `session-start`) to surface in-flight work. |
 
 ### Priority — how urgent (most issues get one; descriptions may be specialized per repo)
@@ -47,7 +47,7 @@
 | Label | Color | Purpose |
 |---|---|---|
 | `question` | `#d876e3` | Further information is requested |
-| `no-changelog` | `#cfd3d7` | PR is internal/refactor; opts out of `pr-gate-changelog` |
+| `no-changelog` | `#cfd3d7` | PR is internal/refactor; opts out of `pr-orchestrator`'s changelog gate |
 | `duplicate` | `#cfd3d7` | This issue or pull request already exists |
 | `wontfix` | `#ffffff` | This will not be worked on |
 | `invalid` | `#e4e669` | This doesn't seem right |
