@@ -45,7 +45,7 @@ Log `"=== pr-orchestrator mode: CREATE ==="` or `"=== pr-orchestrator mode: UPDA
 
 ### 1. Pre-flight
 
-- Confirm a clean tree; push if needed.
+- Confirm a clean tree. Run the push-state check ([`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); push or halt before proceeding.
 - Detect issue refs from `git log <base>..HEAD` using the closing-keyword grammar (`(Closes|Fixes|Resolves) #\d+` — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); confirm with the operator.
 - Scan all `_no-*:_` opt-out markers from the PR body (update mode) or the planned body.
 - Emit the branch-shape signal: `"Branch shape: <N> files changed, +<A> -<D> LOC, <K> commits."` Surface split advice if the branch is substantial but thin on commits.
@@ -77,6 +77,7 @@ For each gate in steps 3, 4, 5:
 
 ### 6. Open or update the PR
 
+- **Re-run the push-state check** ([`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)) immediately before either `gh` call below. Gates 3–5 may have produced local fix-up commits since pre-flight ran; push state can only be trusted at the point of use, not carried forward from Step 1.
 - **Create**: `gh pr create --base <base> --head <head> --title "<prefix>: <title>" --body-file <tmp>`
 - **Update**: `gh pr edit <#> --body-file <tmp>`
 

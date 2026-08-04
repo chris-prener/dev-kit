@@ -2,6 +2,19 @@
 
 Contract and QA detail for `pr-orchestrator` and its three gate skills (`pr-gate-code-review`, `pr-gate-changelog`, `pr-gate-qc`). `SKILL.md` holds the orchestrator's own procedure; this file holds the shared gate protocol, the PR-body marker grammar, the managed-fence contract, outputs, and success criteria.
 
+## Push-state check
+
+Invoked at two points — SKILL.md Step 1 (pre-flight) and again at the top of Step 6, immediately before `gh pr create` / `gh pr edit` — because gates 3–5 can produce local fix-up commits between the two, and a clean working tree does not imply the remote is current.
+
+1. Resolve the upstream ref for the current branch (`git rev-parse --abbrev-ref --symbolic-full-name @{u}`).
+2. **No upstream** (first push): `git push -u origin <branch>`, then proceed. This is the ordinary create-mode case, not an error.
+3. **Upstream exists**: compare `git rev-parse HEAD` to `git rev-parse @{u}`.
+   - Equal → proceed, nothing to do.
+   - Local ahead only → `git push`, then proceed.
+   - Diverged or local behind → halt: `"Local HEAD and origin/<branch> have diverged — resolve before continuing (do not force-push without operator confirmation)."` Do not auto-force-push.
+
+This check never substitutes for `post-merge`'s `git branch -d` "not fully merged" refusal — that backstop stays as-is; this check exists so the PR itself is never opened against stale remote content in the first place.
+
 ## Gate protocol
 
 Every gate skill is invoked with the same input object and must return the same shape of result.
@@ -93,6 +106,7 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 - `CHANGELOG.md`'s `[Unreleased]` block has an entry referencing this PR or its closed issues, or the PR carries `no-changelog`.
 - The QC gate returned non-BLOCKER, or `## Notes` carries `_no-prep-gate: <justification>_`.
 - The working tree is clean immediately before `gh pr create` — no gate may dirty it (they write to gitignored `.github/audit-reports/`).
+- Local `HEAD` matches `origin/<branch>` immediately before `gh pr create` / `gh pr edit` — the push-state check re-runs at that point, not just at pre-flight.
 - Re-running this skill on the same branch detects the open PR and dispatches to update mode rather than opening a duplicate.
 
 ## Out of scope
