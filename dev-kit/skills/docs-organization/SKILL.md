@@ -1,5 +1,5 @@
 ---
-name: docs-organization-curator
+name: docs-organization
 description: >
   Owns the shape of docs/. Places a new doc in the right spot, archives a
   superseded doc explicitly, audits the tree for orphans and staleness,

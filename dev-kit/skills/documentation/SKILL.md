@@ -1,5 +1,5 @@
 ---
-name: documentation-audit
+name: documentation
 description: >
   Systematic, language-agnostic documentation audit. Ensures every
   function has a complete docstring block and that code is well-commented

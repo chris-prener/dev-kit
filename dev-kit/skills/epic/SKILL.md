@@ -1,5 +1,5 @@
 ---
-name: epic-creator
+name: epic
 description: >
   Files an epic parent issue with the canonical body template, the epic
   label, and a Priority label, and registers it in the roadmap. Restartable;

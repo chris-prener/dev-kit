@@ -30,7 +30,7 @@ Contract and QA detail for the `backlog-retrospective` skill. `SKILL.md` holds t
 
 ## Out of scope
 
-- Posting epic-level rollups across multiple issues (epic status stays in the PR body per the `pull-request` skill).
+- Posting epic-level rollups across multiple issues (epic status stays in the PR body per the `pr-orchestrator` skill).
 - Mutating other issues, milestones, or projects.
 - Editing or reformatting prior retros.
 - Filing follow-up issues — list them in the **Follow-ups** section but file them via `backlog` as a separate step.
@@ -40,4 +40,4 @@ Contract and QA detail for the `backlog-retrospective` skill. `SKILL.md` holds t
 - `backlog` — for *opening* / triaging issues. The retro skill is the closing bookend. Its Step C is what creates the parent-epic linkage that this skill reads in Step 6. Its auto-file mode is invoked by the **validate** operation V4 for `partial` / `not-achieved` outcomes.
 - `objectives` — op H (cadence sweep) is the cross-objective analog of the **validate** operation. Both close cycles in the "Outcome tracking" cross-cutting capability.
 - `epic-retrospective` — invoked manually after this skill prompts (Step 6) when the last open sub-issue of an epic closes.
-- `pull-request` — invokes this skill for every `Closes #` / `Fixes #` reference before opening a PR.
+- `pr-orchestrator` — invokes this skill for every `Closes #` / `Fixes #` reference before opening a PR.

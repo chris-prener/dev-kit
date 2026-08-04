@@ -1,5 +1,5 @@
 ---
-name: readme-maintenance
+name: readme
 description: >
   Audits and updates the repository's README.md so it accurately
   reflects the current state of the codebase. Fills placeholder

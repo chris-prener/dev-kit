@@ -1,5 +1,5 @@
 ---
-name: roadmap-curator
+name: roadmap
 description: >
   Owns docs/ROADMAP.md's Epics section. Adds, moves, and prunes epic
   entries across the four horizons. Validates structure on every

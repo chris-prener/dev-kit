@@ -13,7 +13,8 @@ when_to_use: >
   github.com ("PR merged", "PR is done", "merge complete", "reset
   branches", "PR landed"). Not for a PR that isn't merged yet
   (`pr-orchestrator`), for closing a session with no recent merge (just
-  close), or for mid-implementation context refresh (read `plan.md`
+  close), or for mid-implementation context refresh (`implementation-plan`'s
+  Read operation, or the issue's `## Implementation plan` comment
   directly).
 model: haiku
 allowed-tools: Bash(git *), Bash(gh *)
@@ -33,7 +34,7 @@ Activate when the user signals that a PR they had open has just been merged on g
 **When NOT to use:**
 - The PR is not yet merged — invoke `pr-orchestrator` instead.
 - Closing the session without a recent merge — there's no branch to reset; just close.
-- Mid-implementation context refresh — read `plan.md` directly.
+- Mid-implementation context refresh — use `implementation-plan`'s Read operation, or read the issue's `## Implementation plan` comment directly.
 
 ## Inputs
 

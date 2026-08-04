@@ -47,7 +47,7 @@ INFO/LOW findings are deliberately not filed — they would drown the tracker. T
 
 ### 5. Auto-file is file-only; close happens via the normal PR flow
 
-Auto-file mode does **not** invoke `backlog-retrospective` and does not close issues. The `backlog-retrospective` skill requires a resolving commit or PR and flags a retro-with-no-implementation-reference as a smell — auto-filed issues close the same way any other issue does, via the standard `pull-request` skill's `Closes #N` flow. This keeps the audit trail clean: every closed auto-filed issue has a real PR and retro behind it.
+Auto-file mode does **not** invoke `backlog-retrospective` and does not close issues. The `backlog-retrospective` skill requires a resolving commit or PR and flags a retro-with-no-implementation-reference as a smell — auto-filed issues close the same way any other issue does, via the standard `pr-orchestrator` skill's `Closes #N` flow. This keeps the audit trail clean: every closed auto-filed issue has a real PR and retro behind it.
 
 The `qc-fixed` label may be set on file when the caller fixed a finding in-place during the same run — it signals "already fixed, awaiting close" so reviewers don't re-investigate.
 
