@@ -46,7 +46,7 @@ Log `"=== pr-orchestrator mode: CREATE ==="` or `"=== pr-orchestrator mode: UPDA
 ### 1. Pre-flight
 
 - Confirm a clean tree; push if needed.
-- Detect issue refs from `git log <base>..HEAD` for `(Closes|Fixes|Resolves) #\d+`; confirm with the operator.
+- Detect issue refs from `git log <base>..HEAD` using the closing-keyword grammar (`(Closes|Fixes|Resolves) #\d+` — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); confirm with the operator.
 - Scan all `_no-*:_` opt-out markers from the PR body (update mode) or the planned body.
 - Emit the branch-shape signal: `"Branch shape: <N> files changed, +<A> -<D> LOC, <K> commits."` Surface split advice if the branch is substantial but thin on commits.
 - Build the gate protocol input object (`issue_refs`, `diff_context`, `opt_out_markers`, `mode`, `pr_number`, `pr_body_managed`) — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md).

@@ -28,6 +28,17 @@ Every gate skill is invoked with the same input object and must return the same 
 
 A gate skill that doesn't exist yet (not all writer/QC skills are ported) is treated as effective signal 0 with a `"⚠ Gate <slug> not found; skipping."` log line — never a hard failure.
 
+## Closing-keyword grammar (canonical)
+
+Issue references use two distinct grammars, never conflated:
+
+| Grammar | Regex | Meaning |
+|---|---|---|
+| Closing keyword | `(Closes\|Fixes\|Resolves) #\d+` | Closes the referenced issue on merge; feeds `issue_refs`, `## Closes`, and the retro/close-out step |
+| Additive reference | `Refs #\d+` | Cross-references an issue without closing it; operator-added only, never produced by pre-flight, preserved verbatim wherever it sits |
+
+Both pre-flight (SKILL.md Step 1) and the `## Closes` carry-forward diff (below) use the closing-keyword regex exclusively. `Refs #N` lines are additive content the operator writes directly into the PR body — they are never detected from `git log`, never diffed, and never promoted to a closing keyword.
+
 ## PR-body markers (canonical grammar)
 
 Every marker lives in the PR body's `## Notes` section.
@@ -60,7 +71,7 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 **Update mode**: parses the body into `[pre-fence, managed, post-fence]` and re-emits `pre-fence + regenerated-managed + post-fence`. By default only `## Closes` and the `_updated:` marker regenerate; `## Summary` / `## Implementation` / `## Testing` and `## Notes` prose carry forward verbatim. Force full regeneration with `--update --regen-body` (per-section diff prompt).
 
 **Carry-forward rules:**
-- `## Closes`: diff the parsed `(Closes|Fixes|Refs) #\d+` lines against the live set from `git log <base>..HEAD`; surface adds/removes before regenerating. Operator-added `Refs #N` lines are preserved as additive.
+- `## Closes`: diff the parsed closing-keyword lines (`(Closes|Fixes|Resolves) #\d+` — see "Closing-keyword grammar" above) against the live set from `git log <base>..HEAD`; surface adds/removes before regenerating. Operator-added `Refs #N` lines are additive references, not closing keywords — they're preserved verbatim and never enter this diff.
 - `_no-*:_` markers: preserved verbatim wherever they sit in the body.
 - `_created:`: written once, never overwritten.
 - `_updated:`: rewritten every update run.
