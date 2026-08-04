@@ -41,7 +41,7 @@ The skill is restartable, not transactional:
 - `epic` — opening counterpart of this skill.
 - `roadmap` — invoked to move the entry to Recently Shipped.
 - `backlog-retrospective` — per-sub-issue retros that must complete before this skill is invoked.
-- `pull-request` — sub-issue retros are typically posted via the PR flow before this skill runs.
+- `pr-orchestrator` — sub-issue retros are typically posted via the PR flow before this skill runs.
 - `objectives` — invoked to persist KR-impact updates from the retro into `docs/OBJECTIVES.md`.
 - `adr` — formal ADRs are linked from the `Architectural decisions` section.
 - Label vocabulary: [`../_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md); consuming-repo labels, if any, at `${CLAUDE_PROJECT_DIR}/.github/LABELS.md` — carve-out label vocabulary (`duplicate`/`wontfix`/`not-planned`/`invalid`).

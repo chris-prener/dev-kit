@@ -39,7 +39,7 @@ The skill is restartable, not transactional:
 - `roadmap` — invoked once per filing to register the epic.
 - `epic-retrospective` — closing counterpart of this skill.
 - `backlog` — used for filing sub-issues; carries the epic-linkage step.
-- `pull-request` — when work on the epic begins, PRs cite epic sub-issues via `Closes #N` per the standard pull-request flow.
+- `pr-orchestrator` — when work on the epic begins, PRs cite epic sub-issues via `Closes #N` per the standard pr-orchestrator flow.
 - `requirements` — invoked by the requirements gate (Phase 1.5a) when no requirements doc exists.
 - `adr` — invoked by the ADR gate (Phase 1.5b) when an architectural decision needs recording.
 - `objectives` — invoked by the objective prompt (Phase 1.5c) for linking or filing.

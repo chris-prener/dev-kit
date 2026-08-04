@@ -44,7 +44,7 @@ On `n`, continue here. This is the skill's single routing surface — do not re-
 | Write or update the `## Implementation plan` comment | `implementation-plan` |
 | Close a worked issue / post a retro | `backlog-retrospective` |
 | Edit roadmap horizons | `roadmap` |
-| Implement, test, or open a PR for the issue | `pull-request`, `code-review` |
+| Implement, test, or open a PR for the issue | `pr-orchestrator`, `code-review` |
 
 ## Review & prioritize (Steps 1–4)
 
@@ -206,4 +206,4 @@ Do not restate the contract here. Follow the full input contract, dedup rules, a
 - Input/output contract and success criteria: [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)
 - Label vocabulary: [`../_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md); consuming-repo labels, if any, at `${CLAUDE_PROJECT_DIR}/.github/LABELS.md`
 - Shared partials (`user-story`, `epic-linkage`, `dor-preflight`) under `${CLAUDE_SKILL_DIR}/../_partials/`
-- Related skills: `quick-capture`, `triage`, `backlog-grooming`, `backlog-retrospective`, `epic`, `pull-request`
+- Related skills: `quick-capture`, `triage`, `backlog-grooming`, `backlog-retrospective`, `epic`, `pr-orchestrator`

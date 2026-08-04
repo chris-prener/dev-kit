@@ -86,7 +86,7 @@ Examples:
 
 ### What auto-file mode does NOT do
 
-- **Does not invoke the `backlog-retrospective` skill or close issues.** Auto-filed issues close via the normal PR `Closes #N` flow, where the `pull-request` skill triggers the retro on a real resolving commit. Auto-file is **file-only**; see ADR-0004 §5 for the rationale and the deferred-close follow-up.
+- **Does not invoke the `backlog-retrospective` skill or close issues.** Auto-filed issues close via the normal PR `Closes #N` flow, where the `pr-orchestrator` skill triggers the retro on a real resolving commit. Auto-file is **file-only**; see ADR-0004 §5 for the rationale and the deferred-close follow-up.
 - **Does not prompt the user.** Steps F (review draft) and F.5 (`[y/N]` proceed) from interactive mode are skipped — the structural checks run, but their result is "succeed or caller error", not "ask the user".
 - **Does not run a worth-doing judgment.** QC and audit-finding items are exempt per the embedded baseline note in Step D.
 - **Does not auto-reopen closed issues** that match the dedup_id. Surfaces them advisory-only.

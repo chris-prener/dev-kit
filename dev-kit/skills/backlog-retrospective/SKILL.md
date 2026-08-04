@@ -4,7 +4,7 @@ description: >
   Bookends the lifecycle of a GitHub issue. Two operations: (1)
   close+retro — closes an issue and posts a structured Retrospective
   comment in one transaction (default; runs pre-`gh pr create` per the
-  pull-request skill); (2) validate — posts a structured Outcome
+  pr-orchestrator skill); (2) validate — posts a structured Outcome
   validation comment on an already-closed issue weeks/months later,
   recording whether the shipped change achieved the intent (achieved /
   partial / not-achieved / deferred). Required for any issue closed as
@@ -46,7 +46,7 @@ Activate the **validate** operation whenever the issue's intent is observable (a
 - **Required**: at least one of (a) the merge/closing commit SHA(s) or (b) the PR number that resolved the issue. If neither exists, ask the user before proceeding — a retro with no implementation reference is a smell.
 - **Optional**: a short title-line for the retro (defaults to the issue title).
 
-> **Note (auto-filed issues).** Issues created by the `backlog` skill's auto-file mode (which carry an `<!-- autofile-id: ... -->` body marker) are closed via the standard `pull-request` skill's `Closes #N` flow, exactly like manually-filed issues. Auto-file mode itself never invokes this skill directly; the resolving PR is always the entry point. See [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) §5.
+> **Note (auto-filed issues).** Issues created by the `backlog` skill's auto-file mode (which carry an `<!-- autofile-id: ... -->` body marker) are closed via the standard `pr-orchestrator` skill's `Closes #N` flow, exactly like manually-filed issues. Auto-file mode itself never invokes this skill directly; the resolving PR is always the entry point. See [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) §5.
 
 ## Steps
 
