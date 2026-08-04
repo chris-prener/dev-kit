@@ -59,35 +59,35 @@ Compose the five-section PR body (Summary / Implementation / Testing / Closes / 
 
 Invoke `pr-gate-code-review`. Mandatory, no opt-out marker.
 
-### 4. Retro + plan close-out (inline, not a gate)
+### 4. Gate 2 — Changelog
 
-For each issue in `issue_refs`:
+Invoke `pr-gate-changelog`. Opt out with the `no-changelog` marker or label.
+
+### 5. Gate 3 — QC
+
+Invoke `pr-gate-qc`. Opt out with the `no-prep-gate` marker.
+
+For each gate in steps 3, 4, 5:
+1. Check the gate skill exists → if missing, log `"⚠ Gate <slug> not found; skipping."`, effective signal 0.
+2. Invoke with the gate protocol inputs.
+3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not invoke remaining gates. Do not create/update the PR. Do not run step 7 (retro + plan close-out) — it has not run yet at any gate position, so the halt is satisfiable from all three.
+4. Collect any `body_amendments` for insertion into `## Notes`.
+
+**Steps 3–5 are skipped entirely** in `--update --body-only` mode.
+
+### 6. Open or update the PR
+
+- **Create**: `gh pr create --base <base> --head <head> --title "<prefix>: <title>" --body-file <tmp>`
+- **Update**: `gh pr edit <#> --body-file <tmp>`
+
+### 7. Retro + plan close-out (inline, not a gate)
+
+Runs only after all three gates have passed (or been opted out) and the PR exists. For each issue in `issue_refs`:
 
 1. **Post retrospective.** Invoke `backlog-retrospective` with the issue number. It no-ops if a `## Retrospective` comment already exists, and closes the issue as part of its flow. On error: halt with `"Retro failed for #<N>: <error>"`.
 2. **Transition the plan, if one exists.** Search the issue's comments for the `implementation-plan` locator. If found and not already `shipped`, invoke `implementation-plan` `Transition` with target `shipped` (allowed from `ready-for-pr` or `in-progress`). If no plan comment exists, skip silently — nothing to transition.
 
-This step runs for every issue regardless of gate markers; there's no opt-out, because closing the loop on an issue you're about to ship is not optional ceremony.
-
-### 5. Gate 2 — Changelog
-
-Invoke `pr-gate-changelog`. Opt out with the `no-changelog` marker or label.
-
-### 6. Gate 3 — QC
-
-Invoke `pr-gate-qc`. Opt out with the `no-prep-gate` marker.
-
-For each gate in steps 3, 5, 6:
-1. Check the gate skill exists → if missing, log `"⚠ Gate <slug> not found; skipping."`, effective signal 0.
-2. Invoke with the gate protocol inputs.
-3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not invoke remaining gates or step 4. Do not create/update the PR.
-4. Collect any `body_amendments` for insertion into `## Notes`.
-
-**Steps 3–6 are skipped entirely** in `--update --body-only` mode.
-
-### 7. Open or update the PR
-
-- **Create**: `gh pr create --base <base> --head <head> --title "<prefix>: <title>" --body-file <tmp>`
-- **Update**: `gh pr edit <#> --body-file <tmp>`
+This step runs for every issue regardless of gate markers; there's no opt-out, because closing the loop on an issue you're about to ship is not optional ceremony. It's skipped entirely in `--update --body-only` mode (see Step 0).
 
 ### 8. Confirm + cleanup
 
