@@ -38,6 +38,8 @@ This skill covers six operations spanning the issue lifecycle, from first captur
 
 These were four separate skills (`backlog`, `quick-capture`, `backlog-grooming`, `triage`) until [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md) merged them: all four share one trigger source (a GitHub issue moving through its lifecycle) and no distinct caller class from one another, so picking the wrong one used to cost a hand-off prompt. Now it costs picking the right heading below. `backlog` kept its directory identity rather than a new umbrella name specifically so [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md)'s auto-file caller registry needs no amendment.
 
+**Accepted tradeoff.** Skill frontmatter carries one `model:` value for the whole file — there is no per-operation override. Pre-merge, `quick-capture` deliberately ran on `haiku` (cheap, low-latency, matching its low-friction intake design) while `backlog`/`backlog-grooming`/`triage` ran on `sonnet`/`opus`. Post-merge, every operation — including Capture — runs at `opus`, this skill's frontmatter value. This is a real cost/latency regression on the Capture path, accepted here as the cost of one listing entry instead of four; it is not something a future edit should "fix" by splitting the skill back apart without revisiting ADR-0002's merge decision.
+
 If none of these fit, check *Routing* first; another skill may own the request.
 
 ## Routing
@@ -242,7 +244,7 @@ For each issue:
    - **Parent epic** → invoke `${CLAUDE_SKILL_DIR}/../_partials/epic-linkage.md` Steps 1–2 (prompt the user; validate). Record the choice; update body.
    - **Problem statement / Proposal / Acceptance criteria** → prompt the user; insert into the corresponding section. Replace the `TODO — fill during grooming.` placeholder with the real content.
    - **Codebase context** → prompt; offer to run an explore-style scan. Insert into the `## Codebase Context` section.
-   - **Worth-doing judged** → ask the now/later/no question from Operation: Prioritize's Step D. On **no**, exit this item into the close-as-`not-planned` path below instead of promoting it. The user may explicitly skip with a reason — record `skipped — <reason>` in the checklist instead.
+   - **Worth-doing judged** → ask the now/later/no question from Operation: Create's Step D. On **no**, exit this item into the close-as-`not-planned` path below instead of promoting it. The user may explicitly skip with a reason — record `skipped — <reason>` in the checklist instead.
    - **Type label refined** → prompt for one of `bug` / `enhancement` / `documentation` / `tech-debt` / `audit-finding` / `qc` per `${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md`. Default stays `enhancement` if no clear alternative. **The `epic` Type is intentionally excluded here** — if the issue is epic-shaped, exit groom-inbox for this item and route via `propose-epic-promotion` (Groom-F), which hands off to `epic` (the only legitimate path through its own requirements / ADR / objective gates).
    - **Priority label** → prompt for `priority/blocker` / `priority/high` / `priority/medium` or skip for a low-stakes / speculative item.
 

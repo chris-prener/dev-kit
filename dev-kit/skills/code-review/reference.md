@@ -38,7 +38,7 @@ _Verdict: **<CLEAN | ADVISORY | BLOCKED>**_
 <bullet list for findings whose autofile-id markers matched existing open issues, or "None.">
 ```
 
-The same structure is used by `--mode=gate` (report at `.github/audit-reports/code-review_<ts>.md`) and `--mode=self-review`.
+The same structure is used by `--mode=review` (report at `.github/audit-reports/code-review_<ts>.md`) and `--mode=self-review`.
 
 ## Auto-file invocation contract
 

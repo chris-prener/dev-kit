@@ -38,12 +38,12 @@ Merging is out of scope — that happens on github.com, where branch-protection 
 - **Required**: a diff to review. Resolved by mode:
   - `review` (default, called by `pr-orchestrator`'s code-review gate): `<base>..HEAD` for the current branch — caller passes base + head; the skill computes the unified diff via `git diff <base>...HEAD`.
   - `self-review`: same, OR includes uncommitted changes if the user explicitly opts in (`git diff` plus `git diff --cached`).
-- **Required**: at least one issue reference for context. The skill reads the issue body via `gh issue view <n>` to extract acceptance criteria. PRs that don't close an issue are still reviewable, but review depth is reduced (no AC traceability).
+- **Optional, recommended**: at least one issue reference for context. The skill reads the issue body via `gh issue view <n>` to extract acceptance criteria. PRs that don't close an issue are still reviewable, but review depth is reduced (no AC traceability).
 - **Optional context (graceful when absent)**:
   - An `implementation-plan` comment on the issue, if one exists.
   - Recent ADRs: files under `docs/adr/` modified in the last ~30 commits, or ADRs cross-referenced from the issue body.
   - A glossary, if `docs/GLOSSARY.md` exists.
-- **Required for gate mode (`--mode=gate`)**: a writable `.github/audit-reports/` directory (gitignored).
+- **Required for `review` mode**: a writable `.github/audit-reports/` directory (gitignored).
 
 ## Steps
 
