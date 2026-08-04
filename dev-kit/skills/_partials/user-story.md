@@ -57,5 +57,5 @@ Existing issues filed before this format was adopted lack User story blocks. Bac
 
 - Issue templates under `.github/ISSUE_TEMPLATE/` embed a `## User story` placeholder block in the canonical position.
 - The `backlog` skill prompts for the User story before codebase analysis (Step A.5, between template selection in Step A and codebase analysis in Step B).
-- The `quick-capture` skill makes the User story the **only** required input — everything else is deferred to grooming.
+- `backlog`'s Capture operation makes the User story the **only** required input — everything else is deferred to grooming.
 - [`dor-preflight.md`](dor-preflight.md) validates User story presence as a WARNING-level structural check **for human-authored issues**. Auto-filed issues (Type label `qc` or `audit-finding`, identified by the `<!-- autofile-id: ... -->` body marker) are **exempt** — their provenance is the autofile-id itself, not a hand-written user story. Caller skills MAY still inject a synthetic User story (e.g., `**As a** dataset owner, **I want** this QC check to pass, **so that** the dataset stays release-eligible.`) but it is not required.

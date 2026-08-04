@@ -68,8 +68,8 @@ Print to chat in this exact structure:
 
 **Watchlist:**
 - <X> open issues with no labels at all (top 5 listed)
-- <T> open `needs-triage` issues (route via `triage`)
-- <G> open `needs-grooming` issues (curate via `backlog-grooming`)
+- <T> open `needs-triage` issues (route via `backlog`'s Triage operation)
+- <G> open `needs-grooming` issues (curate via `backlog`'s Groom operation)
 - <Z> open priority/blocker issues
 
 **Recent ADRs:**
@@ -112,8 +112,6 @@ The agent **does not block**. It surfaces, asks, and waits for the user's lead. 
 - `requirements` — surfaces draft requirements docs (via the watchlist), when relevant.
 - `objectives` — surfaces active objectives + stale check-ins.
 - `roadmap` — surfaces the Now horizon.
-- `backlog` — DoR violations (no labels, no epic linkage) are surfaced from issue body scans aligned with the skill's contract.
-- `triage` — destination for `needs-triage` items surfaced in Step B.
-- `backlog-grooming` — destination for `needs-grooming` items surfaced in Step B.
+- `backlog` — DoR violations (no labels, no epic linkage) are surfaced from issue body scans aligned with the skill's contract. Its Triage operation is the destination for `needs-triage` items surfaced in Step B; its Groom operation is the destination for `needs-grooming` items surfaced in Step B.
 - `backlog-retrospective` — issues closed without a retro can be spotted by scanning recently-closed issues for a missing `## Retrospective` comment.
 - `post-merge` — invoked after a PR merge as a mid-session pivot; its exit path suggests invoking this skill at the start of the next session.
