@@ -8,8 +8,8 @@ description: >
   does NOT auto-fix code.
 when_to_use: >
   Use to run repo QC ("run repo qc", "audit the repo", "qc the repo"), or
-  as a pre-PR gate (see `pr-gate-qc`). Requires `tests/` to already exist
-  — if it doesn't, use `create-repo-qc` first.
+  as a pre-PR gate (see `pr-orchestrator`'s QC gate). Requires `tests/`
+  to already exist — if it doesn't, use `create-repo-qc` first.
 model: sonnet
 allowed-tools: Bash(gh *), Bash(git *)
 # persona: developer   — grouping metadata only; not read by Claude Code.
@@ -23,7 +23,7 @@ This skill is **read-only**. It does NOT modify code. Findings → issues; fixes
 
 ## Activation
 
-Activate when the user asks to "run repo QC", "audit the repo", "qc the repo", or when invoked as a gate by `pr-gate-qc`.
+Activate when the user asks to "run repo QC", "audit the repo", "qc the repo", or when invoked as a gate by `pr-orchestrator`'s QC gate.
 
 ## Inputs
 

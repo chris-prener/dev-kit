@@ -89,4 +89,4 @@ Renames break dedup against historical issues — add freely, but never silently
 - `backlog` — auto-file mode, called per finding.
 - `docs/qc-modifications.md` — repo-specific overlay (additional checks, known exceptions, divergences).
 - [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) — auto-file contract.
-- `pr-gate-qc` — invokes this skill in `gate` mode as its first sub-step.
+- `pr-orchestrator` — its QC gate (`reference/gate-qc.md`) invokes this skill in `gate` mode as its first sub-step.

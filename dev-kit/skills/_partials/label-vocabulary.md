@@ -47,7 +47,7 @@
 | Label | Color | Purpose |
 |---|---|---|
 | `question` | `#d876e3` | Further information is requested |
-| `no-changelog` | `#cfd3d7` | PR is internal/refactor; opts out of `pr-gate-changelog` |
+| `no-changelog` | `#cfd3d7` | PR is internal/refactor; opts out of `pr-orchestrator`'s changelog gate |
 | `duplicate` | `#cfd3d7` | This issue or pull request already exists |
 | `wontfix` | `#ffffff` | This will not be worked on |
 | `invalid` | `#e4e669` | This doesn't seem right |

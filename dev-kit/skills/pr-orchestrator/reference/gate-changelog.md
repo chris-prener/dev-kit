@@ -1,29 +1,10 @@
----
-name: pr-gate-changelog
-description: >
-  Gate skill: changelog validation. Verifies CHANGELOG.md [Unreleased] has
-  an entry referencing a closing issue. Invokes `changelog` to draft one
-  if missing.
-when_to_use: >
-  Invoked only by `pr-orchestrator`, at gate position 2 of 3. Not
-  triggered directly by the user.
-model: sonnet
-allowed-tools: Bash(gh *)
-# persona: developer   — grouping metadata only; not read by Claude Code.
-# cluster: pr-gates    — grouping metadata only; not read by Claude Code.
----
+# Gate: Changelog
 
-# PR Gate: Changelog
-
-Gate skill invoked by `pr-orchestrator` at position 2 in the gate ladder. Ensures the changelog has an entry for this PR's work before creation/update proceeds.
-
-## Activation
-
-Invoked only by the orchestrator. Not triggered directly by the user.
+Read and followed directly by `pr-orchestrator` at its changelog-gate step. Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
 
 ## Inputs
 
-Gate protocol inputs per the "Gate protocol" section in [`pr-orchestrator`'s reference.md](${CLAUDE_SKILL_DIR}/../pr-orchestrator/reference.md).
+Gate protocol inputs per the "Gate protocol" section in [`../reference.md`](../reference.md).
 
 ## Steps
 
@@ -52,8 +33,10 @@ For PRs with no `Closes` issues: at least one net-new bullet must exist (may ref
 If no qualifying entry found:
 - Invoke `changelog` (add operation) to draft an entry.
 - Surface the draft to the operator for approval.
-- If approved: the entry is committed, gate passes.
+- If approved: the entry is committed to the local branch — this is the tracked-file exception described below — and the gate passes.
 - If rejected: return `{ signal: 2, chat_output: "Changelog gate: operator rejected draft entry. Halting." }`
+
+**Tracked-file exception.** Every other gate in this suite writes only to gitignored `.github/audit-reports/`. This gate is the one exception: an approved draft is committed to `CHANGELOG.md`, a tracked file, and that commit can land after `pr-orchestrator`'s pre-flight push-state check already ran. This is why the push-state check re-runs immediately before `gh pr create` / `gh pr edit` (`pr-orchestrator/SKILL.md` Step 6) — it catches and pushes this commit before the PR opens, rather than relying on a claim that no gate dirties the tree.
 
 ### 5. Return result
 
@@ -70,6 +53,7 @@ Gate protocol output: `signal`, `findings`, `chat_output`.
 - `[Unreleased]` contains at least one bullet referencing a closing issue (or opt-out is present).
 - Missing entries trigger a `changelog` draft — never silently skipped.
 - Without an entry or opt-out, the gate halts (signal 2).
+- The one tracked-file commit this gate can produce is pushed before `gh pr create` / `gh pr edit`, via the push-state check re-run.
 
 ## Out of scope
 
@@ -78,6 +62,6 @@ Gate protocol output: `signal`, `findings`, `chat_output`.
 
 ## Cross-references
 
-- `pr-orchestrator` — the invoker.
+- `pr-orchestrator` — the caller; `SKILL.md` reads this file at the changelog-gate step.
 - `changelog` — drafts entries when missing.
 - `_partials/label-vocabulary.md` — `no-changelog` Meta label.

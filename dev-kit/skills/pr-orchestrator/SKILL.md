@@ -2,24 +2,23 @@
 name: pr-orchestrator
 description: >
   Opens or updates a GitHub PR with a consistent five-section body.
-  Dispatches to three independent gate skills (code review, changelog,
-  QC) and inline-closes each referenced issue with a retrospective and a
-  plan-status transition. Owns mode dispatch, pre-flight, body
-  composition, and `gh pr create` / `gh pr edit`.
+  Runs three gates (code review, changelog, QC) from reference files it
+  reads and follows directly, and inline-closes each referenced issue
+  with a retrospective and a plan-status transition. Owns mode dispatch,
+  pre-flight, body composition, and `gh pr create` / `gh pr edit`.
 when_to_use: >
   Use to open or update a PR ("open pr", "create pull request", "ship
   the branch", "update pr", "refresh pr body"). Not for reviewing or
   merging PRs (those happen on github.com) or for gate-specific logic
-  (each gate skill owns its own).
+  (each gate's own reference file under `reference/` owns that).
 model: sonnet
 allowed-tools: Bash(gh *), Bash(git *)
 # persona: developer   — grouping metadata only; not read by Claude Code.
-# cluster: pr-gates, cluster_role: orchestrator   — grouping metadata only.
 ---
 
 # PR Orchestrator
 
-Opens or updates a GitHub PR. Delegates validation to three independent gate skills, each following the standard protocol (signal 0/1/2 — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); this skill halts on BLOCKER.
+Opens or updates a GitHub PR. Validation runs through three gates — reference files under `reference/` this skill reads and follows directly, each returning the standard protocol shape (signal 0/1/2 — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); this skill halts on BLOCKER.
 
 ## Activation
 
@@ -57,20 +56,22 @@ Compose the five-section PR body (Summary / Implementation / Testing / Closes / 
 
 ### 3. Gate 1 — Code review
 
-Invoke `pr-gate-code-review`. Mandatory, no opt-out marker.
+Read and follow [`reference/gate-code-review.md`](${CLAUDE_SKILL_DIR}/reference/gate-code-review.md). Mandatory, no opt-out marker.
 
 ### 4. Gate 2 — Changelog
 
-Invoke `pr-gate-changelog`. Opt out with the `no-changelog` marker or label.
+Read and follow [`reference/gate-changelog.md`](${CLAUDE_SKILL_DIR}/reference/gate-changelog.md). Opt out with the `no-changelog` marker or label.
 
 ### 5. Gate 3 — QC
 
-Invoke `pr-gate-qc`. Opt out with the `no-prep-gate` marker.
+Read and follow [`reference/gate-qc.md`](${CLAUDE_SKILL_DIR}/reference/gate-qc.md). Opt out with the `no-prep-gate` marker.
+
+None of the three gates are separately listed or `Skill`-tool-dispatchable skills — they're reference files this skill reads and follows inline, per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md).
 
 For each gate in steps 3, 4, 5:
-1. Check the gate skill exists → if missing, log `"⚠ Gate <slug> not found; skipping."`, effective signal 0.
-2. Invoke with the gate protocol inputs.
-3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not invoke remaining gates. Do not create/update the PR. Do not run step 7 (retro + plan close-out) — it has not run yet at any gate position, so the halt is satisfiable from all three.
+1. Check the reference file exists → if missing, log `"⚠ Gate reference <path> not found; skipping."`, effective signal 0.
+2. Follow its steps with the gate protocol inputs.
+3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not proceed to remaining gates. Do not create/update the PR. Do not run step 7 (retro + plan close-out) — it has not run yet at any gate position, so the halt is satisfiable from all three.
 4. Collect any `body_amendments` for insertion into `## Notes`.
 
 **Steps 3–5 are skipped entirely** in `--update --body-only` mode.

@@ -108,6 +108,6 @@ NITs and QUESTIONs are not in the inventory because they don't auto-file. Adding
 
 ## Cross-references
 
-- `pr-gate-code-review` — invokes this skill as the mandatory pre-PR gate.
+- `pr-orchestrator` — its code-review gate (`reference/gate-code-review.md`) invokes this skill as the mandatory pre-PR gate.
 - `backlog` — auto-file mode for non-trivial findings.
 - `implementation-plan` — source of the plan-comment context, when present.

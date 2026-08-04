@@ -29,7 +29,7 @@ The changelog is the user-facing release narrative — what someone pulling this
 
 ## Activation
 
-- `pr-gate-changelog` invokes the add operation when a PR is missing an entry.
+- `pr-orchestrator`'s changelog gate invokes the add operation when a PR is missing an entry.
 - The user is cutting a release, wants a coverage check, or needs a retroactive backfill.
 
 **Not for**: internal-only changes with no user-facing surface (use the `no-changelog` opt-out on the PR instead, per [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md)).
@@ -98,7 +98,7 @@ add / cut-release / audit / backfill.
 
 ## Cross-references
 
-- `pr-gate-changelog` — invokes this skill's add operation to enforce the PR-creation changelog gate.
+- `pr-orchestrator` — its changelog gate (`reference/gate-changelog.md`) invokes this skill's add operation to enforce the PR-creation changelog gate.
 - `roadmap` — the Recently Shipped horizon often correlates with cut-release entries.
 - `${CLAUDE_PROJECT_DIR}/.github/LABELS.md` — `no-changelog` Meta label for opt-out.
 - `${CLAUDE_PROJECT_DIR}/CONTRIBUTING.md` — "How to open a PR" section, if present, should name the changelog requirement.

@@ -1,6 +1,6 @@
 # PR Orchestrator — reference
 
-Contract and QA detail for `pr-orchestrator` and its three gate skills (`pr-gate-code-review`, `pr-gate-changelog`, `pr-gate-qc`). `SKILL.md` holds the orchestrator's own procedure; this file holds the shared gate protocol, the PR-body marker grammar, the managed-fence contract, outputs, and success criteria.
+Contract and QA detail for `pr-orchestrator` and its three gates (`reference/gate-code-review.md`, `reference/gate-changelog.md`, `reference/gate-qc.md`) — reference files read and followed directly, not `Skill`-tool-dispatched skills (see [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)). `SKILL.md` holds the orchestrator's own procedure; this file holds the shared gate protocol, the PR-body marker grammar, the managed-fence contract, outputs, and success criteria.
 
 ## Push-state check
 
@@ -17,7 +17,7 @@ This check never substitutes for `post-merge`'s `git branch -d` "not fully merge
 
 ## Gate protocol
 
-Every gate skill is invoked with the same input object and must return the same shape of result.
+Every gate is followed with the same input object and must return the same shape of result.
 
 **Input** (built once in orchestrator Step 1, passed to every gate):
 
@@ -39,7 +39,7 @@ Every gate skill is invoked with the same input object and must return the same 
 | `body_amendments` | Optional lines to fold into the PR body's `## Notes` |
 | `chat_output` | One-paragraph human-readable summary |
 
-A gate skill that doesn't exist yet (not all writer/QC skills are ported) is treated as effective signal 0 with a `"⚠ Gate <slug> not found; skipping."` log line — never a hard failure.
+A gate reference file that doesn't exist (e.g. mid-migration) is treated as effective signal 0 with a `"⚠ Gate reference <path> not found; skipping."` log line — never a hard failure.
 
 ## Closing-keyword grammar (canonical)
 
@@ -105,7 +105,7 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 - Every `Closes #N` references an issue that is `CLOSED` and carries a `## Retrospective` comment.
 - `CHANGELOG.md`'s `[Unreleased]` block has an entry referencing this PR or its closed issues, or the PR carries `no-changelog`.
 - The QC gate returned non-BLOCKER, or `## Notes` carries `_no-prep-gate: <justification>_`.
-- The working tree is clean immediately before `gh pr create` — no gate may dirty it (they write to gitignored `.github/audit-reports/`).
+- The working tree is clean immediately before `gh pr create` — every gate except the changelog gate writes only to gitignored `.github/audit-reports/`; the changelog gate's one tracked-file commit (see `reference/gate-changelog.md`'s "Tracked-file exception") is covered by the push-state check re-run below, not by staying clean.
 - Local `HEAD` matches `origin/<branch>` immediately before `gh pr create` / `gh pr edit` — the push-state check re-runs at that point, not just at pre-flight.
 - Re-running this skill on the same branch detects the open PR and dispatches to update mode rather than opening a duplicate.
 
@@ -118,10 +118,11 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 
 ## Cross-references
 
-- `pr-gate-code-review` — gate 1.
-- `pr-gate-changelog` — gate 2.
-- `pr-gate-qc` — gate 3.
+- `reference/gate-code-review.md` — gate 1.
+- `reference/gate-changelog.md` — gate 2.
+- `reference/gate-qc.md` — gate 3.
 - `backlog-retrospective` — invoked inline per closing issue.
 - `implementation-plan` — `Transition` invoked inline when a plan comment exists.
 - `changelog` — drafts entries for the changelog gate.
+- [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md) — the decision demoting the three gates to reference files.
 - [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) — auto-file protocol used by the gates.

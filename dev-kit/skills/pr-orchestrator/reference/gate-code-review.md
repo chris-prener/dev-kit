@@ -1,28 +1,10 @@
----
-name: pr-gate-code-review
-description: >
-  Gate skill: institutional code review. Invokes `code-review` in gate
-  mode, maps its exit code to the gate protocol signal. Mandatory — no
-  opt-out marker.
-when_to_use: >
-  Invoked only by `pr-orchestrator`, at gate position 1 of 3. Not
-  triggered directly by the user.
-model: sonnet
-# persona: developer   — grouping metadata only; not read by Claude Code.
-# cluster: pr-gates    — grouping metadata only; not read by Claude Code.
----
+# Gate: Code Review
 
-# PR Gate: Code Review
-
-Gate skill invoked by `pr-orchestrator` at position 1 in the gate ladder. Runs the institutional rubber-duck code review against the final diff before the PR opens.
-
-## Activation
-
-Invoked only by the orchestrator. Not triggered directly by the user.
+Read and followed directly by `pr-orchestrator` at its code-review-gate step (position 1). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill. `code-review` itself is unaffected — it stays a skill, invoked here the same way a user's ad hoc "review the diff" request would invoke it.
 
 ## Inputs
 
-Gate protocol inputs per the "Gate protocol" section in [`pr-orchestrator`'s reference.md](${CLAUDE_SKILL_DIR}/../pr-orchestrator/reference.md).
+Gate protocol inputs per the "Gate protocol" section in [`../reference.md`](../reference.md).
 
 ## Steps
 
@@ -33,7 +15,7 @@ Gate protocol inputs per the "Gate protocol" section in [`pr-orchestrator`'s ref
 
 ### 2. Invoke code review
 
-Invoke `code-review` with `--mode=gate`, passing `diff_context.base` and `diff_context.head`. The child skill handles its own `--minimal` whitelist short-circuit internally.
+Invoke `code-review` with `--mode=review` — the same mode value `code-review`'s own Activation section names for this call ("Invoked by `pr-orchestrator`'s code-review gate as the pre-PR gate. Mode: `review`."). Pass `diff_context.base` and `diff_context.head`. The child skill handles its own `--minimal` whitelist short-circuit internally.
 
 ### 3. Map exit signal
 
@@ -64,6 +46,7 @@ Gate protocol output: `signal`, `findings`, `chat_output`.
 ## Success criteria
 
 - The gate runs for every non-trivial PR.
+- `code-review` is invoked with the mode value it actually defines (`review`), not a value only this file used to invent (`gate`).
 - The only path to CLEAN without a rubber-duck call is the `--minimal` whitelist (delegated to the child skill).
 - BLOCKER always halts; the operator picks the next action explicitly.
 - Re-runs dedup via the body marker (ADR-0004).
@@ -75,6 +58,6 @@ Gate protocol output: `signal`, `findings`, `chat_output`.
 
 ## Cross-references
 
-- `pr-orchestrator` — the invoker.
+- `pr-orchestrator` — the caller; `SKILL.md` reads this file at the code-review-gate step.
 - `code-review` — the child skill that runs the actual review.
 - [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) — auto-file dedup contract.
