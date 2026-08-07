@@ -84,10 +84,8 @@ styler::style_pkg()
 ### 4. Code organization within files
 
 ```r
-# ─── Header ─────────────────────────────────────────────────────────────────
 # File: utils_data.R
 # Purpose: Data cleaning and transformation utilities
-# ─────────────────────────────────────────────────────────────────────────────
 
 #' Clean order data
 #'
@@ -124,7 +122,7 @@ clean_order_data <- function(data, required_cols = c("order_id", "amount")) {
 - Functions ordered by dependency (callees before callers) or alphabetically
 - Group related functions in the same file
 - Keep files under ~300 lines; split if larger
-- Use section separators (`# ─── Section ───`) for files with multiple logical groups
+- Use section separators (`# Section Name ####`) for files with multiple logical groups
 
 ### 5. Package namespacing
 
