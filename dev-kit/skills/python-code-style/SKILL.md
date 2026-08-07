@@ -252,7 +252,7 @@ repos:
 
 ## Cross-references
 
-- `python-project-scaffold` — creates the `[tool.ruff]` config block
+- `python-project-scaffold` — scaffolds the project, including the shared ruff config
 - `python-testing` — style conventions apply to test code too
 - `python-documentation` — Google-style docstring details
 - `python-typing` — type hint conventions enforced alongside style
