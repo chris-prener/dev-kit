@@ -124,7 +124,9 @@ For function library files, the header is simpler:
 
 Not every line needs a comment. Aim for:
 - **One comment per logical block** (a group of 2–8 lines that accomplish one task)
-- **No comment for self-documenting code** — e.g., `library(dplyr)` needs no comment
+- **No comment for self-documenting code** — e.g., an import statement (R's
+  `library(dplyr)`, Python's `import polars as pl`) needs no comment
 - **Always comment** non-obvious joins, filters with business logic, regex,
   complex mutations, and workarounds
-- **Always comment** the purpose of each `source()` call
+- **Always comment** the purpose of each file-sourcing call (R's `source()`,
+  Python's module-level imports of local helper modules)

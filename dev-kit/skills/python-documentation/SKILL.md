@@ -219,17 +219,7 @@ plugins:
 
 ### 6. Inline code comments
 
-Follow the `_partials/inline-comment-standards.md` conventions:
-
-```python
-# BAD — restates the code (what)
-# filter to rows where year is greater than 2010
-df = df.filter(pl.col("year") > 2010)
-
-# GOOD — explains the reasoning (why)
-# sales data before 2011 uses inconsistent region codes
-df = df.filter(pl.col("year") > 2010)
-```
+Follow the `_partials/inline-comment-standards.md` conventions — the "why not what" principle applies regardless of language.
 
 ### 7. Building and checking documentation
 
