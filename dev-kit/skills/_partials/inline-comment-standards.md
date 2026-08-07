@@ -1,6 +1,10 @@
 # Inline comment standards (shared partial)
 
-Referenced by `r-code-style` and `r-documentation`.
+Referenced by `python-code-style`, `python-documentation`, `r-code-style`, and
+`r-documentation`. Examples below use R syntax; the "why not what" principle,
+file header blocks, and comment density guidelines are language-agnostic —
+adapt the concrete syntax to the file's language. The "Section header
+standards" section below (RStudio `####` folding) is R-specific.
 
 ### Inline comment standards
 
