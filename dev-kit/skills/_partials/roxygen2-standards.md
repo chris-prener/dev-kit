@@ -1,6 +1,6 @@
 # roxygen2 standards (shared partial)
 
-Referenced by `r-code-style`, `r-documentation`, and `r-testing`.
+Referenced by `r-code-style`, `r-documentation`, `r-testing`, and `r-pipeline-patterns`.
 
 ### Required roxygen2 tags for every function
 
