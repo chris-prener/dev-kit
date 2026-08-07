@@ -15,7 +15,7 @@ model: sonnet
 
 # R Code Style
 
-You are enforcing or applying code style conventions for an R project. This skill defines the formatting rules, naming conventions, documentation standards, and code organization patterns your R projects follow.
+You are enforcing or applying code style conventions for an R project. This skill defines the formatting rules, naming conventions, and code organization patterns your R projects follow.
 
 ## Activation
 
