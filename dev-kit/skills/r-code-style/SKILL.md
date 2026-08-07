@@ -87,16 +87,9 @@ styler::style_pkg()
 # File: utils_data.R
 # Purpose: Data cleaning and transformation utilities
 
-#' Clean order data
-#'
-#' @description Standardizes column names, removes duplicates, and validates
-#'   required fields in an order-level dataset.
-#'
-#' @param data A data.frame of raw order records.
-#' @param required_cols Character vector of columns that must be non-NA.
-#'
-#' @return A cleaned data.frame with standardized names.
-#' @export
+# Standardizes column names, removes duplicates, and validates required
+# fields in an order-level dataset. (Full roxygen2 documentation is a
+# `r-documentation` concern — see `_partials/roxygen2-standards.md`.)
 clean_order_data <- function(data, required_cols = c("order_id", "amount")) {
   # Validate inputs
 
