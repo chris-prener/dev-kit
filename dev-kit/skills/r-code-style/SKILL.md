@@ -2,7 +2,7 @@
 name: r-code-style
 description: >
   Defines lintr configuration, styler conventions, naming rules (snake_case),
-  roxygen2 documentation standards, and code organization patterns for R projects.
+  and code organization patterns for R projects.
 when_to_use: >
   Use to configure linting, apply formatting, establish naming conventions,
   or review code style for an R project. Trigger phrases: "r code style",
