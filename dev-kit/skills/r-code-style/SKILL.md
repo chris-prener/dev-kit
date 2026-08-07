@@ -2,7 +2,7 @@
 name: r-code-style
 description: >
   Defines lintr configuration, styler conventions, naming rules (snake_case),
-  roxygen2 documentation standards, and code organization patterns for R projects.
+  and code organization patterns for R projects.
 when_to_use: >
   Use to configure linting, apply formatting, establish naming conventions,
   or review code style for an R project. Trigger phrases: "r code style",
@@ -15,7 +15,7 @@ model: sonnet
 
 # R Code Style
 
-You are enforcing or applying code style conventions for an R project. This skill defines the formatting rules, naming conventions, documentation standards, and code organization patterns your R projects follow.
+You are enforcing or applying code style conventions for an R project. This skill defines the formatting rules, naming conventions, and code organization patterns your R projects follow.
 
 ## Activation
 
@@ -87,16 +87,9 @@ styler::style_pkg()
 # File: utils_data.R
 # Purpose: Data cleaning and transformation utilities
 
-#' Clean order data
-#'
-#' @description Standardizes column names, removes duplicates, and validates
-#'   required fields in an order-level dataset.
-#'
-#' @param data A data.frame of raw order records.
-#' @param required_cols Character vector of columns that must be non-NA.
-#'
-#' @return A cleaned data.frame with standardized names.
-#' @export
+# Standardizes column names, removes duplicates, and validates required
+# fields in an order-level dataset. (Full roxygen2 documentation is a
+# `r-documentation` concern — see `_partials/roxygen2-standards.md`.)
 clean_order_data <- function(data, required_cols = c("order_id", "amount")) {
   # Validate inputs
 

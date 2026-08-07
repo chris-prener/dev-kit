@@ -117,6 +117,9 @@ list(
 
 #' Transform raw order data
 #'
+#' @description Filters out records missing an order ID, coerces amount and
+#'   date columns to their proper types, and deduplicates on order ID.
+#'
 #' @param raw_orders Data frame of raw order records.
 #' @return Cleaned and standardized order data frame.
 transform_orders <- function(raw_orders) {
@@ -271,3 +274,5 @@ targets::tar_workspace(failed_target_name)
 - `r-testing` — testing target functions in isolation
 - `r-ci` — running `tar_make()` in CI
 - `r-dependencies` — renv for reproducibility
+- `r-documentation` — full roxygen2 documentation conventions
+- `_partials/roxygen2-standards.md` (`${CLAUDE_SKILL_DIR}/../_partials/roxygen2-standards.md`) — roxygen2 tag reference

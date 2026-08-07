@@ -1,16 +1,14 @@
 # roxygen2 standards (shared partial)
 
-Referenced by `r-code-style`, `r-documentation`, and `r-testing`.
+Referenced by `r-code-style`, `r-documentation`, `r-testing`, and `r-pipeline-patterns`.
 
 ### Required roxygen2 tags for every function
 
-At minimum, every function must have these four tags:
+At minimum, every function must have these three tags:
 
 ```r
 #' @description A clear, concise description of what the function does and when
 #'     to use it. Should be 1–3 sentences. Describe behavior, not implementation.
-#'
-#' @usage function_name(param1, param2, param3 = default)
 #'
 #' @param param1 Description of the parameter, including expected type (e.g.,
 #'     "A character vector of ISO 3166-1 alpha-3 country codes") and any
@@ -24,6 +22,10 @@ At minimum, every function must have these four tags:
 #'     and any important characteristics (e.g., "Rows with NA region codes
 #'     are excluded from the output").
 ```
+
+`@usage` is **not** required — roxygen2 auto-generates the Usage section from
+the function signature. Add `@usage` manually only to override an
+auto-generated signature that's wrong (e.g., hiding an internal parameter).
 
 ### Optional but encouraged tags
 
@@ -106,7 +108,7 @@ When a file contains multiple functions (e.g., a main function and its helpers):
 
 When a function already has some roxygen2 tags but is missing others:
 1. **Do not delete or rewrite** existing tags unless they are factually wrong.
-2. **Add missing tags** in the standard order: `@description`, `@usage`,
+2. **Add missing tags** in the standard order: `@description`,
    `@param` (one per parameter), `@return`, then optional tags.
 3. **Fill in empty tags** — if `@param x` exists with no description, add one.
 4. **Verify accuracy** — if the function signature has changed since the docs
