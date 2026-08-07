@@ -70,6 +70,9 @@ _None._
 - Sprint 4 ("Duplication drift", [#52](https://github.com/chris-prener/dev-kit/issues/52)) of [Epic B](https://github.com/chris-prener/dev-kit/issues/16), Group 1 (lint config drift):
   - Ruff lint config drift between `python-code-style` (canonical) and `python-project-scaffold` resolved by extracting the `[tool.ruff]` block into a new shared `_partials/ruff-config.md`, mirroring the existing `roxygen2-standards.md` pattern; both skills now follow the single canonical config instead of hand-authoring divergent copies ([#6](https://github.com/chris-prener/dev-kit/issues/6)).
   - `.lintr` config drift between `r-code-style` (canonical) and `r-project-scaffold` resolved the same way via a new `_partials/lintr-config.md`, which also fixes the stray ` ```yaml ` code-fence language on `r-project-scaffold`'s old copy (`.lintr` is R, not YAML) ([#12](https://github.com/chris-prener/dev-kit/issues/12)).
+- Sprint 4 ("Duplication drift", [#52](https://github.com/chris-prener/dev-kit/issues/52)) of [Epic B](https://github.com/chris-prener/dev-kit/issues/16), Group 2 (`_partials/inline-comment-standards.md` drift):
+  - `_partials/inline-comment-standards.md` generalized from R-only scoping to a language-agnostic shared partial, per the `documentation` skill's existing precedent of adapting its R-syntax examples to other languages; `python-code-style` and `python-documentation` no longer re-author the same "why not what" guidance and worked example inline, and now cite the partial instead ([#10](https://github.com/chris-prener/dev-kit/issues/10)).
+  - `r-documentation`, `r-code-style`, and `r-pipeline-patterns` each used `# ─── Section ───` box-drawing separators that contradict the partial's `# Section Name ####` convention — two of them while directly citing the partial — and silently lose RStudio's `####` code folding; all three now follow the partial's format ([#38](https://github.com/chris-prener/dev-kit/issues/38)).
 
 ### Security
 

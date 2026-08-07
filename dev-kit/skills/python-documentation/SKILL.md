@@ -219,23 +219,7 @@ plugins:
 
 ### 6. Inline code comments
 
-Follow the "why not what" rule:
-
-```python
-# BAD — restates the code (what)
-# filter to rows where year is greater than 2010
-df = df.filter(pl.col("year") > 2010)
-
-# GOOD — explains the reasoning (why)
-# sales data before 2011 uses inconsistent region codes
-df = df.filter(pl.col("year") > 2010)
-```
-
-**When comments ARE warranted even if they seem to state "what":**
-- Complex regex patterns — always explain what the pattern matches
-- Non-obvious conditional logic — explain the business rule
-- Magic numbers — explain what the constant represents
-- Workarounds — explain why the obvious approach doesn't work
+Follow the `_partials/inline-comment-standards.md` conventions — the "why not what" principle applies regardless of language.
 
 ### 7. Building and checking documentation
 
@@ -276,3 +260,4 @@ uv run ruff check --select D .
 - `python-packaging` — package-level docs setup, README as PyPI long description
 - `python-code-style` — ruff's `D` (pydocstyle) rules enforce docstring presence
 - `readme` — generic README maintenance
+- `_partials/inline-comment-standards.md` (`${CLAUDE_SKILL_DIR}/../_partials/inline-comment-standards.md`) — inline comment patterns

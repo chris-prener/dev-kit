@@ -266,7 +266,7 @@ Follow the `_partials/inline-comment-standards.md` conventions:
 
 ```r
 # Section headers use this format:
-# ─── Data Ingestion ──────────────────────────────────────────────────────────
+# Data Ingestion ####
 
 # Explain WHY, not WHAT (the code shows what):
 # Filter to completed orders only because refunded orders use a separate pipeline

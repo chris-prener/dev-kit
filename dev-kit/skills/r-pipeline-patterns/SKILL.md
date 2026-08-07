@@ -67,7 +67,7 @@ tar_option_set(
 
 # Define the pipeline:
 list(
-  # ─── Ingest ────────────────────────────────────────────────────────────
+  # Ingest ####
 
   tar_target(
     raw_orders,
@@ -81,7 +81,7 @@ list(
     format = "parquet"
   ),
 
-  # ─── Transform ─────────────────────────────────────────────────────────
+  # Transform ####
   tar_target(
     clean_orders,
     transform_orders(raw_orders)
@@ -92,14 +92,14 @@ list(
     enrich_shipments(raw_shipments, clean_orders)
   ),
 
-  # ─── Validate ──────────────────────────────────────────────────────────
+  # Validate ####
   tar_target(
     validation_report,
     validate_output(enriched_shipments),
     error = "continue"
   ),
 
-  # ─── Output ────────────────────────────────────────────────────────────
+  # Output ####
   tar_target(
     final_dataset,
     write_output(enriched_shipments, "data/final_dataset.parquet"),

@@ -179,23 +179,7 @@ def validate_input(data: pl.DataFrame | None) -> pl.DataFrame | None:
     return cleaned_data
 ```
 
-### 7. Comment standards
-
-**Why not What** — comment the reasoning, not what the code already says:
-
-```python
-# BAD — restates the code
-# filter to rows where year is greater than 2010
-df = df.filter(pl.col("year") > 2010)
-
-# GOOD — explains the reasoning
-# sales data before 2011 uses inconsistent region codes
-df = df.filter(pl.col("year") > 2010)
-```
-
-Always comment: complex regex, non-obvious business rules, magic numbers, and workarounds. Never comment self-explanatory code (`import polars as pl` needs no comment).
-
-### 8. Running linting and formatting
+### 7. Running linting and formatting
 
 ```bash
 # Lint a single file:
@@ -214,7 +198,7 @@ uv run ruff format .
 uv run ruff check . && uv run ruff format --check .
 ```
 
-### 9. Editor integration
+### 8. Editor integration
 
 **VS Code:** install the `ruff` extension; enable "format on save" with ruff as the default formatter.
 
@@ -258,3 +242,4 @@ repos:
 - `python-typing` — type hint conventions enforced alongside style
 - `python-ci` — running ruff in CI
 - `_partials/ruff-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/ruff-config.md`) — canonical `[tool.ruff]` config block
+- `_partials/inline-comment-standards.md` (`${CLAUDE_SKILL_DIR}/../_partials/inline-comment-standards.md`) — commenting guidelines
