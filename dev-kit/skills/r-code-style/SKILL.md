@@ -224,7 +224,7 @@ lintr::lint_package()
 
 ## Cross-references
 
-- `r-project-scaffold` — creates the `.lintr` file
+- `r-project-scaffold` — scaffolds the project, including the shared .lintr config
 - `r-testing` — style conventions apply to test code
 - `r-documentation` — roxygen2 documentation details
 - `r-ci` — running lintr in CI
