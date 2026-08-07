@@ -151,20 +151,11 @@ Thumbs.db
 
 ### 5. Create the ruff + mypy configuration
 
-Add to `pyproject.toml`:
+Follow `_partials/ruff-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/ruff-config.md`)
+for the canonical `[tool.ruff]` block — see `python-code-style` for the full
+ruleset. Add it to `pyproject.toml` alongside the mypy and pytest config:
 
 ```toml
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "N", "UP", "B", "D"]
-ignore = ["D203", "D213"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
-
 [tool.mypy]
 python_version = "3.12"
 strict = true
@@ -211,3 +202,4 @@ After creating all files:
 - `python-code-style` — ruff/mypy configuration
 - `python-pipeline-patterns` — Prefect flow structure
 - `python-ci` — CI workflow for Python projects
+- `_partials/ruff-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/ruff-config.md`) — canonical `[tool.ruff]` config block
