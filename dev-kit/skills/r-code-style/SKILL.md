@@ -49,36 +49,9 @@ Activate when the user needs to configure linting, apply formatting, establish n
 
 ### 2. lintr configuration
 
-Create `.lintr` at the project root:
-
-```r
-linters:
-  linters_with_defaults(
-    line_length_linter(120),
-    object_name_linter(styles = "snake_case"),
-    commented_code_linter = NULL,
-    cyclocomp_linter(complexity_limit = 15),
-    function_argument_linter = NULL
-  )
-exclusions:
-  list(
-    "renv" = list(linters = "all"),
-    "data-raw" = list(linters = "all")
-  )
-```
-
-**Key linters enabled by default:**
-- `line_length_linter(120)` — max 120 characters per line
-- `object_name_linter("snake_case")` — enforce snake_case
-- `cyclocomp_linter(15)` — flag overly complex functions
-- `assignment_linter` — use `<-` not `=` for assignment
-- `spaces_inside_linter` — no spaces inside `[` or `(`
-- `trailing_whitespace_linter` — no trailing spaces
-- `no_tab_linter` — spaces only (2-space indent)
-
-**Linters explicitly disabled:**
-- `commented_code_linter` — too many false positives with examples in comments
-- `function_argument_linter` — conflicts with tidyverse-style pipelines
+Follow `_partials/lintr-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/lintr-config.md`)
+for the canonical `.lintr` block to create at the project root — this is the
+source of truth; `r-project-scaffold` follows the same partial.
 
 ### 3. styler configuration
 
@@ -251,9 +224,10 @@ lintr::lint_package()
 
 ## Cross-references
 
-- `r-project-scaffold` — creates the `.lintr` file
+- `r-project-scaffold` — scaffolds the project, including the shared .lintr config
 - `r-testing` — style conventions apply to test code
 - `r-documentation` — roxygen2 documentation details
 - `r-ci` — running lintr in CI
 - `_partials/roxygen2-standards.md` (`${CLAUDE_SKILL_DIR}/../_partials/roxygen2-standards.md`) — roxygen2 tag reference
 - `_partials/inline-comment-standards.md` (`${CLAUDE_SKILL_DIR}/../_partials/inline-comment-standards.md`) — commenting guidelines
+- `_partials/lintr-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/lintr-config.md`) — canonical `.lintr` config block

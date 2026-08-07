@@ -50,42 +50,9 @@ Activate when the user needs to configure linting/formatting, apply formatting, 
 
 ### 2. ruff configuration
 
-Add to `pyproject.toml`:
-
-```toml
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = [
-    "E", "F",     # pycodestyle errors, pyflakes
-    "I",          # isort (import sorting)
-    "N",          # pep8-naming
-    "UP",         # pyupgrade
-    "B",          # bugbear (likely bugs)
-    "D",          # pydocstyle (docstring presence/format)
-    "SIM",        # flake8-simplify
-]
-ignore = [
-    "D203",   # conflicts with D211
-    "D213",   # conflicts with D212
-]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D"]   # tests don't need docstrings on every function
-```
-
-**Key rule groups enabled:**
-- `E`/`F` — correctness and pycodestyle baseline
-- `I` — import sorting (replaces isort as a separate tool)
-- `N` — naming conventions (snake_case functions, PascalCase classes)
-- `UP` — modernizes syntax to the target Python version
-- `B` — catches common bugs (mutable default args, bare except)
-- `D` — docstring presence and Google-style format
+Follow `_partials/ruff-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/ruff-config.md`)
+for the canonical `[tool.ruff]` block to add to `pyproject.toml` — this is the
+source of truth; `python-project-scaffold` follows the same partial.
 
 ### 3. ruff format (replaces black)
 
@@ -285,8 +252,9 @@ repos:
 
 ## Cross-references
 
-- `python-project-scaffold` — creates the `[tool.ruff]` config block
+- `python-project-scaffold` — scaffolds the project, including the shared ruff config
 - `python-testing` — style conventions apply to test code too
 - `python-documentation` — Google-style docstring details
 - `python-typing` — type hint conventions enforced alongside style
 - `python-ci` — running ruff in CI
+- `_partials/ruff-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/ruff-config.md`) — canonical `[tool.ruff]` config block

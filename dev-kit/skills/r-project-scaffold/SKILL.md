@@ -159,18 +159,9 @@ Thumbs.db
 
 ### 6. Create the .lintr file
 
-```yaml
-linters:
-  linters_with_defaults(
-    line_length_linter(120),
-    object_name_linter(styles = "snake_case"),
-    commented_code_linter = NULL
-  )
-exclusions:
-  list(
-    "renv" = list(linters = "all")
-  )
-```
+Follow `_partials/lintr-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/lintr-config.md`)
+for the canonical `.lintr` block — see `r-code-style` for the full linter
+reference.
 
 ### 7. Verify the scaffold
 
@@ -210,3 +201,4 @@ After creating all files:
 - `r-code-style` — lintr/styler configuration
 - `r-pipeline-patterns` — targets pipeline structure
 - `r-ci` — CI workflow for R projects
+- `_partials/lintr-config.md` (`${CLAUDE_SKILL_DIR}/../_partials/lintr-config.md`) — canonical `.lintr` config block
