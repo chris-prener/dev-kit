@@ -72,6 +72,8 @@ status=$?
 - **`status != 0` and `protection_raw` contains `HTTP 403`** → branch protection is **unavailable on this plan**, not merely unconfigured. This is the live response for a private repo on GitHub's free tier (the API returns *"Upgrade to GitHub Pro or make this repository public to enable this feature."*). Do not conflate this with the 404 case — report it as a distinct **UNAVAILABLE** outcome (Step 3), not FAIL, since there is nothing the user can configure without first changing plan or visibility.
 - **`status != 0` and neither substring matches** → an unexpected error (auth, rate limit, network). Surface `protection_raw` verbatim to the user and halt the audit rather than silently reporting FAIL or UNAVAILABLE — a misreported outcome here is worse than an explicit error.
 
+This branches on `gh`'s current error-text format (`... (HTTP <code>)` on stderr) rather than a structured status code, because `gh api` doesn't otherwise expose one on failure. If a future `gh` release reformats that text, the 403/404 cases fall through to "unexpected error" (the safe direction — it surfaces and halts rather than misreporting) instead of silently mis-tagging a normal case; that's the intended failure mode of this substring match, not a gap to route around.
+
 #### Step 2: Check CI workflow exists
 
 ```bash
