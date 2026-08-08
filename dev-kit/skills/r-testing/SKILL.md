@@ -178,7 +178,7 @@ expect_warning_message <- function(expr, pattern) {
 
 | Metric | Threshold | Enforcement |
 |---|---|---|
-| Line coverage | ≥ 80% | CI gate (warning below, fail below 60%) |
+| Line coverage | ≥ 80% | Advisory (tracked in CI, not blocking — see `r-ci`) |
 | Function coverage | 100% exported functions | Every exported function has at least one test |
 | Branch coverage | Best-effort | Not gated but reviewed in PRs |
 
