@@ -4,18 +4,24 @@
 
 ## Rule
 
-1. **Completeness matters** (a count fed to a human or a report; a coverage/audit claim that something covers *everything* since a cutoff) → use `gh api --paginate`, not `gh issue list` / `gh pr list`. `gh api --paginate` follows every page; a bare list command does not, regardless of `--limit`.
+1. **Completeness matters** (a count fed to a human or a report; a coverage/audit claim that something covers *everything* since a cutoff) → use `gh api`, not `gh issue list` / `gh pr list`.
 
-   ```bash
-   # Count — e.g. "how many needs-triage issues are open"
-   gh api --paginate "repos/${REPO}/issues?state=open&labels=needs-triage" \
-     --jq '.[] | .number' | wc -l
+   - **For a count**, prefer the `search/issues` endpoint's `total_count` field over paginating and counting rows yourself: it reports the true total on a single call, regardless of how many pages the matching set would span. `is:issue` excludes pull requests — the plain `repos/{owner}/{repo}/issues` endpoint returns PRs too and will overcount a label count if any PR carries it.
 
-   # Coverage query — e.g. "every PR merged since <date>, no gaps"
-   gh api --paginate \
-     "search/issues?q=repo:${REPO}+is:pr+is:merged+merged:>=${SINCE}" \
-     --jq '.items[] | {number, title, url}'
-   ```
+     ```bash
+     # Count — e.g. "how many needs-triage issues are open"
+     gh api "search/issues?q=repo:{owner}/{repo}+is:issue+is:open+label:needs-triage" \
+       --jq '.total_count'
+     ```
+
+   - **For a full row-level listing** where nothing but `total_count` will do, use `gh api --paginate`, which follows every page (a bare list command does not, regardless of `--limit`). `--jq` runs once *per page* under `--paginate`, not once over the merged result — never use `--jq 'length'` here, since that reports only the last page's count. Filter and stream fields (`.items[] | {...}`) and let the caller consume the full stream instead.
+
+     ```bash
+     # Coverage query — e.g. "every PR merged since <date>, no gaps"
+     gh api --paginate \
+       "search/issues?q=repo:{owner}/{repo}+is:pr+is:merged+merged:>=${SINCE}" \
+       --jq '.items[] | {number, title, url}'
+     ```
 
 2. **Completeness doesn't matter** (a top-N surface for a human to skim, a dedup probe expected to return 0–1 rows) → bare `gh issue list` / `gh pr list` is fine, but it must always carry an explicit `--limit` sized to the domain. Never omit `--limit` on the assumption the result set is small — that assumption is exactly what silently breaks when a repo grows.
 

@@ -42,8 +42,8 @@ Run a small batch of `gh` queries (in parallel where possible). Counts follow `$
 
 - **Open PRs by current user**: `gh pr list --author @me --state open --json number,title,url,updatedAt --limit 50`.
 - **Open issues with `priority/blocker`**: `gh issue list --state open --label priority/blocker --json number,title,url --limit 50`.
-- **Open `needs-triage` count**: `gh api --paginate "repos/{owner}/{repo}/issues?state=open&labels=needs-triage" --jq '.[].number' | wc -l`.
-- **Open `needs-grooming` count**: `gh api --paginate "repos/{owner}/{repo}/issues?state=open&labels=needs-grooming" --jq '.[].number' | wc -l`.
+- **Open `needs-triage` count**: `gh api "search/issues?q=repo:{owner}/{repo}+is:issue+is:open+label:needs-triage" --jq '.total_count'`.
+- **Open `needs-grooming` count**: `gh api "search/issues?q=repo:{owner}/{repo}+is:issue+is:open+label:needs-grooming" --jq '.total_count'`.
 - **Open `in-progress` issues (in-flight workstreams)**: `gh issue list --state open --label in-progress --json number,title,url,updatedAt --limit 50`.
 - **Issues with no labels at all** (a quick DoR smell): `gh issue list --state open --search "no:label" --limit 5 --json number,title`.
 
