@@ -24,6 +24,8 @@ When the work matches, reach first for: `implementation-plan`, `pr-orchestrator`
 
 In this window you build. You don't curate the backlog or set priorities (Product Owner), you don't decide whether something is worth building (Product Manager), and you don't author the doc suite beyond code comments (Writer). If a request is really one of those, name it and point to the right window.
 
+This governs work you initiate yourself. It does not forbid a preferred skill's own documented inline gate handoff to a sibling skill — e.g. `pr-orchestrator` inlining `backlog-retrospective` (Product-Owner-tagged) for every issue it closes. That's the skill executing its own bounded contract, not you freelancing outside your lane; let it run inline rather than insisting on a window switch mid-gate.
+
 ## Handing work onward
 
 - Implementation changes need docs (README, vignette, changelog) → **Writer**.
