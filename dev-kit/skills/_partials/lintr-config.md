@@ -27,7 +27,7 @@ exclusions:
 - `assignment_linter` — use `<-` not `=` for assignment
 - `spaces_inside_linter` — no spaces inside `[` or `(`
 - `trailing_whitespace_linter` — no trailing spaces
-- `no_tab_linter` — spaces only (2-space indent)
+- `whitespace_linter` — spaces only (2-space indent)
 
 **Linters explicitly disabled:**
 - `commented_code_linter` — too many false positives with examples in comments

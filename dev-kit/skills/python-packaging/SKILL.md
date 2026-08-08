@@ -63,13 +63,13 @@ version = "0.1.0"
 description = "What the package does (one line)."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     { name = "First Last", email = "first.last@example.com" },
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
     "httpx>=0.27",
@@ -90,7 +90,7 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
@@ -145,7 +145,7 @@ Keep `CHANGELOG.md` updated per release (see `changelog` skill for format).
 uv build
 
 # Check the built artifacts:
-uv run twine check dist/*
+uvx twine check dist/*
 
 # Publish to PyPI (requires PYPI_API_TOKEN):
 uv publish
@@ -167,7 +167,7 @@ uv run ruff check .
 uv run mypy src
 uv run pytest --cov=src --cov-report=term-missing
 uv build
-uv run twine check dist/*
+uvx twine check dist/*
 ```
 
 **All must pass with 0 errors before tagging a release.**
@@ -191,7 +191,7 @@ uv run python -c "import mypackage; print(mypackage.__version__)"
 ## Success criteria
 
 - `uv build` produces a valid sdist and wheel
-- `uv run twine check dist/*` reports no issues
+- `uvx twine check dist/*` reports no issues
 - `py.typed` is present and the package ships accurate type hints
 - Public API (`__all__`) is intentional, not accidental (every export documented)
 - Package installs cleanly via `uv add mypackage` (or `pip install`) in a fresh environment

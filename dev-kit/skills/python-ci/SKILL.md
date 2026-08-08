@@ -54,7 +54,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v9
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -78,7 +78,7 @@ jobs:
         run: uv run pytest --cov=src --cov-report=xml
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         with:
           files: coverage.xml
 ```
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v9
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -144,13 +144,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v9
 
       - name: Build
         run: uv build
 
       - name: Check
-        run: uv run twine check dist/*
+        run: uvx twine check dist/*
 
       - name: Publish to PyPI
         run: uv publish
@@ -175,7 +175,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v9
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -200,7 +200,7 @@ jobs:
 
 ```yaml
 - name: Install uv
-  uses: astral-sh/setup-uv@v3
+  uses: astral-sh/setup-uv@v9
   with:
     enable-cache: true
     cache-dependency-glob: "uv.lock"
@@ -219,7 +219,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v9
         with:
           enable-cache: true
 
@@ -230,7 +230,7 @@ jobs:
         run: uv run pytest --cov=src --cov-report=xml --cov-report=term-missing
 
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         with:
           files: coverage.xml
           fail_ci_if_error: true

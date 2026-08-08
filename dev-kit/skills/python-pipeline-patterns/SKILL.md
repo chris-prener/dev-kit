@@ -139,6 +139,8 @@ def process_all_files(paths: list[str]) -> list[pl.DataFrame]:
 #### Dynamic mapping (determined at runtime)
 
 ```python
+from prefect import unmapped
+
 @task
 def get_unique_sites(raw_data: pl.DataFrame) -> list[str]: ...
 
@@ -148,7 +150,10 @@ def generate_site_report(raw_data: pl.DataFrame, site_id: str) -> pl.DataFrame: 
 @flow
 def site_reports_flow(raw_data: pl.DataFrame) -> list[pl.DataFrame]:
     site_ids = get_unique_sites(raw_data)
-    futures = generate_site_report.map(raw_data, site_ids)
+    # .map() fans out over every iterable argument — wrap raw_data in unmapped()
+    # so the same full frame is passed to every site's task run, instead of
+    # Prefect iterating over it (or zipping it against site_ids by length).
+    futures = generate_site_report.map(unmapped(raw_data), site_ids)
     return [f.result() for f in futures]
 ```
 

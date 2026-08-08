@@ -47,15 +47,18 @@ Activate when the user needs to add data quality checks, validate pipeline input
 #### Schema definition
 
 ```python
+from datetime import datetime
+
 import pandera.polars as pa
 from pandera.polars import DataFrameSchema, Column, Check
+from pandera.engines.polars_engine import DateTime
 
 order_schema = DataFrameSchema(
     {
         "order_id": Column(str, Check.str_matches(r"^ORD-\d{6}$"), unique=True),
         "amount": Column(float, Check.in_range(0, 100_000)),
         "status": Column(str, Check.isin(["pending", "shipped", "delivered", "cancelled"])),
-        "order_date": Column(pa.DateTime, Check.less_than_or_equal_to(pa.polars.Timestamp.now())),
+        "order_date": Column(DateTime, Check.less_than_or_equal_to(datetime.now())),
     },
     strict=True,     # reject unexpected columns
     coerce=True,     # coerce dtypes to match schema before validating
@@ -93,7 +96,7 @@ def is_business_day(series: pl.Series) -> pl.Series:
     return series.dt.weekday() < 5
 
 order_schema = order_schema.add_columns({
-    "order_date": Column(pa.DateTime, Check(is_business_day, element_wise=False)),
+    "order_date": Column(DateTime, Check(is_business_day, element_wise=False)),
 })
 ```
 

@@ -226,8 +226,8 @@ process_orders <- function(data) {
 | Unique | `assert(is_uniq, col)` | `rows_distinct(col)` |
 | Range | `assert(within_bounds(a, b), col)` | `col_vals_between(col, a, b)` |
 | Allowed values | `assert(in_set(...), col)` | `col_vals_in_set(col, set)` |
-| Regex | `assert(matches("^...$"), col)` | `col_vals_regex(col, regex)` |
-| Row count | `verify(nrow(.) > N)` | `col_count_match(n)` |
+| Regex | `assert(function(x) grepl("^...$", x), col)` | `col_vals_regex(col, regex)` |
+| Row count | `verify(nrow(.) > N)` | `row_count_match(n)` |
 | Column exists | `verify(has_all_names(...))` | `col_exists(columns)` |
 | Type check | `verify(is.numeric(col))` | `col_is_numeric(col)` |
 
