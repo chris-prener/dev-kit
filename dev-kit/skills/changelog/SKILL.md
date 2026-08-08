@@ -65,7 +65,13 @@ add / cut-release / audit / backfill.
 ### D. Audit
 
 1. Determine the cutoff date: either user-supplied or the date of the most recent `[X.Y.Z]` block.
-2. Query merged PRs since that date: `gh pr list --state merged --search "merged:>=<date>" --json number,title,url`.
+2. Query merged PRs since that date. Completeness is the whole point of this step, so use `gh api --paginate` per `${CLAUDE_SKILL_DIR}/../_partials/gh-list-pagination.md` rather than bare `gh pr list`, which truncates at 30 and would silently under-report coverage:
+   ```bash
+   REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+   gh api --paginate \
+     "search/issues?q=repo:${REPO}+is:pr+is:merged+merged:>=<date>" \
+     --jq '.items[] | {number, title, url}'
+   ```
 3. For each, check whether `CHANGELOG.md`'s `[Unreleased]` block already references the PR number.
 4. Output a markdown report listing PRs without entries.
 

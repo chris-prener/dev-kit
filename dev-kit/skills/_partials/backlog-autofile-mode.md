@@ -57,10 +57,10 @@ Examples:
 
 1. **Validate inputs.** All required inputs present; `parent_epic` XOR `standalone_reason` exactly. Body contains an `<!-- autofile-id: <dedup_id> -->` marker matching the supplied `dedup_id`. Labels list contains ≥1 Type + ≥1 Priority. Template matches a real `.github/ISSUE_TEMPLATE/*.md` filename. Any failure → return caller error; do NOT post.
 
-2. **Dedup search (open issues).**
+2. **Dedup search (open issues).** Exact-match on a unique marker realistically returns 0–1 rows, but carries an explicit `--limit` anyway per [`gh-list-pagination.md`](gh-list-pagination.md) rather than relying on that assumption.
    ```bash
    REPO=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
-   gh issue list --repo "$REPO" --state open --search "in:body \"autofile-id: <dedup_id>\"" --json number,title,state,labels
+   gh issue list --repo "$REPO" --state open --search "in:body \"autofile-id: <dedup_id>\"" --json number,title,state,labels --limit 10
    ```
    - **Hit (1+ open issues)**: post a single comment on the most-recently-updated match — `"Still reproduces in <run_id> on <date>; see <report-path>."` — and **conditionally patch the dedup target's labels**: add `needs-triage` only if **all three** are true: (a) the label is absent today, (b) the issue carries no priority label (a triaged issue will have one), and (c) no comment authored on the issue contains the heading `## Triage` (the audit trail left by `backlog`'s Triage operation). This guard prevents already-routed or in-progress issues from being yanked back into the triage queue by a re-firing finding. If patched, do so via `gh issue edit <existing-num> --add-label needs-triage`. Then return `{action: "deduped", issue: <existing-num>, label_patched: <bool>}` to the caller. Do NOT file a duplicate.
    - **Miss**: continue.

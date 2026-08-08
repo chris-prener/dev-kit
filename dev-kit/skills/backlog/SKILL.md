@@ -673,7 +673,7 @@ General guidelines: auto-detect the repo (ask if detection fails); use `gh` for 
 Before drafting, investigate the relevant code so the issue is immediately actionable:
 
 1. Identify affected files and functions with explore / grep / glob.
-2. Capture concrete references for the issue body: file paths and function names; current behavior and brief code excerpts when useful; related existing issues via `gh issue list --search "<keywords>"`. Never invent file names or line numbers.
+2. Capture concrete references for the issue body: file paths and function names; current behavior and brief code excerpts when useful; related existing issues via `gh issue list --search "<keywords>" --limit 10` (explicit `--limit` per `${CLAUDE_SKILL_DIR}/../_partials/gh-list-pagination.md`). Never invent file names or line numbers.
 3. Check for overlap or blockers among existing issues.
 
 ### Step C: Determine epic linkage *(required, no silent default)*
