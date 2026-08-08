@@ -41,20 +41,36 @@ Activate this skill whenever:
 
 Checks the repo's live GitHub enforcement posture. Read-only — no mutations.
 
+#### Step 0: Resolve the default branch
+
+Never assume `main`:
+
+```bash
+default_branch=$(gh api repos/{owner}/{repo} --jq '.default_branch')
+```
+
+All subsequent steps use `$default_branch`, not a literal `main`.
+
 #### Step 1: Fetch branch protection
 
 ```bash
-gh api repos/{owner}/{repo}/branches/main/protection \
+protection_raw=$(gh api "repos/{owner}/{repo}/branches/${default_branch}/protection" \
   --jq '{
     signed_commits: .required_signatures.enabled,
     force_push_blocked: (.allow_force_pushes.enabled | not),
     deletions_blocked: (.allow_deletions.enabled | not),
     enforce_admins: .enforce_admins.enabled,
     required_checks: [.required_status_checks.checks[]?.context // empty]
-  }'
+  }' 2>&1)
+status=$?
 ```
 
-If the API returns 404 (no protection configured at all), report every check as FAIL — this is the normal starting state for a fresh personal repo, not a bug.
+`gh api` exits non-zero on any non-2xx response and puts the API's error message on stderr (captured above via `2>&1`), so branch on it rather than treating every failure the same way:
+
+- **`status == 0`** → parse `protection_raw` as JSON; proceed to Step 3 with real values.
+- **`status != 0` and `protection_raw` contains `HTTP 404`** → no protection configured at all. This is the normal starting state for a fresh personal repo, not a bug — report every protection check as FAIL.
+- **`status != 0` and `protection_raw` contains `HTTP 403`** → branch protection is **unavailable on this plan**, not merely unconfigured. This is the live response for a private repo on GitHub's free tier (the API returns *"Upgrade to GitHub Pro or make this repository public to enable this feature."*). Do not conflate this with the 404 case — report it as a distinct **UNAVAILABLE** outcome (Step 3), not FAIL, since there is nothing the user can configure without first changing plan or visibility.
+- **`status != 0` and neither substring matches** → an unexpected error (auth, rate limit, network). Surface `protection_raw` verbatim to the user and halt the audit rather than silently reporting FAIL or UNAVAILABLE — a misreported outcome here is worse than an explicit error.
 
 #### Step 2: Check CI workflow exists
 
@@ -66,8 +82,10 @@ PASS if at least one workflow exists and is `active`.
 
 #### Step 3: Print audit report
 
+Normal case (protection reachable, whether configured or not):
+
 ```
-## Enforcement audit — <owner>/<repo>
+## Enforcement audit — <owner>/<repo> (default branch: <default_branch>)
 
 | Check | Status | Detail |
 |---|---|---|
@@ -81,40 +99,69 @@ PASS if at least one workflow exists and is `active`.
 **Verdict:** PASS / WARN / FAIL
 ```
 
-Exit codes: `0` = all PASS (WARN is acceptable), `1` = any FAIL.
+403/plan-unavailable case — replace the table and verdict with:
+
+```
+## Enforcement audit — <owner>/<repo> (default branch: <default_branch>)
+
+⚠️ **UNAVAILABLE** — branch protection is not offered on this repo's current plan (private repo without GitHub Pro/Team/Enterprise). GitHub's own message: "Upgrade to GitHub Pro or make this repository public to enable this feature."
+
+To unblock: make the repo public, or upgrade the account/org plan. Neither is a change this skill makes for you.
+
+| Check | Status | Detail |
+|---|---|---|
+| CI workflow active | ✅ PASS / ❌ FAIL | <workflow name> |
+```
+
+(The CI-workflow check is independent of branch protection and still runs.)
+
+Exit codes: `0` = all PASS (WARN is acceptable), `1` = any FAIL, `2` = UNAVAILABLE (distinguishable from FAIL — nothing to fix by configuring this repo).
 
 None of these settings are assumed to be enforced elsewhere — if `audit` reports FAIL on branch protection basics and the user wants them enabled, that's a manual github.com settings change (or `gh api -X PUT .../protection`) they make deliberately; this skill doesn't write branch-protection rules itself, only reports on them.
 
 ### Operation 2: `configure-checks`
 
-Wires a CI workflow job as a required status check on `main`. This is the only write operation.
+Wires a CI workflow job as a required status check on the repo's default branch. This is the only write operation.
 
 #### Step 1: Pre-flight
 
-1. Confirm the target workflow has run at least once on `main`:
+1. Resolve the default branch — never assume `main` (same as audit Step 0):
    ```bash
-   gh run list --workflow <workflow-file> --branch main --limit 1 --json status
+   default_branch=$(gh api repos/{owner}/{repo} --jq '.default_branch')
    ```
-   If no runs found, halt with: "The workflow has not run on main yet. Push a commit or open a PR to trigger it, then re-run this operation."
 
-2. Confirm branch protection exists on `main` (the API endpoint must return 200). If not, tell the user required-status-checks can't be configured until basic branch protection exists, and stop — this skill doesn't create branch protection from nothing.
+2. Confirm the target workflow has run at least once on `$default_branch`:
+   ```bash
+   gh run list --workflow <workflow-file> --branch "$default_branch" --limit 1 --json status
+   ```
+   If no runs found, halt with: "The workflow has not run on $default_branch yet. Push a commit or open a PR to trigger it, then re-run this operation."
+
+3. Confirm branch protection exists on `$default_branch` and distinguish *why* it doesn't, same as audit Step 1:
+   ```bash
+   protection_raw=$(gh api "repos/{owner}/{repo}/branches/${default_branch}/protection" 2>&1)
+   status=$?
+   ```
+   - `status == 0` → protection exists, proceed to Step 2.
+   - `status != 0` and `protection_raw` contains `HTTP 403` → halt with: "Branch protection is unavailable on this repo's current plan (private repo without GitHub Pro/Team/Enterprise) — make the repo public or upgrade the plan first. This skill doesn't create branch protection from nothing, and can't on this plan regardless."
+   - `status != 0` and `protection_raw` contains `HTTP 404` → halt with: "No branch protection exists yet on $default_branch. This skill doesn't create branch protection from nothing — configure the basics first, then re-run this operation."
+   - Any other non-zero status → halt and surface `protection_raw` verbatim; don't guess.
 
 #### Step 2: Wire the check
 
-Fetch existing required checks first to avoid destructively replacing them:
+Fetch existing required checks first to avoid destructively replacing them. Use the `checks` field (current API) throughout — not the deprecated `contexts` array — so read and write agree on one convention:
 
 ```bash
-existing=$(gh api repos/{owner}/{repo}/branches/main/protection/required_status_checks \
-  --jq '.contexts')
+existing=$(gh api "repos/{owner}/{repo}/branches/${default_branch}/protection/required_status_checks" \
+  --jq '[.checks[]? | {context, app_id}]')
 
-new_contexts=$(echo "$existing" | jq --arg new "<workflow-name> / <job-name>" \
-  '. + [$new] | unique')
+new_checks=$(echo "$existing" | jq --arg new "<workflow-name> / <job-name>" \
+  '. + [{context: $new, app_id: null}] | unique_by(.context)')
 
-gh api -X PATCH repos/{owner}/{repo}/branches/main/protection/required_status_checks \
+gh api -X PATCH "repos/{owner}/{repo}/branches/${default_branch}/protection/required_status_checks" \
   --input - <<EOF
 {
   "strict": false,
-  "contexts": $new_contexts
+  "checks": $new_checks
 }
 EOF
 ```
@@ -123,7 +170,7 @@ This preserves any previously configured required checks while adding the new on
 
 #### Step 3: Verify
 
-Re-run the `required_checks` portion of audit Step 1 to confirm the check appears in the list.
+Re-run the `required_checks` portion of audit Step 1 (against `$default_branch`) to confirm the check appears in the list.
 
 #### Step 4: Report
 
@@ -131,14 +178,16 @@ Print confirmation with the check name and the verification result.
 
 ## Outputs
 
-- **`audit`**: a structured enforcement report printed to chat. Exit code 0 (pass) or 1 (fail).
-- **`configure-checks`**: a required status check wired on `main`.
+- **`audit`**: a structured enforcement report printed to chat. Exit code 0 (pass), 1 (fail), or 2 (unavailable on this plan).
+- **`configure-checks`**: a required status check wired on the repo's default branch.
 
 ## Success criteria
 
-- `audit` correctly reports the live enforcement posture without mutations.
+- `audit` correctly reports the live enforcement posture without mutations, on any branch-protection-eligible plan.
+- `audit` reports a 403 (private repo without GitHub Pro/Team/Enterprise) as a distinct UNAVAILABLE outcome, not as FAIL or a crash.
+- `audit` and `configure-checks` both resolve the repo's actual default branch instead of assuming `main`.
 - `configure-checks` wires the specified check and verifies it appears in the protection settings.
-- `configure-checks` refuses to run if the workflow has never executed on `main`, or if branch protection doesn't exist yet.
+- `configure-checks` refuses to run if the workflow has never executed on the default branch, or if branch protection doesn't exist yet — and says which of the two (or a 403 plan limit) is the reason.
 - The skill works against both the current repo and remote repos via `--repo`.
 
 ## Out of scope
