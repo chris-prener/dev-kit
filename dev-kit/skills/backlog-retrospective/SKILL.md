@@ -61,7 +61,7 @@ The skill has two operations. **close+retro** runs Steps 1–7 below (the origin
    - **If the user is asking to close as duplicate/wontfix/etc. but the issue does not yet have the matching label**, prompt them to add it first (`gh issue edit <N> --add-label <label>`) before closing. The label is required by the label vocabulary and is what gates this carve-out for downstream tooling.
 
 2. **Gather evidence**. Pull the data the retro needs:
-   - Resolving PR(s): `gh pr list --search "<N> in:body" --state all --json number,title,mergedAt,mergeCommit`.
+   - Resolving PR(s): `gh pr list --search "<N> in:body" --state all --json number,title,mergedAt,mergeCommit --limit 10` (explicit `--limit` per `${CLAUDE_SKILL_DIR}/../_partials/gh-list-pagination.md`).
    - Commits that touched the relevant paths since the issue was opened (use `gh search commits` or `git log --oneline <since>..HEAD -- <paths>`).
    - Tests added/changed in those commits.
 

@@ -38,13 +38,13 @@ None. The skill reads durable sources only. Optional input: a focus filter (e.g.
 
 ### B. Read live GitHub state
 
-Run a small batch of `gh` queries (in parallel where possible):
+Run a small batch of `gh` queries (in parallel where possible). Counts follow `${CLAUDE_SKILL_DIR}/../_partials/gh-list-pagination.md` — a bare `gh issue list ... --jq 'length'` silently caps at 30, so both watchlist counts use `gh api --paginate` instead:
 
-- **Open PRs by current user**: `gh pr list --author @me --state open --json number,title,url,updatedAt`.
-- **Open issues with `priority/blocker`**: `gh issue list --state open --label priority/blocker --json number,title,url`.
-- **Open `needs-triage` count**: `gh issue list --state open --label needs-triage --json number --jq 'length'`.
-- **Open `needs-grooming` count**: `gh issue list --state open --label needs-grooming --json number --jq 'length'`.
-- **Open `in-progress` issues (in-flight workstreams)**: `gh issue list --state open --label in-progress --json number,title,url,updatedAt`.
+- **Open PRs by current user**: `gh pr list --author @me --state open --json number,title,url,updatedAt --limit 50`.
+- **Open issues with `priority/blocker`**: `gh issue list --state open --label priority/blocker --json number,title,url --limit 50`.
+- **Open `needs-triage` count**: `gh api "search/issues?q=repo:{owner}/{repo}+is:issue+is:open+label:needs-triage" --jq '.total_count'`.
+- **Open `needs-grooming` count**: `gh api "search/issues?q=repo:{owner}/{repo}+is:issue+is:open+label:needs-grooming" --jq '.total_count'`.
+- **Open `in-progress` issues (in-flight workstreams)**: `gh issue list --state open --label in-progress --json number,title,url,updatedAt --limit 50`.
 - **Issues with no labels at all** (a quick DoR smell): `gh issue list --state open --search "no:label" --limit 5 --json number,title`.
 
 Performance budget: under ~30 seconds for the whole sweep. If a query is slow, surface partial results rather than blocking.

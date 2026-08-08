@@ -62,7 +62,7 @@ Activate whenever:
 
 **Authority hierarchy** (do NOT collapse — each layer has a distinct role):
 
-1. **Merged PRs in window** — corpus authority for "what shipped". Use `gh api --paginate` (NOT bare `gh pr list`, which truncates):
+1. **Merged PRs in window** — corpus authority for "what shipped". Use `gh api --paginate` (NOT bare `gh pr list`, which truncates) per `${CLAUDE_SKILL_DIR}/../_partials/gh-list-pagination.md`, the suite-wide convention this skill originated:
 
    ```bash
    REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
