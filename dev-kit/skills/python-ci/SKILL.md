@@ -150,7 +150,7 @@ jobs:
         run: uv build
 
       - name: Check
-        run: uv run twine check dist/*
+        run: uvx twine check dist/*
 
       - name: Publish to PyPI
         run: uv publish
