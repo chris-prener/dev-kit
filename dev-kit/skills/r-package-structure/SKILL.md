@@ -151,7 +151,7 @@ usethis::use_readme_md()
 usethis::use_news_md()
 usethis::use_vignette("getting-started")
 usethis::use_pkgdown()
-usethis::use_github_actions()
+usethis::use_github_action("check-standard")
 
 # Add dependencies:
 usethis::use_package("dplyr", min_version = "1.1.0")
