@@ -38,7 +38,7 @@ Activate when the user needs to read/write data files, connect to databases, cho
 |---|---|---|---|---|
 | Parquet | Large tabular data, cross-language | `polars` | `pl.read_parquet()` | `df.write_parquet()` |
 | CSV | Small data, human-readable | `polars` | `pl.read_csv()` | `df.write_csv()` |
-| Excel | Business stakeholder exchange | `polars` (via `xlsx2csv`/`openpyxl`) | `pl.read_excel()` | `df.write_excel()` |
+| Excel | Business stakeholder exchange | `polars` (via `fastexcel`/`xlsxwriter`) | `pl.read_excel()` | `df.write_excel()` |
 | JSON | APIs, config files | stdlib `json` / `pydantic` | `json.load()` | `json.dump()` |
 | Pickle | Complex Python objects (models) | stdlib `pickle` | `pickle.load()` | `pickle.dump()` |
 
@@ -91,6 +91,8 @@ data.write_csv("data/output.csv")
 - Never use bare `csv.reader` for tabular data with a known shape — use polars
 
 #### Excel
+
+Requires `fastexcel` (read — the default `calamine` engine) and `xlsxwriter` (write): `uv add fastexcel xlsxwriter`. `xlsx2csv`/`openpyxl` are alternate read engines, selectable via `engine=`, not the default.
 
 ```python
 # Read:
