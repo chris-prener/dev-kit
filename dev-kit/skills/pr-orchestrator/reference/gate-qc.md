@@ -1,6 +1,6 @@
 # Gate: Pre-PR QC
 
-Read and followed directly by `pr-orchestrator` at its QC-gate step (final position). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
+Read and followed directly by `pr-orchestrator` at its QC-gate step (third position). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
 
 ## Inputs
 

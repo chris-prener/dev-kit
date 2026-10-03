@@ -2,7 +2,9 @@
 
 Read and followed directly by `pr-orchestrator` at its implementation-plan-gate step (fourth and final gate). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
 
-Why it exists: `session-start` surfaces in-flight work from the `in-progress` label, and that label is only set by an `implementation-plan` `Transition`. Without a check, an issue can be implemented and closed with no plan, no label, and no durable record of the approach. This gate is the enforcement point; the Developer output styles are the advisory tier.
+Why it exists: `session-start` surfaces in-flight work from the `in-progress` label, and that label is only set by an `implementation-plan` `Transition`. Without a check, an issue can be implemented and closed with no plan and no durable record of the approach. This gate is the enforcement point; the Developer output styles are the advisory tier.
+
+The gate checks that a plan exists and has progressed past `drafting`, not that the label was set at the time: the `in-progress` label is removed again at `ready-for-pr` and `shipped`, so label history can't be read back at PR time. `blocked` passes because the plan was started and the operator is opening the PR deliberately.
 
 ## Inputs
 
