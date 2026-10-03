@@ -14,4 +14,4 @@ A shared file under `dev-kit/skills/_partials/` holding content that more than o
 
 ### persona
 
-The role a skill or output style belongs to (`product-owner`, `product-manager`, `developer`, `writer`, `python-developer`, `r-developer`), recorded in a skill's `# persona:` frontmatter comment. Grouping metadata only; Claude Code does not read it. See [`gate-qc.md`](../dev-kit/skills/pr-orchestrator/reference/gate-qc.md).
+The role a skill or output style belongs to (`product-owner`, `product-manager`, `developer`, `writer`, `python-developer`, `r-developer`), recorded in a skill's `# persona:` frontmatter comment. Grouping metadata only; Claude Code does not read it. See [`output-styles/developer.md`](../output-styles/developer.md) for an example persona and [`gate-qc.md`](../dev-kit/skills/pr-orchestrator/reference/gate-qc.md) for the check that validates the comment.
