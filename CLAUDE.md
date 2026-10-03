@@ -44,9 +44,12 @@ unless marked **BLOCKER**.
 
 - **One commit per closed issue.** For each issue in `issue_refs`
   (the PR's `Closes` / `Fixes` / `Resolves` set), `git log <base>..HEAD`
-  has at least one commit whose message references `#N`. When
-  `issue_refs` has more than one issue, no single commit may reference
-  all of them. Skip when `issue_refs` has fewer than two entries.
+  has at least one commit whose subject or body references `#N`,
+  matching `#N` followed by a non-digit (so `#7` does not match `#77`).
+  When `issue_refs` has more than one issue, no single commit may
+  reference all of them, except a commit touching only `CHANGELOG.md`
+  (the changelog gate's own commit cites every closed issue). Skip when
+  `issue_refs` has fewer than two entries.
 - **Label baseline in sync.** If `diff_context.files_changed` includes
   `dev-kit/assets/github/LABELS.md` or
   `dev-kit/skills/_partials/label-vocabulary.md`, it includes both.
