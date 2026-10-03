@@ -132,7 +132,7 @@ V1. **Pre-flight**.
    - `gh issue view <N> --json number,title,state,labels,closedAt,comments`.
    - If `state != "CLOSED"`, refuse: validate runs only on closed issues. Tell the operator to use close+retro first.
    - If a comment beginning with `## Outcome validation` already exists for this issue, surface it and ask whether to post a *new* validation (legitimate when more time has passed and the picture has changed) or stop. **Multiple validations are allowed**; each is dated and the most recent represents the current view.
-   - Read the issue's Acceptance Criteria from the body and the `### What shipped` section from the existing `## Retrospective` comment. These define the intent being validated.
+   - Read the issue's Acceptance Criteria from the body and the `### What shipped` section from the existing retrospective comment (`## Retrospective`, or `## Sprint Retrospective` on a sprint issue). These define the intent being validated.
 
 V2. **Determine the outcome.** Pick exactly one of the four values:
    - `achieved` — the shipped change produced the expected behavior; the AC is met in observable practice (not just in tests).

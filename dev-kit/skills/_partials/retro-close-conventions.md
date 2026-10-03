@@ -28,4 +28,6 @@ Each issue kind opens its retrospective comment with exactly one heading. Any do
 
 **Matching rule.** A comment counts as a retrospective if its first line is exactly one of the three headings above. A bare `startswith("## Retrospective")` test is wrong: it misses the other two.
 
-`backlog-retrospective` handles ordinary issues and sprints, and **refuses epics**, naming `epic-retrospective` as the owner. If a dedicated sprint-retro skill is ever added, update this table and `backlog-retrospective`'s sprint handling together.
+`backlog-retrospective` handles ordinary issues and sprints, and **refuses epics**, naming `epic-retrospective` as the owner. An issue carrying both `epic` and `sprint` is treated as an epic (the `epic` check runs first).
+
+**Provisional.** The `sprint` label is live in this repo (a pilot per ADR-0001) but is not yet in `label-vocabulary.md`, and the sprint design is still open in `docs/requirements/epic-sprint-model.md` (R2). Treat the sprint row as provisional until that lands. A sprint issue that lacks the label falls through to the ordinary `## Retrospective` heading. If a dedicated sprint-retro skill is ever added, update this table and `backlog-retrospective`'s sprint handling together.

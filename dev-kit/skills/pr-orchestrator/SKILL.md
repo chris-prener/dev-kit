@@ -86,7 +86,7 @@ For each gate in steps 3, 4, 5:
 
 Runs only after all three gates have passed (or been opted out) and the PR exists. For each issue in `issue_refs`:
 
-1. **Post retrospective.** Invoke `backlog-retrospective` with the issue number. It no-ops if a `## Retrospective` comment already exists, and closes the issue as part of its flow. On error: halt with `"Retro failed for #<N>: <error>"`.
+1. **Post retrospective.** Invoke `backlog-retrospective` with the issue number. It no-ops if a retrospective comment (any heading in `_partials/retro-close-conventions.md`'s registry) already exists, and closes the issue as part of its flow. On error: halt with `"Retro failed for #<N>: <error>"`.
 2. **Transition the plan, if one exists.** Search the issue's comments for the `implementation-plan` locator. If found and not already `shipped`, invoke `implementation-plan` `Transition` with target `shipped` (allowed from `ready-for-pr` or `in-progress`). If no plan comment exists, skip silently — nothing to transition.
 
 This step runs for every issue regardless of gate markers; there's no opt-out, because closing the loop on an issue you're about to ship is not optional ceremony. It's skipped entirely in `--update --body-only` mode (see Step 0).
