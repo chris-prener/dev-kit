@@ -664,6 +664,8 @@ General guidelines: auto-detect the repo (ask if detection fails); use `gh` for 
 
    > **As a** <role>, **I want** <capability>, **so that** <outcome>.
 
+   Use `**As an**` for a vowel-initial role (e.g. `AI agent`); the gate accepts both forms.
+
 2. Use a canonical role from the partial when possible (`data consumer`, `dataset owner`, `repo maintainer`, `AI agent`, `pipeline operator`, `new contributor`), or free text.
 3. All three parts are required unless the issue is a minor chore using the partial's `**Mechanical change**` escape hatch.
 4. Record this block; it goes at the top of the issue body in Step E.
