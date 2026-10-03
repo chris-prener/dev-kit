@@ -36,8 +36,9 @@ Do **not** use this skill when scope is already clear — file a regular issue v
 ## Inputs
 
 - A one-sentence question to answer.
-- A stated time-box (e.g., "1 session", "4 hours", "2 days").
+- A stated time-box in one of the frozen formats Op 4 parses: `1 session`, `<N> hours`, or `<N> days`.
 - A stated artifact target (one of: requirements doc / scoped issues / ADR / decision summary).
+- A user story (`**As a** / **I want** / **so that**`, per `_partials/user-story.md` — pick a canonical role, e.g. `repo maintainer`) and a `**Parent epic:**` line (`#N`, or `standalone — <reason>`), because the `spike.md` body passes the DoR gate. The `**Mechanical change**` escape hatch is not appropriate for a spike.
 - Optional context: known facts, known unknowns, hypotheses.
 
 ## Steps
@@ -46,7 +47,7 @@ Do **not** use this skill when scope is already clear — file a regular issue v
 
 Files a discovery issue with the `spike` Type label and the `spike.md` template body.
 
-1. Confirm the inputs above are populated. Refuse to proceed if the time-box, the question, or the artifact target is missing.
+1. Confirm the inputs above are populated. Refuse to proceed if the time-box (or one outside the frozen formats), the question, the artifact target, or the user story is missing.
 2. Create the issue via `gh issue create` with:
    - Title: `Spike: <topic>`
    - Labels: `spike` (Type — a baseline label per [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md); if the repo lacks it, follow that partial's label-migration flow rather than creating it inline). Optionally add a `priority/*` label. No other Type label is required — `spike` IS the Type for this issue.
