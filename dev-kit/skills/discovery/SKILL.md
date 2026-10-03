@@ -44,37 +44,18 @@ Do **not** use this skill when scope is already clear — file a regular issue v
 
 ### Op 1 — Open spike
 
-Files a discovery issue with the `spike` Type label and the discovery template body.
+Files a discovery issue with the `spike` Type label and the `spike.md` template body.
 
 1. Confirm the inputs above are populated. Refuse to proceed if the time-box, the question, or the artifact target is missing.
 2. Create the issue via `gh issue create` with:
    - Title: `Spike: <topic>`
    - Labels: `spike` (Type — a baseline label per [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md); if the repo lacks it, follow that partial's label-migration flow rather than creating it inline). Optionally add a `priority/*` label. No other Type label is required — `spike` IS the Type for this issue.
-   - Body: the discovery template (below).
+   - Body: the `spike.md` template (see "Body template" below).
 3. Print the new issue URL and remind the operator of the stated time-box and expiry date.
 
-**Discovery template (frozen for parser stability):**
+**Body template.** Use the repo's `${CLAUDE_PROJECT_DIR}/.github/ISSUE_TEMPLATE/spike.md` (or, if the repo has none, dev-kit's vendored `assets/github/ISSUE_TEMPLATE/spike.md`) as the body skeleton — it is the single source for the spike body and passes the DoR gate (`_partials/dor-preflight.md`). Fill: the User story, `## Question` (the one-sentence question), `## Timebox` (`**Time-box**:` and `**Opened**:`), `## Exit artifact` (`**What "done" looks like**:`), and `## Context`. Titles stay `Spike: <topic>`.
 
-```markdown
-## Spike: <topic>
-
-**Time-box**: <e.g. 1 session, 4 hours, 2 days>
-**Opened**: YYYY-MM-DD
-**Question to answer**: <one sentence>
-**What "done" looks like**: <one of: requirements doc / scoped issues / ADR / decision summary>
-
-## Context
-
-<why we're doing this; what's known; what's unknown>
-
-## Approach
-
-<how exploration will proceed>
-
-## Findings (updated as work progresses)
-
-- YYYY-MM-DD: <finding>
-```
+**Parser contract (frozen).** Ops 2–4 read the body by these exact strings, so a template edit must preserve them: the `**Time-box**:` and `**Opened**:` lines (Op 4), the `**What "done" looks like**:` line, and the `## Findings (updated as work progresses)` heading (Op 2).
 
 ### Op 2 — Update findings
 
@@ -139,7 +120,7 @@ Surfaces overrun spikes — open `spike` issues whose stated `Time-box:` has exp
 
 ## Success criteria
 
-- Spike issues consistently follow the discovery template.
+- Spike issues consistently follow the `spike.md` template.
 - Closure produces a structured `<!-- spike-closure-v1 -->` comment naming the artifact.
 - Overrun spikes are surfaced by this skill's own audit op — there's no separate detector to rely on.
 - The artifact produced by closure (requirements doc / issues / ADR / not-planned summary) survives context loss.

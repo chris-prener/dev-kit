@@ -651,6 +651,7 @@ General guidelines: auto-detect the repo (ask if detection fails); use `gh` for 
 | `tech_debt.md` | refactor, cleanup, scaling crack, internal quality |
 | `qc_finding.md` | explicit QC finding |
 | `documentation.md` | missing, unclear, or stale docs |
+| `spike.md` | a time-boxed question to answer before scope is known; produces an artifact, not code. The timebox is required (refuse to file without one); `discovery` owns the spike's later lifecycle (findings, closure, overrun audit) |
 
 3. If the request is thin, nudge toward Operation: Capture once:
 
