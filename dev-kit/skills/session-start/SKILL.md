@@ -113,5 +113,5 @@ The agent **does not block**. It surfaces, asks, and waits for the user's lead. 
 - `objectives` — surfaces active objectives + stale check-ins.
 - `roadmap` — surfaces the Now horizon.
 - `backlog` — DoR violations (no labels, no epic linkage) are surfaced from issue body scans aligned with the skill's contract. Its Triage operation is the destination for `needs-triage` items surfaced in Step B; its Groom operation is the destination for `needs-grooming` items surfaced in Step B.
-- `backlog-retrospective` — issues closed without a retro can be spotted by scanning recently-closed issues for a missing `## Retrospective` comment.
+- `backlog-retrospective` — issues closed without a retro can be spotted by scanning recently-closed issues for a missing retrospective comment (any heading in `_partials/retro-close-conventions.md`'s registry; `## Retrospective` for ordinary issues, `## Sprint Retrospective` for sprints).
 - `post-merge` — invoked after a PR merge as a mid-session pivot; its exit path suggests invoking this skill at the start of the next session.

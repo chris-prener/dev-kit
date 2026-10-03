@@ -15,3 +15,17 @@ The `--reason` flag alone is **not** sufficient. The label is the durable, audit
 The close-reason vocabulary lives in `${CLAUDE_PROJECT_DIR}/.github/LABELS.md` (or [`label-vocabulary.md`](label-vocabulary.md) if absent).
 
 **Carve-out label set:** `duplicate`, `wontfix`, `not-planned`, `invalid`. An issue carrying any of them is *descoped*, not *completed*.
+
+## Retrospective heading registry
+
+Each issue kind opens its retrospective comment with exactly one heading. Any double-post guard checks for **all three**, not just its own: a closed issue already carrying any of them is already retro'd.
+
+| Issue kind (label) | Owning skill | Heading |
+|---|---|---|
+| Ordinary issue (no `epic` / `sprint` label) | `backlog-retrospective` | `## Retrospective` |
+| Sprint (`sprint`) | `backlog-retrospective` (no dedicated sprint-retro skill exists) | `## Sprint Retrospective` |
+| Epic (`epic`) | `epic-retrospective` | `## Epic Retrospective` |
+
+**Matching rule.** A comment counts as a retrospective if its first line is exactly one of the three headings above. A bare `startswith("## Retrospective")` test is wrong: it misses the other two.
+
+`backlog-retrospective` handles ordinary issues and sprints, and **refuses epics**, naming `epic-retrospective` as the owner. If a dedicated sprint-retro skill is ever added, update this table and `backlog-retrospective`'s sprint handling together.

@@ -56,7 +56,8 @@ The skill has two operations. **close+retro** runs Steps 1–7 below (the origin
 
 1. **Pre-flight**.
    - `gh issue view <N> --json number,title,state,labels,closedAt,comments`.
-   - If `state == "CLOSED"` and a comment beginning with `## Retrospective` already exists, stop — do not double-post.
+   - If `state == "CLOSED"` and a comment whose first line is any heading in the registry in `${CLAUDE_SKILL_DIR}/../_partials/retro-close-conventions.md` (`## Retrospective`, `## Sprint Retrospective`, `## Epic Retrospective`) already exists, stop — do not double-post.
+   - **If labels include `epic`**, refuse and name `epic-retrospective` as the owning skill. **If labels include `sprint`**, proceed, but open the comment with `## Sprint Retrospective` instead of `## Retrospective` (same template; see the registry).
    - **If labels include any of `duplicate`, `wontfix`, `not-planned`, `invalid`**, or the user is asking to close as one of those without the matching label, follow `${CLAUDE_SKILL_DIR}/../_partials/retro-close-conventions.md` (label first, short rationale comment, then `gh issue close --reason <reason>`). Do not post a full retro.
 
 2. **Gather evidence**. Pull the data the retro needs:
@@ -67,7 +68,7 @@ The skill has two operations. **close+retro** runs Steps 1–7 below (the origin
 3. **Compose the retro comment** using exactly this template (markdown). Sections marked *required* must be present and non-empty; sections marked *optional* may be omitted entirely (do not leave empty headings). Keep it tight — typical retros are 200–400 words; long technical rationale belongs in commit messages, not here.
 
    ```markdown
-   ## Retrospective
+   ## Retrospective   <!-- use `## Sprint Retrospective` when the issue carries the `sprint` label -->
 
    **Resolved by**: <commit SHA(s) or PR #> on branch `<branch>` (merged <ISO date>).
 

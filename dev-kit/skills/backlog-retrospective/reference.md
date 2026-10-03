@@ -5,7 +5,7 @@ Contract and QA detail for the `backlog-retrospective` skill. `SKILL.md` holds t
 ## Outputs
 
 **close+retro:**
-- One `## Retrospective` comment on issue `<N>`.
+- One `## Retrospective` comment on issue `<N>` (`## Sprint Retrospective` when `<N>` carries the `sprint` label).
 - Issue state transitioned to `CLOSED` with reason `completed`.
 - Tempfiles cleaned up.
 
