@@ -36,7 +36,7 @@ Activate the **validate** operation whenever the issue's intent is observable (a
 
 ## Out of scope (do NOT post a retro)
 
-- Closes as **duplicate / wontfix / not-planned / invalid** — these require the matching close-reason **label** on the issue *before* close (`duplicate`, `wontfix`, `not-planned`, `invalid`). Add the label first, then leave a 1–3 sentence rationale comment, then close. The `--reason` flag alone is **not** sufficient — the label is the durable signal that gates this carve-out for the retro skill, the backlog skill, and any future tooling. See `${CLAUDE_PROJECT_DIR}/.github/LABELS.md` (or `${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md` if absent) for the close-reason vocabulary.
+- Closes as **duplicate / wontfix / not-planned / invalid** — label first, short rationale comment, then close; no full retro. The rule is stated once in `${CLAUDE_SKILL_DIR}/../_partials/retro-close-conventions.md`.
 - Re-closing an issue that already has a retro from a prior close (check `gh issue view <N> --comments` first).
 - Session-end / pause workflows — out of scope for this skill.
 
@@ -57,8 +57,7 @@ The skill has two operations. **close+retro** runs Steps 1–7 below (the origin
 1. **Pre-flight**.
    - `gh issue view <N> --json number,title,state,labels,closedAt,comments`.
    - If `state == "CLOSED"` and a comment beginning with `## Retrospective` already exists, stop — do not double-post.
-   - **If labels include any of `duplicate`, `wontfix`, `not-planned`, `invalid`**, fall back to the out-of-scope path above (short rationale comment, then `gh issue close --reason <reason>`). Do not post a full retro.
-   - **If the user is asking to close as duplicate/wontfix/etc. but the issue does not yet have the matching label**, prompt them to add it first (`gh issue edit <N> --add-label <label>`) before closing. The label is required by the label vocabulary and is what gates this carve-out for downstream tooling.
+   - **If labels include any of `duplicate`, `wontfix`, `not-planned`, `invalid`**, or the user is asking to close as one of those without the matching label, follow `${CLAUDE_SKILL_DIR}/../_partials/retro-close-conventions.md` (label first, short rationale comment, then `gh issue close --reason <reason>`). Do not post a full retro.
 
 2. **Gather evidence**. Pull the data the retro needs:
    - Resolving PR(s): `gh pr list --search "<N> in:body" --state all --json number,title,mergedAt,mergeCommit --limit 10` (explicit `--limit` per `${CLAUDE_SKILL_DIR}/../_partials/gh-list-pagination.md`).
