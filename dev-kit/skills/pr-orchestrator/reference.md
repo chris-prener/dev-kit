@@ -94,7 +94,7 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 ## Outputs
 
 - One open PR (create) or one updated PR (update), body matching the five-section template inside the managed fence.
-- Every issue listed under `## Closes` is already closed with a `## Retrospective` comment (from `backlog-retrospective`, via the inline retro step).
+- Every issue listed under `## Closes` is already closed with a retrospective comment — `## Retrospective`, or `## Sprint Retrospective` for a sprint (from `backlog-retrospective`, via the inline retro step).
 - Zero or more auto-filed code-review / QC / doc-audit issues if the gates surfaced findings.
 - Update mode also: refreshed `_updated:` marker; preserved `_created:` marker, `_no-*:_` markers, and unfenced content.
 
@@ -102,7 +102,7 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 
 - The PR body has all five sections, non-empty (or `None.` for `## Notes`).
 - The code-review gate returned a non-BLOCKER signal — no marker overrides this one.
-- Every `Closes #N` references an issue that is `CLOSED` and carries a `## Retrospective` comment.
+- Every `Closes #N` references an issue that is `CLOSED` and carries a retrospective comment (`## Retrospective`, or `## Sprint Retrospective` for a sprint).
 - `CHANGELOG.md`'s `[Unreleased]` block has an entry referencing this PR or its closed issues, or the PR carries `no-changelog`.
 - The QC gate returned non-BLOCKER, or `## Notes` carries `_no-prep-gate: <justification>_`.
 - The working tree is clean immediately before `gh pr create` — every gate except the changelog gate writes only to gitignored `.github/audit-reports/`; the changelog gate's one tracked-file commit (see `reference/gate-changelog.md`'s "Tracked-file exception") is covered by the push-state check re-run below, not by staying clean.

@@ -54,7 +54,7 @@ Two fill strategies. **Stub** — a minimal starter (heading + one sentence); th
 | `docs/ARCHITECTURE.md` | `architecture-overview` | Stub | Skill has nothing to refresh |
 | `docs/qc-modifications.md` + `tests/` | `run-repo-qc` | — | Use `create-repo-qc` to scaffold these instead — not this skill's job |
 | `.github/LABELS.md` | most issue-filing skills | Vendor | They fall back to the baseline in `_partials/label-vocabulary.md`, but the repo has no editable local copy to specialize |
-| `.github/ISSUE_TEMPLATE/*.md` (6 files) | `backlog`'s auto-file mode (`template` must match a filename here); `dor-preflight.md`'s per-template heading matrix checks bodies against these | Vendor | GitHub falls back to a blank issue form; auto-file mode has no template to validate `template` against |
+| `.github/ISSUE_TEMPLATE/*.md` (7 files) | `backlog`'s auto-file mode (`template` must match a filename here); `dor-preflight.md`'s per-template heading matrix checks bodies against these | Vendor | GitHub falls back to a blank issue form; auto-file mode has no template to validate `template` against |
 | `.github/PULL_REQUEST_TEMPLATE.md` | repo hygiene; no skill parses this | Vendor | GitHub falls back to a blank PR body |
 | `.github/CODE_OF_CONDUCT.md` | repo hygiene | Vendor | No stated community standard |
 | `.github/CONTRIBUTING.md` | repo hygiene | Vendor (with placeholder substitution) | No contribution guidance for outside contributors |

@@ -18,6 +18,8 @@ Standard agile format. Position: **after** the `**Parent epic:**` metadata line 
 
 All three components (`As a`, `I want`, `so that`) are required. Reject empty or placeholder values; prompt the user to refine if missing.
 
+**Article agreement.** Use `**As an**` when the role begins with a vowel sound (`**As an** AI agent,`); the gate accepts either `**As a**` or `**As an**`. The templates and the format block above show `**As a**` as the placeholder; switch it to `**As an**` when the role calls for it. Do not rewrite a role to dodge the article.
+
 ## Standard roles
 
 The role is rarely an end-user for repo / pipeline work. Pick from the canonical list (or supply free text if none fit):

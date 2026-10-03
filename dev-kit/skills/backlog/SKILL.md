@@ -82,7 +82,7 @@ This operation does **NOT** prompt for: codebase context, parent epic, worth-doi
 
 #### Capture-A. Prompt for the User story
 
-Use the format from `${CLAUDE_SKILL_DIR}/../_partials/user-story.md`. Reject empty or placeholder values for any of the three components (`As a` / `I want` / `so that`); reprompt. The mechanical-change escape hatch is acceptable.
+Use the format from `${CLAUDE_SKILL_DIR}/../_partials/user-story.md`. Reject empty or placeholder values for any of the three components (`As a` or `As an` / `I want` / `so that`); reprompt. The mechanical-change escape hatch is acceptable.
 
 Pick a role from the canonical list (`data consumer`, `dataset owner`, `repo maintainer`, `AI agent`, `pipeline operator`, `new contributor`) or supply free text.
 
@@ -651,6 +651,7 @@ General guidelines: auto-detect the repo (ask if detection fails); use `gh` for 
 | `tech_debt.md` | refactor, cleanup, scaling crack, internal quality |
 | `qc_finding.md` | explicit QC finding |
 | `documentation.md` | missing, unclear, or stale docs |
+| `spike.md` | a time-boxed question to answer before scope is known; produces an artifact, not code. The timebox is required (refuse to file without one); `discovery` owns the spike's later lifecycle (findings, closure, overrun audit) |
 
 3. If the request is thin, nudge toward Operation: Capture once:
 
@@ -663,6 +664,8 @@ General guidelines: auto-detect the repo (ask if detection fails); use `gh` for 
 1. Prompt for the canonical form from `${CLAUDE_SKILL_DIR}/../_partials/user-story.md`:
 
    > **As a** <role>, **I want** <capability>, **so that** <outcome>.
+
+   Use `**As an**` for a vowel-initial role (e.g. `AI agent`); the gate accepts both forms.
 
 2. Use a canonical role from the partial when possible (`data consumer`, `dataset owner`, `repo maintainer`, `AI agent`, `pipeline operator`, `new contributor`), or free text.
 3. All three parts are required unless the issue is a minor chore using the partial's `**Mechanical change**` escape hatch.

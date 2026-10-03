@@ -10,8 +10,8 @@ when_to_use: >
   Not for per-issue closes (`backlog-retrospective`), session-end / pause
   workflows, or cancelled-without-work epics that should carry a
   `wontfix` / `not-planned` close-reason label and a short rationale
-  comment instead of a full retro (carve-out mirrored from
-  `backlog-retrospective`).
+  comment instead of a full retro (see
+  `_partials/retro-close-conventions.md`).
 model: sonnet
 allowed-tools: Bash(gh *)
 # persona: product-owner   — grouping metadata only; not read by Claude Code.
@@ -47,7 +47,7 @@ This skill writes a retrospective comment on the epic, closes the issue, and inv
    - **If zero native sub-issues AND no checklist in body**: warn and confirm — this might be a genuinely scopeless / placeholder epic; continue only on explicit confirmation.
    - **Otherwise**: proceed with the native sub-issue list.
 4. **Sub-issue completion check**: for each native sub-issue, fetch state and labels.
-   - **Completed** = `state == "CLOSED"` AND no carve-out label (`duplicate` / `wontfix` / `not-planned` / `invalid`).
+   - **Completed** = `state == "CLOSED"` AND no carve-out label (see the carve-out label set in `${CLAUDE_SKILL_DIR}/../_partials/retro-close-conventions.md`).
    - **Descoped** = `state == "CLOSED"` AND carries a carve-out label.
    - **Open** = `state == "OPEN"`.
    - **If any sub-issues are Open**: halt with the list. The user must close (or descope) each one — typically via `backlog-retrospective` — before closing the epic. Do not bypass this; descoping requires the carve-out label, which is the auditable signal.
