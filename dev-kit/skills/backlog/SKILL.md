@@ -82,7 +82,7 @@ This operation does **NOT** prompt for: codebase context, parent epic, worth-doi
 
 #### Capture-A. Prompt for the User story
 
-Use the format from `${CLAUDE_SKILL_DIR}/../_partials/user-story.md`. Reject empty or placeholder values for any of the three components (`As a` / `I want` / `so that`); reprompt. The mechanical-change escape hatch is acceptable.
+Use the format from `${CLAUDE_SKILL_DIR}/../_partials/user-story.md`. Reject empty or placeholder values for any of the three components (`As a` or `As an` / `I want` / `so that`); reprompt. The mechanical-change escape hatch is acceptable.
 
 Pick a role from the canonical list (`data consumer`, `dataset owner`, `repo maintainer`, `AI agent`, `pipeline operator`, `new contributor`) or supply free text.
 
