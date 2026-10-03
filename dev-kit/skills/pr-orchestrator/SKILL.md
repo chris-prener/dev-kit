@@ -2,7 +2,7 @@
 name: pr-orchestrator
 description: >
   Opens or updates a GitHub PR with a consistent five-section body.
-  Runs three gates (code review, changelog, QC) from reference files it
+  Runs four gates (code review, changelog, QC, implementation plan) from reference files it
   reads and follows directly, and inline-closes each referenced issue
   with a retrospective and a plan-status transition. Owns mode dispatch,
   pre-flight, body composition, and `gh pr create` / `gh pr edit`.
@@ -18,7 +18,7 @@ allowed-tools: Bash(gh *), Bash(git *)
 
 # PR Orchestrator
 
-Opens or updates a GitHub PR. Validation runs through three gates — reference files under `reference/` this skill reads and follows directly, each returning the standard protocol shape (signal 0/1/2 — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); this skill halts on BLOCKER.
+Opens or updates a GitHub PR. Validation runs through four gates — reference files under `reference/` this skill reads and follows directly, each returning the standard protocol shape (signal 0/1/2 — see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)); this skill halts on BLOCKER.
 
 ## Activation
 
@@ -66,32 +66,36 @@ Read and follow [`reference/gate-changelog.md`](${CLAUDE_SKILL_DIR}/reference/ga
 
 Read and follow [`reference/gate-qc.md`](${CLAUDE_SKILL_DIR}/reference/gate-qc.md). Opt out with the `no-prep-gate` marker.
 
-None of the three gates are separately listed or `Skill`-tool-dispatchable skills — they're reference files this skill reads and follows inline, per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md).
+### 6. Gate 4 — Implementation plan
 
-For each gate in steps 3, 4, 5:
+Read and follow [`reference/gate-implementation-plan.md`](${CLAUDE_SKILL_DIR}/reference/gate-implementation-plan.md). Opt out with the `no-plan-gate` marker. Runs last so the cheaper local gates fail first; it blocks when a closing issue has no plan, or a plan still at `drafting`.
+
+None of the four gates are separately listed or `Skill`-tool-dispatchable skills — they're reference files this skill reads and follows inline, per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md).
+
+For each gate in steps 3, 4, 5, 6:
 1. Check the reference file exists → if missing, log `"⚠ Gate reference <path> not found; skipping."`, effective signal 0.
 2. Follow its steps with the gate protocol inputs.
-3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not proceed to remaining gates. Do not create/update the PR. Do not run step 7 (retro + plan close-out) — it has not run yet at any gate position, so the halt is satisfiable from all three.
+3. Read the signal: **0** (CLEAN) → proceed. **1** (FINDINGS) → display `chat_output`, proceed. **2** (BLOCKER) → display `chat_output`, halt. Do not proceed to remaining gates. Do not create/update the PR. Do not run step 8 (retro + plan close-out) — it has not run yet at any gate position, so the halt is satisfiable from all four.
 4. Collect any `body_amendments` for insertion into `## Notes`.
 
-**Steps 3–5 are skipped entirely** in `--update --body-only` mode.
+**Steps 3–6 are skipped entirely** in `--update --body-only` mode.
 
-### 6. Open or update the PR
+### 7. Open or update the PR
 
-- **Re-run the push-state check** ([`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)) immediately before either `gh` call below. Gates 3–5 may have produced local fix-up commits since pre-flight ran; push state can only be trusted at the point of use, not carried forward from Step 1.
+- **Re-run the push-state check** ([`reference.md`](${CLAUDE_SKILL_DIR}/reference.md)) immediately before either `gh` call below. Gates 3–6 may have produced local fix-up commits since pre-flight ran; push state can only be trusted at the point of use, not carried forward from Step 1.
 - **Create**: `gh pr create --base <base> --head <head> --title "<prefix>: <title>" --body-file <tmp>`
 - **Update**: `gh pr edit <#> --body-file <tmp>`
 
-### 7. Retro + plan close-out (inline, not a gate)
+### 8. Retro + plan close-out (inline, not a gate)
 
-Runs only after all three gates have passed (or been opted out) and the PR exists. For each issue in `issue_refs`:
+Runs only after all four gates have passed (or been opted out) and the PR exists. For each issue in `issue_refs`:
 
 1. **Post retrospective.** Invoke `backlog-retrospective` with the issue number. It no-ops if a retrospective comment (any heading in `_partials/retro-close-conventions.md`'s registry) already exists, and closes the issue as part of its flow. On error: halt with `"Retro failed for #<N>: <error>"`.
 2. **Transition the plan, if one exists.** Search the issue's comments for the `implementation-plan` locator. If found and not already `shipped`, invoke `implementation-plan` `Transition` with target `shipped` (allowed from `ready-for-pr` or `in-progress`). If no plan comment exists, skip silently — nothing to transition.
 
 This step runs for every issue regardless of gate markers; there's no opt-out, because closing the loop on an issue you're about to ship is not optional ceremony. It's skipped entirely in `--update --body-only` mode (see Step 0).
 
-### 8. Confirm + cleanup
+### 9. Confirm + cleanup
 
 Report the PR URL. Remove tempfiles.
 

@@ -1,10 +1,10 @@
 # PR Orchestrator — reference
 
-Contract and QA detail for `pr-orchestrator` and its three gates (`reference/gate-code-review.md`, `reference/gate-changelog.md`, `reference/gate-qc.md`) — reference files read and followed directly, not `Skill`-tool-dispatched skills (see [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)). `SKILL.md` holds the orchestrator's own procedure; this file holds the shared gate protocol, the PR-body marker grammar, the managed-fence contract, outputs, and success criteria.
+Contract and QA detail for `pr-orchestrator` and its four gates (`reference/gate-code-review.md`, `reference/gate-changelog.md`, `reference/gate-qc.md`, `reference/gate-implementation-plan.md`) — reference files read and followed directly, not `Skill`-tool-dispatched skills (see [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)). `SKILL.md` holds the orchestrator's own procedure; this file holds the shared gate protocol, the PR-body marker grammar, the managed-fence contract, outputs, and success criteria.
 
 ## Push-state check
 
-Invoked at two points — SKILL.md Step 1 (pre-flight) and again at the top of Step 6, immediately before `gh pr create` / `gh pr edit` — because gates 3–5 can produce local fix-up commits between the two, and a clean working tree does not imply the remote is current.
+Invoked at two points — SKILL.md Step 1 (pre-flight) and again at the top of Step 7, immediately before `gh pr create` / `gh pr edit` — because gates 3–6 can produce local fix-up commits between the two, and a clean working tree does not imply the remote is current.
 
 1. Resolve the upstream ref for the current branch (`git rev-parse --abbrev-ref --symbolic-full-name @{u}`).
 2. **No upstream** (first push): `git push -u origin <branch>`, then proceed. This is the ordinary create-mode case, not an error.
@@ -60,6 +60,7 @@ Every marker lives in the PR body's `## Notes` section.
 |---|---|---|
 | `_no-changelog: <justification>_` | `^_no-changelog:\s+(?P<j>.+?)_$` | opts out of the changelog gate |
 | `_no-prep-gate: <justification>_` | `^_no-prep-gate:\s+(?P<j>.+?)_$` | opts out of the QC gate |
+| `_no-plan-gate: <justification>_` | `^_no-plan-gate:\s+(?P<j>.+?)_$` | opts out of the implementation-plan gate |
 | `_created: <ISO-8601 UTC>_` | `^_created:\s+(?P<ts>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)_$` | machine-only; written once at create, never overwritten |
 | `_updated: <ISO-8601 UTC>_` | `^_updated:\s+(?P<ts>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)_$` | machine-only; rewritten on every update |
 
@@ -105,6 +106,7 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 - Every `Closes #N` references an issue that is `CLOSED` and carries a retrospective comment (`## Retrospective`, or `## Sprint Retrospective` for a sprint).
 - `CHANGELOG.md`'s `[Unreleased]` block has an entry referencing this PR or its closed issues, or the PR carries `no-changelog`.
 - The QC gate returned non-BLOCKER, or `## Notes` carries `_no-prep-gate: <justification>_`.
+- Every closing issue has an `## Implementation plan` at `in-progress` or later, or `## Notes` carries `_no-plan-gate: <justification>_`.
 - The working tree is clean immediately before `gh pr create` — every gate except the changelog gate writes only to gitignored `.github/audit-reports/`; the changelog gate's one tracked-file commit (see `reference/gate-changelog.md`'s "Tracked-file exception") is covered by the push-state check re-run below, not by staying clean.
 - Local `HEAD` matches `origin/<branch>` immediately before `gh pr create` / `gh pr edit` — the push-state check re-runs at that point, not just at pre-flight.
 - Re-running this skill on the same branch detects the open PR and dispatches to update mode rather than opening a duplicate.
@@ -121,8 +123,9 @@ Inside the fence, this skill is the owner. Outside it, the operator is the owner
 - `reference/gate-code-review.md` — gate 1.
 - `reference/gate-changelog.md` — gate 2.
 - `reference/gate-qc.md` — gate 3.
+- `reference/gate-implementation-plan.md` — gate 4.
 - `backlog-retrospective` — invoked inline per closing issue.
 - `implementation-plan` — `Transition` invoked inline when a plan comment exists.
 - `changelog` — drafts entries for the changelog gate.
-- [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md) — the decision demoting the three gates to reference files.
+- [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md) — the decision demoting the original three gates to reference files; the fourth follows the same pattern.
 - [ADR-0004](${CLAUDE_SKILL_DIR}/../_docs/ADR-0004-auto-filed-issue-protocol.md) — auto-file protocol used by the gates.
