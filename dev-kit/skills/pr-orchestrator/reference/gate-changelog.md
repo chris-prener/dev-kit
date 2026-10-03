@@ -36,7 +36,7 @@ If no qualifying entry found:
 - If approved: the entry is committed to the local branch — this is the tracked-file exception described below — and the gate passes.
 - If rejected: return `{ signal: 2, chat_output: "Changelog gate: operator rejected draft entry. Halting." }`
 
-**Tracked-file exception.** Every other gate in this suite writes only to gitignored `.github/audit-reports/`. This gate is the one exception: an approved draft is committed to `CHANGELOG.md`, a tracked file, and that commit can land after `pr-orchestrator`'s pre-flight push-state check already ran. This is why the push-state check re-runs immediately before `gh pr create` / `gh pr edit` (`pr-orchestrator/SKILL.md` Step 6) — it catches and pushes this commit before the PR opens, rather than relying on a claim that no gate dirties the tree.
+**Tracked-file exception.** Every other gate in this suite writes only to gitignored `.github/audit-reports/`. This gate is the one exception: an approved draft is committed to `CHANGELOG.md`, a tracked file, and that commit can land after `pr-orchestrator`'s pre-flight push-state check already ran. This is why the push-state check re-runs immediately before `gh pr create` / `gh pr edit` (`pr-orchestrator/SKILL.md` Step 7) — it catches and pushes this commit before the PR opens, rather than relying on a claim that no gate dirties the tree.
 
 ### 5. Return result
 

@@ -1,6 +1,6 @@
 # Gate: Pre-PR QC
 
-Read and followed directly by `pr-orchestrator` at its QC-gate step (final position). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
+Read and followed directly by `pr-orchestrator` at its QC-gate step (third position). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
 
 ## Inputs
 
@@ -34,7 +34,8 @@ Invoke `documentation-audit-changes` with `--mode=gate` and the changed-files li
 
 Read `CLAUDE.md`'s "Pre-PR QC checklist" subsection, if present.
 - If missing: skip silently.
-- Execute whatever repo-specific checks it names.
+- Execute each check it names, using the gate protocol inputs (`issue_refs`, `diff_context`) and `git log <base>..HEAD` where a check calls for them. A check whose precondition isn't met (e.g. a multi-issue check on a single-issue PR) is skipped, not failed.
+- A failed check is a FINDING (signal 1) unless the checklist marks it **BLOCKER** (signal 2). Name the failing check and the offending issue or commit in `chat_output`.
 
 ### 6. Sub-step d — Skill cross-reference consistency (conditional)
 
