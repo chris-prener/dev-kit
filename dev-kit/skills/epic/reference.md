@@ -12,7 +12,7 @@ Contract and QA detail for the `epic` skill. `SKILL.md` holds the procedure; thi
 ## Success criteria
 
 - The epic issue exists with `epic` + at least one Priority label, a `[Epic <id>] <theme>` title, and a non-empty `**Owner:**` line.
-- The body contains all required sections (Owner / Goal / Why now / Success signals / Decisions / Sub-issues / Related work / Out of scope), with `_TBD_` placeholders for forward-referenced fields.
+- A newly filed epic's body contains all required sections (Owner / Goal / Why now / Success signals / Decisions / Sub-issues / Related work / Out of scope), with `_TBD_` placeholders for forward-referenced fields.
 - The roadmap has exactly one entry for this issue (validated by the `roadmap` skill's Phase 0).
 - Re-running the skill in resume mode on the same issue is a no-op for filing and idempotent for roadmap registration.
 - The chosen epic ID does not collide with any existing epic.
@@ -22,6 +22,7 @@ Contract and QA detail for the `epic` skill. `SKILL.md` holds the procedure; thi
 The skill is restartable, not transactional:
 
 - **Resume from an existing epic issue**: pass the issue number; the skill skips filing and reconciles the roadmap.
+- **Owner backfill**: on resume, an open epic with a missing, empty, or placeholder `Owner` gets a one-time `**Owner:**` insert under the title and nothing else changes. A no-op once the line holds a real value; closed epics are never touched. Backfilled epics keep their original sections, so the section-list criterion above applies to newly filed epics only.
 - **Partial-failure recovery**: if Phase 3 (file issue) succeeds but Phase 4 (roadmap registration) fails, the user can re-run with the just-created issue number to complete only Phase 4.
 - **Duplicate detection** runs every time, so a re-run after a filing failure surfaces the partially-created issue rather than producing a duplicate.
 

@@ -7,7 +7,8 @@ description: >
 when_to_use: >
   Use to stand up a durable, owned area of work (a product area,
   subsystem, or workstream) as an epic, or to resume filing one that was
-  interrupted (issue exists but roadmap entry is missing). Not for a
+  interrupted (issue exists but roadmap entry is missing), or to backfill
+  `Owner` on an open epic filed before that field existed. Not for a
   bounded increment of work, however large — file that via `backlog`.
 model: opus
 allowed-tools: Bash(gh *)
@@ -16,7 +17,7 @@ allowed-tools: Bash(gh *)
 
 # Epic Creator
 
-You are about to file (or finish filing) a GitHub epic — a parent issue that anchors a durable, owned area of work and gathers its sub-issues. An epic is an area someone is accountable for; it outlives any single increment of work. Epics are how the roadmap's Areas are curated and how ownership survives session loss.
+You are about to file (or finish filing) a GitHub epic — a parent issue that anchors a durable, owned area of work and gathers its sub-issues. An epic is an area someone is accountable for; it outlives any single increment of work. Epics are how the roadmap's epic entries are curated and how ownership survives session loss.
 
 This skill produces:
 
@@ -42,7 +43,7 @@ It does NOT link sub-issues. Sub-issue linking happens at sub-issue *creation* t
 An epic is a **durable ownership boundary**: a product area, subsystem, or workstream that will outlive any single increment of work. File one when **all** of the following hold:
 
 - **It has a nameable owner** — a person or role who is accountable for the area's health, not just for one delivery.
-- **It has no completion state** — you can describe what the area keeps true, but there is no "done"; new work keeps arriving under it.
+- **It has no completion state** — you can describe what the area keeps true, but there is no "done"; new work keeps arriving under it. (`epic-retrospective` still closes epics until Epic A's R4 re-scopes it; closing an area is a deliberate retirement, not a completion.)
 - **It will outlive any one increment** — several unrelated pieces of work could plausibly land under it over time.
 
 Size is not a signal. A large, bounded body of work (many PRs, many sub-issues) is a sprint or a chain of issues under an existing area, not an epic. If an existing epic already owns the area, file under it via `backlog` instead.
@@ -66,7 +67,7 @@ Conflicts: the gates do not collide because they operate on independent dimensio
 2. **Resume mode** — if the user supplied an existing epic issue number `N`:
    - `gh issue view <N> --json number,title,state,labels,body,milestone,url`.
    - Verify it has the `epic` label and the title matches `[Epic <id>] <theme>`. Halt with a clear error if not.
-   - **Owner backfill (epics filed before the `Owner` field existed).** If the body has no `**Owner:**` line and the epic is **open**, prompt for an owner and insert `**Owner:** <owner>` directly under the title via `gh issue edit <N> --body-file`. Change nothing else in the body — an older epic keeps its original sections (including any `Acceptance criteria (epic-level)`) untouched. **Closed epics are left as-is**: no `Owner` is added and nothing is rewritten, so their history stays exactly as filed.
+   - **Owner backfill (epics filed before the `Owner` field existed).** If the body has no `**Owner:**` line, or its value is empty or still the template placeholder `<named person or role>`, and the epic is **open**, prompt for an owner and insert `**Owner:** <owner>` directly under the title via `gh issue edit <N> --body-file`. Change nothing else in the body — an older epic keeps its original sections (including any `Acceptance criteria (epic-level)`) untouched. **Closed epics are left as-is**: no `Owner` is added and nothing is rewritten, so their history stays exactly as filed. If `${CLAUDE_PROJECT_DIR}/docs/ROADMAP.md` already has an entry for `#N`, stop after the backfill: Phase 4 is already satisfied.
    - Skip Phases 1–3 and jump to Phase 4 (roadmap registration).
 3. **Duplicate epic detection** — search existing epics for likely duplicates:
    - `gh issue list --label epic --state all --limit 100 --json number,title,state`.
