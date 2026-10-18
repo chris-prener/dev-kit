@@ -8,11 +8,11 @@ _None yet._
 
 ### Next
 
-_None yet._
+- [Epic A: Epic vs. Sprint: separate durable ownership areas from time-boxed execution](https://github.com/chris-prener/dev-kit/issues/13) — Redefine epic as an owned area, introduce sprint as the time-boxed unit. (milestone: —)
 
 ### Later
 
-- [Epic A: Epic vs. Sprint: separate durable ownership areas from time-boxed execution](https://github.com/chris-prener/dev-kit/issues/13) — Redefine epic as an owned area, introduce sprint as the time-boxed unit. (milestone: —)
+_None yet._
 
 ### Recently Shipped
 
