@@ -16,7 +16,7 @@ _None yet._
 
 ### Recently Shipped
 
-- [Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) — Keep dev-kit's shipped guidance free of known defects; drained the audit baseline across eight sprints, closed 2026-10-17. (milestone: —)
+- [Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) — Keep dev-kit's shipped guidance free of known defects; drained the audit baseline across nine sprints (1–8 and 1.5), closed 2026-10-17. (milestone: —)
 
 ## Where we are
 
