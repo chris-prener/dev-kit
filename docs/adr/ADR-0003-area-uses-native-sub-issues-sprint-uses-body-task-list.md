@@ -27,7 +27,9 @@ We will:
 
 1. **Area (epic) linkage uses GitHub native sub-issues; sprint membership is a task list in the sprint issue's body.** The one-parent constraint is a hard platform limit, so the dimension that is durable and single-valued (an issue belongs to exactly one area) takes the native parent slot, and the dimension that is transient and multi-valued over time (an issue moves between sprints) takes the mechanism that is cheap to edit.
 2. **The DoR gate checks sprint linkage by lookup, not by a pointer on the member issue.** The gate lists open issues labelled `sprint` and scans their `## Membership` task lists for `#N`. An issue is *linked* if found, and *explicitly standalone* only if its body carries a `**Sprint:** none` line. Anything else is a gate failure, with no silent default. The only sprint text that ever lives on a member issue is the standalone declaration, so there is no second copy of membership to drift. Moving an issue between sprints edits task lists only.
-3. **Area-level "blocked by" uses the existing `## Dependencies` block in the epic body**, in the format `epic-dependency` already parses (`- Blocked by #NN — reason`), without the graph and cycle-detection machinery. It is body text, so it is git-renderable and diffable, and it is not a parent/child relationship, so the one-parent limit does not apply.
+
+    **Creation-time ordering.** DoR pre-flight runs before `gh issue create`, when the issue has no number and no sprint list can contain it. So at creation the gate takes the *intended* sprint as an input, the way epic linkage takes the intended parent: the author names a sprint or declares `**Sprint:** none`, and `backlog` appends `- [ ] #N` to that sprint's `## Membership` after the issue is created. The lookup applies to issues that already exist (groom, triage, auto-file). `**Sprint:** none` is removed when the issue is added to a sprint, and the `sprint` skill's add operation owns that removal, so a stale declaration cannot outlive a membership.
+3. **Area-level "blocked by" uses the existing `## Dependencies` block in the epic body**, in the format `epic-dependency` already parses (`- Blocked by #NN — reason`), without the graph and cycle-detection machinery. It is body text, so it is git-renderable and diffable, and it is not a parent/child relationship, so the one-parent limit does not apply. R5 moves the graph to the sprint unit, so the same block means a graph edge on a `sprint` issue and a plain strategic note on an `epic` issue; `epic-dependency` distinguishes them by the issue's label. The parser change belongs to #100.
 
 ### Alternatives considered
 
@@ -36,7 +38,7 @@ For sprint membership:
 - **Body task list (chosen).** Edit-in-place, renders progress as checkboxes, diffable via the roadmap rendering, and needs no new object. Cost: membership is one-directional, so the member issue cannot show its sprint without a lookup.
 - **Per-sprint label (`sprint/N`).** Rejected: gives the member issue a pointer, but adds one label per sprint to a vocabulary that `LABELS.md` and `_partials/label-vocabulary.md` must keep identical, and labels have no body for goal, timebox, or sequencing.
 - **GitHub Milestone.** Rejected: already claimed for release versioning (`vX.Y.Z`) per ADR-0001, and an issue holds one milestone, so overloading it would collide with release attachment.
-- **Native sub-issues for sprint, task list for area.** Rejected: areas are the long-lived grouping whose membership is browsed in the GitHub UI and counted by the roadmap's Areas listing, so they get the first-class mechanism.
+- **Native sub-issues for sprint, task list for area.** Rejected: areas are the long-lived grouping whose membership is browsed in the GitHub UI and counted by the roadmap's epic entries (and its planned Areas listing, R6), so they get the first-class mechanism.
 
 For the DoR sprint check:
 
@@ -53,7 +55,7 @@ For area-level blocking:
 
 - **Easier:** No unbuildable design reaches the `sprint` skill; the 422 is accounted for before build. Area-level blocking needs no new format. Epic B and the pilot sprints already conform, so no migration.
 - **Harder:** The DoR gate's sprint check costs a search over open sprints per issue instead of a field read. The `sprint` skill must keep `## Membership` parseable and must be the only writer that moves issues between sprints.
-- **Constraints:** One parent per issue is a platform fact. Any future mechanism needing a second parent-style link must use a non-parent relationship. `epic-dependency`'s re-scope (#100) builds on decision 3 and #97's DoR work on decision 2; neither needs another ADR.
+- **Constraints:** The DoR lookup keys on the `sprint` label, which exists live (#49, #50) but is not yet in the label baseline (`LABELS.md` and `_partials/label-vocabulary.md`); consuming repos need it before the check works (R8). One parent per issue is a platform fact. Any future mechanism needing a second parent-style link must use a non-parent relationship. `epic-dependency`'s re-scope (#100) builds on decision 3 and #97's DoR work on decision 2; neither needs another ADR.
 - **Revisit when:** GitHub lifts the one-parent limit, or the lookup cost in the DoR gate becomes noticeable with many concurrent open sprints.
 
 ## References
