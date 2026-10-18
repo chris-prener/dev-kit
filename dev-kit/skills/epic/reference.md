@@ -11,8 +11,8 @@ Contract and QA detail for the `epic` skill. `SKILL.md` holds the procedure; thi
 
 ## Success criteria
 
-- The epic issue exists with `epic` + at least one Priority label and a `[Epic <id>] <theme>` title.
-- The body contains all required sections (Goal / Why now / AC / Decisions / Sub-issues / Related work / Out of scope), with `_TBD_` placeholders for forward-referenced fields.
+- The epic issue exists with `epic` + at least one Priority label, a `[Epic <id>] <theme>` title, and a non-empty `**Owner:**` line.
+- The body contains all required sections (Owner / Goal / Why now / Success signals / Decisions / Sub-issues / Related work / Out of scope), with `_TBD_` placeholders for forward-referenced fields.
 - The roadmap has exactly one entry for this issue (validated by the `roadmap` skill's Phase 0).
 - Re-running the skill in resume mode on the same issue is a no-op for filing and idempotent for roadmap registration.
 - The chosen epic ID does not collide with any existing epic.

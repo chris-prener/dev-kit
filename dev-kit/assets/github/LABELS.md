@@ -16,7 +16,7 @@ This is the unmodified cross-repo canonical baseline, vendored from [dev-kit](ht
 | `enhancement` | `#a2eeef` | New feature or request |
 | `documentation` | `#0075ca` | Improvements or additions to documentation |
 | `tech-debt` | `#fbca04` | Refactoring, cleanup, robustness, scaling, or other internal-quality work |
-| `epic` | `#5319E7` | Parent issue for a thematic body of work; sub-issues linked |
+| `epic` | `#5319E7` | Durable, owned area of work; sub-issues linked |
 | `audit-finding` | `#B60205` | Issue identified during an audit |
 | `qc` | `#D93F0B` | QC finding from automated or independent audit |
 | `spike` | `#C5DEF5` | Time-boxed discovery spike; produces artifacts, not production code |

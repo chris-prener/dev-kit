@@ -5,10 +5,10 @@ description: >
   label, and a Priority label, and registers it in the roadmap. Restartable;
   runs requirements / ADR / objective lifecycle gates before filing.
 when_to_use: >
-  Use to scope a new thematic body of work into an epic, or to resume
-  filing one that was interrupted (issue exists but roadmap entry is
-  missing). Not for small, single-PR work — file that via `backlog`
-  instead.
+  Use to stand up a durable, owned area of work (a product area,
+  subsystem, or workstream) as an epic, or to resume filing one that was
+  interrupted (issue exists but roadmap entry is missing). Not for a
+  bounded increment of work, however large — file that via `backlog`.
 model: opus
 allowed-tools: Bash(gh *)
 # persona: product-owner   — grouping metadata only; not read by Claude Code.
@@ -16,7 +16,7 @@ allowed-tools: Bash(gh *)
 
 # Epic Creator
 
-You are about to file (or finish filing) a GitHub epic — a parent issue that anchors a thematic body of work and gathers sub-issues. Epics are how the roadmap is curated and how multi-PR work survives session loss.
+You are about to file (or finish filing) a GitHub epic — a parent issue that anchors a durable, owned area of work and gathers its sub-issues. An epic is an area someone is accountable for; it outlives any single increment of work. Epics are how the roadmap's Areas are curated and how ownership survives session loss.
 
 This skill produces:
 
@@ -29,6 +29,7 @@ It does NOT link sub-issues. Sub-issue linking happens at sub-issue *creation* t
 ## Inputs
 
 - **Required**: theme / one-paragraph goal of the epic.
+- **Required**: `Owner` — a named person or role accountable for the area. Filing halts without one.
 - **Required**: at least one Priority label (`priority/blocker` / `priority/high` / `priority/medium`) per `${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md`.
 - **Required for resume**: existing epic issue number `N`. Skill reads everything else from the issue.
 - **Optional**: epic ID (auto-suggest if existing IDs are clean monotonic single letters; otherwise prompt).
@@ -38,14 +39,13 @@ It does NOT link sub-issues. Sub-issue linking happens at sub-issue *creation* t
 
 ## When does work warrant an epic?
 
-File an epic when **at least two** of the following hold:
+An epic is a **durable ownership boundary**: a product area, subsystem, or workstream that will outlive any single increment of work. File one when **all** of the following hold:
 
-- Work spans **multiple PRs** by design (not just because one got too big).
-- Work involves **architectural decisions** that should be ratified across the team.
-- Work has a **non-trivial sub-issue tree** (≥ 4 sub-issues) where the relationship matters more than the individual issues.
-- Work has a **distinct outcome / KR** that's worth tracking on the roadmap as a unit.
+- **It has a nameable owner** — a person or role who is accountable for the area's health, not just for one delivery.
+- **It has no completion state** — you can describe what the area keeps true, but there is no "done"; new work keeps arriving under it.
+- **It will outlive any one increment** — several unrelated pieces of work could plausibly land under it over time.
 
-If only one holds, prefer a regular issue (or a small chain) via `backlog`.
+Size is not a signal. A large, bounded body of work (many PRs, many sub-issues) is a sprint or a chain of issues under an existing area, not an epic. If an existing epic already owns the area, file under it via `backlog` instead.
 
 ## Gate precedence
 
@@ -66,6 +66,7 @@ Conflicts: the gates do not collide because they operate on independent dimensio
 2. **Resume mode** — if the user supplied an existing epic issue number `N`:
    - `gh issue view <N> --json number,title,state,labels,body,milestone,url`.
    - Verify it has the `epic` label and the title matches `[Epic <id>] <theme>`. Halt with a clear error if not.
+   - **Owner backfill (epics filed before the `Owner` field existed).** If the body has no `**Owner:**` line and the epic is **open**, prompt for an owner and insert `**Owner:** <owner>` directly under the title via `gh issue edit <N> --body-file`. Change nothing else in the body — an older epic keeps its original sections (including any `Acceptance criteria (epic-level)`) untouched. **Closed epics are left as-is**: no `Owner` is added and nothing is rewritten, so their history stays exactly as filed.
    - Skip Phases 1–3 and jump to Phase 4 (roadmap registration).
 3. **Duplicate epic detection** — search existing epics for likely duplicates:
    - `gh issue list --label epic --state all --limit 100 --json number,title,state`.
@@ -115,21 +116,26 @@ Use exactly this template. All sections required:
 ```markdown
 # [Epic <id>] <theme>
 
+**Owner:** <named person or role>
+
 ## Goal
 
-One paragraph. What outcome does this epic produce? Past-tense user-visible
-description of the world after the epic closes.
+One paragraph. What does this area keep true? Present-tense description of
+the standing outcome the owner is accountable for (the area has no end state).
 
 ## Why now?
 
 2–4 sentences. What's the cost of not doing this; what's the trigger;
 what does this unblock.
 
-## Acceptance criteria (epic-level)
+## Success signals
 
-- [ ] Bullet 1 — measurable, falsifiable.
-- [ ] Bullet 2 — ...
-- [ ] ...
+Observable signs the area is healthy. These are standing signals, not a
+completion checklist — plain bullets, no checkboxes, because the area never
+"finishes".
+
+- Signal 1 — observable and falsifiable.
+- Signal 2 — ...
 
 ## Decisions and constraints
 
@@ -162,7 +168,7 @@ _None._ <!-- or: - Blocked by #NN — one-line reason -->
 - Bullet 2 — ...
 ```
 
-The skill prompts the user to fill each section interactively (or accept a pre-supplied draft). Empty AC / Goal / Why-now sections halt filing.
+The skill prompts the user to fill each section interactively (or accept a pre-supplied draft). A missing `Owner`, or an empty Goal / Why-now / Success signals section, halts filing.
 
 ### Phase 3: File the issue
 
