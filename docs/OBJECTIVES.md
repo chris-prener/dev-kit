@@ -5,7 +5,7 @@
 ### O1 — dev-kit's shipped guidance is trustworthy
 
 - **Filed:** 2026-08-01
-- **Linked epic(s):** [#16 — Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) (area; execution sequenced by sprints [#49–#54](https://github.com/chris-prener/dev-kit/issues/49), plus [#63](https://github.com/chris-prener/dev-kit/issues/63) and [#67](https://github.com/chris-prener/dev-kit/issues/67))
+- **Linked epic(s):** [#16 — Epic B: Audit remediation](https://github.com/chris-prener/dev-kit/issues/16) (area; execution sequenced by sprints [#49–#54](https://github.com/chris-prener/dev-kit/issues/49), plus [#63](https://github.com/chris-prener/dev-kit/issues/63), [#67](https://github.com/chris-prener/dev-kit/issues/67) and [#86](https://github.com/chris-prener/dev-kit/issues/86))
 - **Last check-in:** 2026-10-17
 
 **Why this matters**
