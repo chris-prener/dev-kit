@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: accepted (Constraints bullet on native sub-issues superseded by ADR-0003)
 date: 2026-07-30
 source: "[Epic A (#13)](https://github.com/chris-prener/dev-kit/issues/13), docs/requirements/epic-sprint-model.md (R1-R8)"
 ---

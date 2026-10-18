@@ -245,7 +245,7 @@ For each issue:
    - **Problem statement / Proposal / Acceptance criteria** → prompt the user; insert into the corresponding section. Replace the `TODO — fill during grooming.` placeholder with the real content.
    - **Codebase context** → prompt; offer to run an explore-style scan. Insert into the `## Codebase Context` section.
    - **Worth-doing judged** → ask the now/later/no question from Operation: Create's Step D. On **no**, exit this item into the close-as-`not-planned` path below instead of promoting it. The user may explicitly skip with a reason — record `skipped — <reason>` in the checklist instead.
-   - **Type label refined** → prompt for one of `bug` / `enhancement` / `documentation` / `tech-debt` / `audit-finding` / `qc` per `${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md`. Default stays `enhancement` if no clear alternative. **The `epic` Type is intentionally excluded here** — if the issue is epic-shaped, exit groom-inbox for this item and route via `propose-epic-promotion` (Groom-F), which hands off to `epic` (the only legitimate path through its own requirements / ADR / objective gates).
+   - **Type label refined** → prompt for one of `bug` / `enhancement` / `documentation` / `tech-debt` / `audit-finding` / `qc` per `${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md`. Default stays `enhancement` if no clear alternative. **The `epic` Type is intentionally excluded here** — if the issue describes a durable owned area, exit groom-inbox for this item and route via `propose-epic-promotion` (Groom-F), which hands off to `epic` (the only legitimate path through its own requirements / ADR / objective gates).
    - **Priority label** → prompt for `priority/blocker` / `priority/high` / `priority/medium` or skip for a low-stakes / speculative item.
 
 3. **Run DoR pre-flight.** Once all items are ticked (or explicitly skipped), invoke `${CLAUDE_SKILL_DIR}/../_partials/dor-preflight.md` in interactive mode. WARNING-level misses surface a proceed prompt.
@@ -328,7 +328,7 @@ For each orphan:
 
 #### Groom-F. propose-epic-promotion — hand-off only
 
-Same propose-only contract as Operation: Triage's Triage-D. Never sets the `epic` label directly; never creates a new epic. Recommends invoking `epic`.
+Same propose-only contract and the same ownership-shaped signals as Operation: Triage's Triage-D (not size or sub-task count). Never sets the `epic` label directly; never creates a new epic. Recommends invoking `epic`.
 
 #### Groom-G. propose-epic-demotion — guarded hand-off
 
@@ -517,13 +517,13 @@ This audit trail is what makes triage decisions auditable from the issue thread.
 
 #### Triage-D. propose-promote-to-epic — propose only
 
-When the assessment suggests the issue is large enough to be a parent for sub-issues, **never** directly mutate the issue into an epic. Instead, present the case:
+When the assessment suggests the issue describes a durable, owned area rather than a bounded piece of work, **never** directly mutate the issue into an epic. The signals are ownership-shaped, per `epic`'s "When does work warrant an epic?": a nameable owner, no completion state, and work that will outlive any one increment. Size is not a signal — many files, many sub-tasks, or many PRs describe a large issue or a sprint, not an area. Instead, present the case:
 
 ```
-Issue #<N> looks epic-shaped:
-  - <reason 1: e.g. "scope spans 4+ files / multiple skills">
-  - <reason 2: e.g. "explicitly enumerates 3 sub-tasks">
-  - <reason 3>
+Issue #<N> looks like a durable area:
+  - <reason 1: e.g. "names a standing subsystem with no end state">
+  - <reason 2: e.g. "needs an accountable owner beyond this one issue">
+  - <reason 3: e.g. "unrelated pieces of work keep arriving under this theme">
 
 Proposed promotion: invoke `epic` to file a new epic with #<N>'s scope,
   then make #<N> a sub-issue of the new epic (or close #<N> if the new
