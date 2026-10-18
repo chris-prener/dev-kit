@@ -61,6 +61,7 @@ This document scopes **what** needs to be true of the resulting model — not ho
 **Source(s):** S2
 
 **Acceptance criteria:**
+- [ ] Area linkage uses GitHub native sub-issues and sprint membership uses a task list in the sprint issue body, because an issue may have only one parent ([ADR-0003](../adr/ADR-0003-area-uses-native-sub-issues-sprint-uses-body-task-list.md)).
 - [ ] The DoR gate validates epic-linkage and sprint-linkage as two independent checks; each is either linked or explicitly standalone, with no silent default (mirroring today's epic-linkage rigor).
 - [ ] `backlog`, `triage`, `quick-capture`, and `backlog-grooming` — today's four consumers of the epic-linkage partial — all reflect the two-dimension model consistently rather than three of four getting updated and one drifting.
 - [ ] An issue can change its sprint linkage over time (move between sprints) without needing to change its epic/area linkage, and vice versa.
@@ -83,7 +84,7 @@ This document scopes **what** needs to be true of the resulting model — not ho
 
 **Acceptance criteria:**
 - [ ] Blocking-relationship tracking (the `## Dependencies` block and its rendered graph) is re-scoped to the time-boxed/initiative unit, not the area, for the common finishable-work-blocks-finishable-work case.
-- [ ] A lightweight area-level "blocked by" relationship remains available for strategic, cross-area dependencies that outlive a single sprint (exact mechanism is an implementation decision for the follow-up ADR — it does not need the full graph/cycle-detection machinery `epic-dependency` provides today).
+- [ ] A lightweight area-level "blocked by" relationship remains available for strategic, cross-area dependencies that outlive a single sprint (mechanism decided in [ADR-0003](../adr/ADR-0003-area-uses-native-sub-issues-sprint-uses-body-task-list.md): the epic body's `## Dependencies` block, since the one-parent limit rules out native sub-issues — it does not need the full graph/cycle-detection machinery `epic-dependency` provides today).
 - [ ] Existing epic-to-epic dependency data has a defined migration path (re-attach to the corresponding sprint, retain as an area-level strategic dependency, or explicitly drop if no longer meaningful) rather than silently breaking.
 
 ### R6 — Roadmap's horizon model is reconciled with the area/timebox split
