@@ -4,11 +4,11 @@
 
 ### Now
 
-_None yet._
+- [Epic A: Epic vs. Sprint: separate durable ownership areas from time-boxed execution](https://github.com/chris-prener/dev-kit/issues/13) — Redefine epic as an owned area, introduce sprint as the time-boxed unit. (milestone: —)
 
 ### Next
 
-- [Epic A: Epic vs. Sprint: separate durable ownership areas from time-boxed execution](https://github.com/chris-prener/dev-kit/issues/13) — Redefine epic as an owned area, introduce sprint as the time-boxed unit. (milestone: —)
+_None yet._
 
 ### Later
 
@@ -20,4 +20,11 @@ _None yet._
 
 ## Where we are
 
-_To be filled in as epics are added._
+**[Sprint 9](https://github.com/chris-prener/dev-kit/issues/105)** (Epic A's first sprint) — build the sprint substrate. Epic A's first slice (#95, the epic-as-area definition and ADR-0003) shipped in PR #104.
+
+- #89 — sprint status vocabulary partial and `sprint` label in the baseline (first; #93 and #94 depend on it)
+- #93 — `sprint` filer skill and canonical sprint body template
+- #94 — `sprint-retrospective` closer skill
+- #103 — hooks that enforce the implementation-plan step at issue pickup and at commit
+
+After Sprint 9: #97, #96, #98, #99, #100.
