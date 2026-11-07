@@ -20,7 +20,7 @@ _None yet._
 
 ## Where we are
 
-**Epic A, Sprint 1** — build the sprint substrate. Epic A's first slice (#95, the epic-as-area definition and ADR-0003) shipped in PR #104.
+**[Sprint 9](https://github.com/chris-prener/dev-kit/issues/105)** (Epic A's first sprint) — build the sprint substrate. Epic A's first slice (#95, the epic-as-area definition and ADR-0003) shipped in PR #104.
 
 - #89 — sprint status vocabulary partial and `sprint` label in the baseline (first; #93 and #94 depend on it)
 - #93 — `sprint` filer skill and canonical sprint body template
