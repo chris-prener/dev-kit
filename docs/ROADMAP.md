@@ -27,4 +27,4 @@ _None yet._
 - #94 — `sprint-retrospective` closer skill
 - #103 — hooks that enforce the implementation-plan step at issue pickup and at commit
 
-After Sprint 1: #97, #96, #98, #99, #100.
+After Sprint 9: #97, #96, #98, #99, #100.
