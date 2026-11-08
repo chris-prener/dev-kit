@@ -19,6 +19,7 @@
 | `documentation` | `#0075ca` | Improvements or additions to documentation |
 | `tech-debt` | `#fbca04` | Refactoring, cleanup, robustness, scaling, or other internal-quality work |
 | `epic` | `#5319E7` | Durable, owned area of work; sub-issues linked |
+| `sprint` | `#1D76DB` | Time-boxed unit of execution under an area epic; issue-backed, membership as a body task list. Status vocabulary: `_partials/sprint-status.md` |
 | `audit-finding` | `#B60205` | Issue identified during an audit |
 | `qc` | `#D93F0B` | QC finding from automated or independent audit |
 | `spike` | `#C5DEF5` | Time-boxed discovery spike; produces artifacts, not production code |
