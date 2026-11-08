@@ -24,10 +24,13 @@ SEP = r"(?:^|&&|\|\||[;|({!`]|\b(?:then|do|else)\b)"
 ASSIGN = r"(?:[A-Za-z_]\w*=\S*\s+)*"
 # Prefixes that run the next word as a command: env/sudo/time/..., VAR=val, xargs and its flags.
 PRE = (
-    r"(?:(?:env|sudo|time|nohup|exec|command|builtin)(?:\s+-\S+)*\s+"
+    r"(?:(?:env|sudo|exec)(?:\s+-[ugCrtphSUaT]\s+[^-\s]\S*|\s+-\S+)*\s+"
+    r"|(?:time|nohup|command|builtin)(?:\s+-\S+)*\s+"
+    r"|timeout(?:\s+-\S+)*\s+\d\S*\s+"
+    r"|nice(?:\s+-n\s+[^-\s]\S*|\s+-\S+)*\s+"
     r"|[A-Za-z_]\w*=\S*\s+"
-    r"|xargs(?:\s+-[ILnPdsEaJ]\s+\S+|\s+-\S+)*\s+)*"
-)
+    r"|xargs(?:\s+-[ILnPdsEaJ]\s+[^-\s]\S*|\s+-\S+)*\s+)*"
+)  # value alternatives start with a non-dash so each token matches one way: no backtracking blowup
 HEREDOC = re.compile(r"(?<!<)<<(?!<)-?\s*(['\"]?)(\w+)\1")
 _ARITH = re.compile(r"\$\(\(.*?\)\)")
 _QUOTED = re.compile(r"'[^']*'|\"(?:\\.|[^\"\\])*\"")

@@ -204,6 +204,13 @@ check "hook: unquoted backticks deny"         "$(guard 'echo `gh pr create`')"  
 check "hook: quoted subcommand denies"        "$(guard 'gh "pr" create')"                'deny'
 check "hook: comment-only mention passes"     "$(guard '# remember to gh pr create')"    ''
 check "hook: deep nesting does not crash"     "$(guard "$(python3 -c 'print("\"$(" * 3000 + "x" + ")\"" * 3000)')" | grep -c Traceback)" '0'
+check "hook: sudo -u root denies"             "$(guard 'sudo -u root gh pr create')"     'deny'
+check "hook: env -u VAR denies"               "$(guard 'env -u FOO gh pr create')"       'deny'
+check "hook: timeout N denies"                "$(guard 'timeout 5 gh pr create')"        'deny'
+check "hook: nice denies"                     "$(guard 'nice -n 5 gh pr create')"        'deny'
+check "hook: xargs flag chain is fast"        "$(python3 -I -c '
+import sys,time; sys.path.insert(0,"'"$ROOT"'/.claude/hooks"); import _cmd
+t=time.time(); _cmd.invokes("xargs "+"-n "*60+"x","gh"); print("fast" if time.time()-t<2 else "SLOW")')" 'fast'
 check "hook: non-Bash tool ignored"          "$(printf '{"tool_name":"Edit","tool_input":{}}' | python3 "$GUARD")" ''
 all
 check "hook: create with receipts passes"    "$(guard 'gh pr create --title x')"        ''
