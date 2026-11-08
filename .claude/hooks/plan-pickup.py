@@ -16,6 +16,7 @@ MAX_REFS = 5
 
 
 def main():
+    """Nudge when a pickup prompt names issues without a started plan; never blocks."""
     ev = _plan.read_event()
     prompt = ev.get("prompt", "")
     if not PICKUP.search(prompt):

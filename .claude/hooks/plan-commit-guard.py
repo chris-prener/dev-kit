@@ -29,6 +29,7 @@ FILE_FLAG = re.compile(r"(?:\s-F\s*|\s--file[= ])\s*(['\"]?)([^\s'\"]+)\1")
 
 
 def message_text(command, cwd):
+    """The command text plus the contents of any `-F`/`--file` message file it names."""
     text = command
     m = FILE_FLAG.search(command)
     if m:
@@ -42,6 +43,7 @@ def message_text(command, cwd):
 
 
 def main():
+    """Deny the commit if a qualifying issue ref lacks a started plan; fail open on gh errors."""
     ev = _plan.read_event()
     if ev.get("tool_name") != "Bash":
         return

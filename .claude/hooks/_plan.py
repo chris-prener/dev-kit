@@ -25,6 +25,7 @@ class LocatorError(Exception):
 
 
 def read_event():
+    """Parse the hook event JSON from stdin; return {} if it is missing or malformed."""
     try:
         return json.load(sys.stdin)
     except (ValueError, OSError):
@@ -57,6 +58,7 @@ def needs_plan(kind, status, state="open"):
 
 
 def remedy(n, status):
+    """One-line fix instruction for issue n given its plan status."""
     if status == "drafting":
         return f"#{n}: plan is still `drafting`. Run `implementation-plan` Transition to `in-progress`."
     if status == "unknown":
@@ -67,6 +69,7 @@ def remedy(n, status):
 
 
 def emit(**payload):
+    """Print a hook response object as JSON on stdout."""
     print(json.dumps(payload))
 
 
@@ -79,4 +82,5 @@ class Budget:
         self.deadline = time.monotonic() + seconds
 
     def remaining(self):
+        """Seconds left before the shared deadline (may be negative)."""
         return self.deadline - self._time.monotonic()
