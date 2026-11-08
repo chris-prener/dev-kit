@@ -25,8 +25,10 @@ VERIFIER = os.environ.get(
     "GATE_VERIFIER", str(ROOT / "dev-kit/skills/pr-orchestrator/scripts/verify-gate-receipts.sh")
 )
 BYPASS_VAR = "DEVKIT_SKIP_GATE_CHECK"
-CREATE = r"gh\s+pr\s+create\b"
-EDIT = r"gh\s+pr\s+edit\b"
+# gh, optionally path-qualified and with global flags (-R/--repo) before the subcommand.
+GH = r"(?:\S*/)?gh(?:\s+(?:-R|--repo)\s+\S+|\s+--\S+)*\s+pr\s+"
+CREATE = GH + r"create\b"
+EDIT = GH + r"edit\b"
 
 
 def main():
@@ -36,7 +38,7 @@ def main():
     command = (ev.get("tool_input") or {}).get("command", "")
     is_create = _cmd.invokes(command, CREATE)
     is_edit = _cmd.invokes(command, EDIT)
-    if not (is_create or is_edit) or _cmd.bypassed(command, BYPASS_VAR):
+    if not (is_create or is_edit) or _cmd.bypassed(command, BYPASS_VAR, GH + r"(?:create|edit)\b"):
         return
     args = [VERIFIER] + (["--edit"] if is_edit and not is_create else [])
     try:

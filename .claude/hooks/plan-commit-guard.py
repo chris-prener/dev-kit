@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _cmd  # noqa: E402
 import _plan  # noqa: E402
 
-COMMIT_TAIL = r"git(?:\s+-[Cc]\s+\S+|\s+--\S+)*\s+commit\b"
+COMMIT_TAIL = r"(?:\S*/)?git(?:\s+-[Cc]\s+\S+|\s+--\S+)*\s+commit\b"
 
 
 def is_commit(command):
@@ -46,7 +46,7 @@ def message_text(command, cwd):
 
 
 def bypassed(command):
-    return _cmd.bypassed(command, _plan.BYPASS_VAR)
+    return _cmd.bypassed(command, _plan.BYPASS_VAR, COMMIT_TAIL)
 
 
 def main():

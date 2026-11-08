@@ -12,7 +12,7 @@ One JSON file per gate, plus one `preflight` receipt for Step 1, in the gitignor
 .github/audit-reports/receipt-<gate>_<head-sha>.json
 ```
 
-`<gate>` is `preflight`, `code-review`, `changelog`, `qc` or `implementation-plan`. `<head-sha>` is the full `git rev-parse HEAD` the gate ran against. The `preflight` receipt is Step 1's, not a gate's, and cannot be opted out. A new commit changes HEAD and so invalidates every receipt: a fix-up commit after the gates means the gates run again. That is intended.
+`<gate>` is `preflight`, `code-review`, `changelog`, `qc` or `implementation-plan`. `<head-sha>` is the full `git rev-parse HEAD` the gate ran against. The `preflight` receipt is Step 1's, not a gate's, and cannot be opted out. A new commit changes HEAD and so invalidates every receipt: a fix-up commit after the gates means the gates run again. That is intended, with one exception: a receipt for an earlier SHA stays valid if every commit since touched **only `CHANGELOG.md`** (the changelog gate's own commit, which would otherwise make the gate that runs before it fail the check).
 
 ## Schema (version 1)
 
@@ -23,38 +23,40 @@ One JSON file per gate, plus one `preflight` receipt for Step 1, in the gitignor
 | `head_sha` | string | Full SHA; must equal the current HEAD. |
 | `signal` | integer | The gate's result: `0` clean or `1` findings. `2` (BLOCKER) is never a valid receipt: a blocked gate halts the flow. |
 | `invoked` | string[] | The skills and sub-steps that **actually ran**. A sub-step the gate describes as "invoke X" is listed only if X ran through the `Skill` tool; an inline equivalent is not listed. |
-| `artifacts` | string[] | Repo-relative paths of the reports the sub-skills wrote. Each must exist on disk. |
+| `artifacts` | string[] | Repo-relative paths of the reports the sub-skills wrote. Each must resolve (symlinks and `..` followed) to an existing file **inside `.github/audit-reports/`**, and the file name must carry the expected prefix for its sub-step (see below). |
+| `skipped` | object, optional | `{ "<sub-step>": "<reason>" }` for a sub-step the gate file lets be missing (`qc` only: `run-repo-qc`, `documentation-audit-changes`, `claude-md-checklist`, each "if missing: skip"). A skipped sub-step needs a non-empty reason and no artifact. |
+| `drafted` | boolean, optional | `changelog` receipt: `true` when an entry was drafted, whether or not the `changelog` skill was used. Requires `approved_by_operator: true`. |
 | `findings` | object[] | `{ "id": string, "disposition": "fixed" \| "filed" \| "accepted" \| "n/a" }`. Every finding the gate surfaced has a disposition. |
 | `written_at` | string | ISO-8601 UTC. |
 | `opted_out` | string, optional | The opt-out marker name (`no-changelog`, `no-prep-gate`, `no-plan-gate`) with the justification. Satisfies the gate without `invoked`/`artifacts`. **Not accepted for `code-review`**, which is mandatory. |
 | `confirmed_by_operator` | boolean | `preflight` receipt only; required `true`. Set after the operator confirms the detected `issue_refs`, the branch-shape signal and the mode shown to them in Step 1. |
 | `issue_refs`, `branch_shape`, `mode` | integer[], string, string | `preflight` receipt only: what was shown to the operator. |
-| `approved_by_operator` | boolean, optional | Required `true` on the `changelog` receipt when `invoked` contains `changelog` (a drafted entry needs approval before it is committed). |
+| `approved_by_operator` | boolean, optional | Required `true` on the `changelog` receipt when `drafted` is `true` or `invoked` contains `changelog` (a drafted entry needs approval before it is committed). |
 
 ## Required per gate
 
 | Gate | `invoked` must include | Artifacts required |
 |---|---|---|
 | `preflight` | none (carries `confirmed_by_operator`) | none |
-| `code-review` | `code-review` | at least 1 (the review report) |
+| `code-review` | `code-review` | one `code-review_*` file (the review report) |
 | `changelog` | `changelog-check` | none |
-| `qc` | `run-repo-qc`, `documentation-audit-changes`, `claude-md-checklist` | at least 2 (the repo-QC report and the doc-audit report) |
+| `qc` | `run-repo-qc`, `documentation-audit-changes`, `claude-md-checklist` (or each skipped with a reason) | one `repo-qc_*` and one `doc-audit-changes_*` file, for each of the first two not skipped |
 | `implementation-plan` | `implementation-plan-locate` | none |
 
 Sub-step names beyond these (for example `xref`) may be recorded and are not required.
 
 ## Update-body-only mode
 
-`pr-orchestrator --update --body-only` skips the gates by design. In that mode it writes `receipt-mode_<head-sha>.json` with `"gate": "mode"` and `"mode": "update-body-only"`. That receipt satisfies the check for `gh pr edit` only; it never satisfies `gh pr create`.
+`pr-orchestrator --update --body-only` skips the gates by design. In that mode it writes `receipt-mode_<head-sha>.json` with `"gate": "mode"` and `"mode": "update-body-only"`. That receipt satisfies the check for `gh pr edit` only; it never satisfies `gh pr create`. It carries `schema: 1`, `gate: "mode"`, `mode` and `head_sha`.
 
 ## What this does and does not prove
 
-A receipt is written by the same agent it constrains, so it can be thin or forged. The contract raises the cost of skipping a gate: it demands artifacts the sub-skills write themselves and a disposition for every finding. It does not make skipping impossible, and a determined bypass (`DEVKIT_SKIP_GATE_CHECK=1`, or a forged file) is outside what it can stop. Treat a bypassed PR as something to state in the PR body.
+A receipt is written by the same agent it constrains, so it can be thin or forged. The contract raises the cost of skipping a gate: it demands artifacts the sub-skills write themselves and a disposition for every finding. Artifacts are not checked for freshness, so a report left over from an earlier PR can still satisfy the check; the confinement and prefix rules only narrow that. It does not make skipping impossible, and a determined bypass (`DEVKIT_SKIP_GATE_CHECK=1`, or a forged file) is outside what it can stop. Treat a bypassed PR as something to state in the PR body.
 
 ## Bypass and failure behaviour
 
-- **Bypass:** prefix the command with `DEVKIT_SKIP_GATE_CHECK=1` directly before `gh`, or export it where Claude Code runs.
-- **Fail open:** if the verifier itself errors (exit 2: missing `python3`, unreadable directory), the hook allows the command and shows a visible `failed open` warning. A missing or incomplete receipt (exit 1) is a denial, not an error.
+- **Bypass:** prefix the `gh pr create|edit` command itself with `DEVKIT_SKIP_GATE_CHECK=1` (on the same command, not an earlier one in a chain), or export it where Claude Code runs.
+- **Fail open:** if the verifier itself errors (exit 2: missing `python3`, an unexpected exception, a bad argument), the hook allows the command and shows a visible `failed open` warning. A missing or incomplete receipt (exit 1) is a denial, not an error.
 
 ## Verifier
 
