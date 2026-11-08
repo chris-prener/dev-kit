@@ -9,41 +9,19 @@ Bypass for a deliberate no-plan `Refs #N` commit: prefix the command with
 DEVKIT_SKIP_PLAN_CHECK=1 (or export it where Claude Code runs). Any gh failure
 fails open with a visible warning.
 """
-import os
 import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _cmd  # noqa: E402
 import _plan  # noqa: E402
 
-# A real invocation: `git commit` at a command position (line start or after && || ; | ( ),
-# optionally behind VAR=val assignments. Text that merely contains "git commit" (an echo,
-# a quoted string, a heredoc being written to a file) is not an invocation.
-COMMIT = re.compile(
-    r"(?:^|&&|\|\||[;|(])\s*(?:[A-Za-z_]\w*=\S*\s+)*(?:command\s+)?"
-    r"git(?:\s+-[Cc]\s+\S+|\s+--\S+)*\s+commit\b"
-)
-HEREDOC = re.compile(r"(?<!<)<<(?!<)-?\s*(['\"]?)(\w+)\1")
-
-
-def code_lines(command):
-    """Command lines with heredoc bodies removed (bodies are data, not commands)."""
-    lines, term = [], None
-    for line in command.split("\n"):
-        if term is not None:
-            if line.strip() == term:
-                term = None
-            continue
-        lines.append(line)
-        m = HEREDOC.search(line)
-        if m:
-            term = m.group(2)
-    return lines
+COMMIT_TAIL = r"git(?:\s+-[Cc]\s+\S+|\s+--\S+)*\s+commit\b"
 
 
 def is_commit(command):
-    return any(COMMIT.search(line) for line in code_lines(command))
+    return _cmd.invokes(command, COMMIT_TAIL)
 
 
 KEYWORD = re.compile(
@@ -68,14 +46,7 @@ def message_text(command, cwd):
 
 
 def bypassed(command):
-    if os.environ.get(_plan.BYPASS_VAR) == "1":
-        return True
-    # Only as an assignment prefix of the git commit itself, not anywhere in the text.
-    code = "\n".join(code_lines(command))
-    return re.search(
-        rf"(?:^|&&|\|\||[;|(])\s*(?:[A-Za-z_]\w*=\S*\s+)*{_plan.BYPASS_VAR}=1\s+(?:[A-Za-z_]\w*=\S*\s+)*git\b",
-        code,
-    ) is not None
+    return _cmd.bypassed(command, _plan.BYPASS_VAR)
 
 
 def main():
