@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# verify-gate-receipts.sh — check pr-orchestrator gate receipts against the contract in
+# verify-gate-receipts.sh — check pr-orchestrator preflight + gate receipts against the contract in
 # reference/gate-receipts.md (that file is the single definition; keep the two in step).
 #
 # Usage: verify-gate-receipts.sh [--edit] [--sha SHA] [--dir DIR]
@@ -29,6 +29,7 @@ import json, os, sys
 root, d, sha, edit = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4] == "1"
 
 REQUIRED = {  # gate -> (invoked, min artifacts, opt-out allowed)
+    "preflight": (set(), 0, False),
     "code-review": ({"code-review"}, 1, False),
     "changelog": ({"changelog-check"}, 0, True),
     "qc": ({"run-repo-qc", "documentation-audit-changes", "claude-md-checklist"}, 2, True),
@@ -71,6 +72,8 @@ for gate, (need, min_art, can_opt_out) in REQUIRED.items():
     for f in r.get("findings", []):
         if f.get("disposition") not in DISPOSITIONS:
             gaps.append(f"{gate}: finding {f.get('id')!r} has no valid disposition")
+    if gate == "preflight" and r.get("confirmed_by_operator") is not True:
+        gaps.append("preflight: the operator has not confirmed issue_refs and branch shape (confirmed_by_operator)")
     opted = r.get("opted_out")
     if opted:
         if not can_opt_out:

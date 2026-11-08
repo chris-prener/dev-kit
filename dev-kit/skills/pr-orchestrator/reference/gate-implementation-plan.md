@@ -35,7 +35,11 @@ A plan passes when its `Status:` is `in-progress`, `blocked`, `ready-for-pr`, or
 
 `shipped` passes so re-running the gate in update mode, after step 8 already transitioned the plan, stays clean.
 
-### 4. Return result
+### 4. Write the receipt
+
+Write `receipt-implementation-plan_<head-sha>.json` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md): `invoked: ["implementation-plan-locate"]` (the locator run in step 2). A `no-plan-gate` marker or an empty `issue_refs` writes `opted_out` with the reason instead.
+
+### 5. Return result
 
 If no findings: `{ signal: 0, chat_output: "Implementation-plan gate passed: all of #<N>, … have a plan at in-progress or later." }`
 

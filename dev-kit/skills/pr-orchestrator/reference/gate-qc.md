@@ -62,7 +62,11 @@ If triggered, validate the touched skills:
 2. **File-and-stop** — keep filed issues open, exit without PR.
 3. **Proceed with marker** — append `_no-prep-gate: <justification>_` to `body_amendments`.
 
-### 8. Return result
+### 8. Write the receipt
+
+Write `receipt-qc_<head-sha>.json` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md): `invoked` lists `run-repo-qc` and `documentation-audit-changes` (each only if it ran through the `Skill` tool), `claude-md-checklist` (sub-step c) and `xref` when sub-step d was triggered; `artifacts` are the report each of the two skills wrote; every finding carries a disposition. A `no-prep-gate` marker writes `opted_out` instead. A sub-step this file says to "invoke" counts as run only if it ran through the `Skill` tool; an inline equivalent is not recorded under `invoked` (see [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md)).
+
+### 9. Return result
 
 ```
 { signal: <0|1|2>, findings: [...], body_amendments: [...], chat_output: "<summary>" }

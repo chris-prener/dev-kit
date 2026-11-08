@@ -31,6 +31,8 @@ receipt() {
 import json, sys
 d, sha, gate, mut = sys.argv[1:5]
 base = {
+    "preflight": {"invoked": [], "artifacts": [], "confirmed_by_operator": True,
+                  "issue_refs": [1], "branch_shape": "1 file", "mode": "create"},
     "code-review": {"invoked": ["code-review"], "artifacts": [".github/audit-reports/code-review_x.md"]},
     "changelog": {"invoked": ["changelog-check"], "artifacts": []},
     "qc": {"invoked": ["run-repo-qc", "documentation-audit-changes", "claude-md-checklist"],
@@ -45,7 +47,7 @@ json.dump(r, open(f"{d}/receipt-{gate}_{r['head_sha'] if gate!='x' else sha}.jso
 PY
 }
 reset() { rm -f "$D"/receipt-*.json; }
-all() { for g in code-review changelog qc implementation-plan; do receipt "$g"; done; }
+all() { for g in preflight code-review changelog qc implementation-plan; do receipt "$g"; done; }
 verify() { (cd "$REPO" && "$VERIFY" "$@" 2>&1); }
 vcode() { (cd "$REPO" && "$VERIFY" "$@" >/dev/null 2>&1; echo $?); }
 
@@ -55,6 +57,12 @@ check "verifier: all good exits 0"          "$(vcode)" '0'
 reset
 check "verifier: no receipts exits 1"       "$(vcode)" '1'
 check "verifier: names each gate"           "$(verify)" 'qc: no receipt'
+reset; all; receipt preflight 'r["confirmed_by_operator"]=False'
+check "verifier: preflight needs operator"  "$(verify)" 'preflight: the operator has not confirmed'
+reset; all; receipt preflight 'r["opted_out"]="skip"'
+check "verifier: preflight not optable"     "$(verify)" 'mandatory'
+reset; all; rm -f "$D"/receipt-preflight_*.json
+check "verifier: missing preflight named"   "$(verify)" 'preflight: no receipt'
 reset; all; receipt qc 'r["invoked"].remove("documentation-audit-changes")'
 check "verifier: skipped sub-skill named"   "$(verify)" 'qc: not invoked: documentation-audit-changes'
 reset; all; receipt qc 'r["artifacts"]=r["artifacts"][:1]'
