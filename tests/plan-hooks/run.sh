@@ -2,7 +2,7 @@
 # Tests for the implementation-plan enforcement hooks (.claude/hooks/) and the
 # shared locator (dev-kit/skills/implementation-plan/scripts/plan-status.sh).
 # No network: hook tests swap the locator for a fixture via PLAN_STATUS_SCRIPT;
-# locator tests put a stub `gh` on PATH (they need `jq`, and skip without it).
+# locator tests put a stub `gh` on PATH (they need `jq`; without it the suite fails unless ALLOW_NO_JQ=1).
 # Run:  bash tests/plan-hooks/run.sh
 set -u
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -145,7 +145,11 @@ GH
   FIXTURE=fail PATH="$TMP/bin:$PATH" "$LOCATOR" 7 >/dev/null 2>&1; check "locator: gh failure exits 2" "$?" '2'
   "$LOCATOR" abc >/dev/null 2>&1; check "locator: bad arg exits 2" "$?" '2'
 else
-  echo "SKIP: jq not found; locator tests not run"
+  if [ "${ALLOW_NO_JQ:-}" = "1" ]; then
+    echo "SKIP: jq not found; locator tests not run (ALLOW_NO_JQ=1)"
+  else
+    fail=$((fail+1)); echo "FAIL: jq not found, so the locator tests cannot run. Install jq, or set ALLOW_NO_JQ=1 to skip them explicitly."
+  fi
 fi
 
 echo "passed: $pass  failed: $fail"
