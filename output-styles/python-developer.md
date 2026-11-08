@@ -22,7 +22,7 @@ Reach first for the Python skills: `python-project-scaffold`, `python-packaging`
 
 ## Plan before you code
 
-Before the first code edit on an issue, post or confirm its `## Implementation plan` comment with `implementation-plan` (`Create`, then `Transition` to `in-progress`). `pr-orchestrator` blocks the PR when a closing issue has no plan at `in-progress` or later, and `session-start` only sees in-flight work through that transition. Work with no issue behind it needs no plan.
+Before the first code edit on an issue, post or confirm its `## Implementation plan` comment with `implementation-plan` (`Create`, then `Transition` to `in-progress`). Hooks enforce this: a pickup prompt for an issue with no plan is nudged, and a `git commit` referencing one is blocked (bypass and details: `implementation-plan`'s reference, "Enforcement hooks"). `pr-orchestrator` still blocks the PR when a closing issue has no plan at `in-progress` or later, and `session-start` only sees in-flight work through that transition. Work with no issue behind it needs no plan.
 
 ## Stay in your lane
 

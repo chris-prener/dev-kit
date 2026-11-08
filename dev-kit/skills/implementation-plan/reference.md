@@ -49,6 +49,28 @@ See [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-voc
 - `Reconcile labels`: label update only.
 - One short success line per operation.
 
+## Enforcement hooks
+
+The plan step is enforced by two Claude Code hooks, configured in the repo's committed `.claude/settings.json` (not the gitignored `settings.local.json`) and implemented under `.claude/hooks/`. Both call [`scripts/plan-status.sh`](${CLAUDE_SKILL_DIR}/scripts/plan-status.sh) for the locator and `Status:` parse rather than reimplementing it. They are the *early* enforcement layer; `pr-orchestrator`'s implementation-plan gate (`reference/gate-implementation-plan.md`) is unchanged and remains the last backstop at PR time.
+
+| Hook | Event | Behaviour |
+|---|---|---|
+| `plan-pickup.py` | `UserPromptSubmit` | A prompt with a pickup verb (pick up / work on / start) and `#N` refs injects a nudge for each issue lacking a plan at `in-progress` or later. Advisory; never blocks the prompt. |
+| `plan-commit-guard.py` | `PreToolUse` on `Bash` | Blocks a `git commit` whose message has a keyword-qualified ref (`Closes` / `Fixes` / `Resolves` / `Refs` / `Part of` / `Implements #N`) to an issue with no plan, a duplicate plan, or a plan still at `drafting`. A commit with no such refs passes. |
+
+Scope rules:
+
+- Only ordinary issues are checked. Epics, sprints and PRs carry no plan and are skipped.
+- Bare `#N` mentions in prose do not count as refs; only the keyword-qualified form does.
+- Detection is by invocation, not by text: a `git commit` that only appears inside a heredoc body or a quoted string is not a commit.
+- Edits are not hooked. Nothing links an `Edit`/`Write` to an issue at that point.
+
+**Bypass.** For a deliberate `Refs #N` commit that has no plan, prefix the command with `DEVKIT_SKIP_PLAN_CHECK=1` (for example `DEVKIT_SKIP_PLAN_CHECK=1 git commit -m "Refs #N"`), or export it in the environment Claude Code runs in. The block message names this variable.
+
+**Fail open.** If `gh` fails (offline, rate-limited, unauthenticated), the hooks allow the action and show a visible `failed open` warning; a network blip never blocks a commit.
+
+**Scope of install.** Repo-local only. A consuming repo gets these hooks by copying `.claude/hooks/` and the `hooks` block of `.claude/settings.json`; shipping them in the plugin overlaps the packaging epic and is deferred. Tests: `bash tests/plan-hooks/run.sh`.
+
 ## Success criteria
 
 - Exactly one comment matches the plan locator after every successful write.
