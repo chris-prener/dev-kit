@@ -87,3 +87,8 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 inst/doc
+
+# Python bytecode #
+##################
+__pycache__/
+*.pyc

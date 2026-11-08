@@ -13,12 +13,13 @@ LOCATOR="$ROOT/dev-kit/skills/implementation-plan/scripts/plan-status.sh"
 pass=0; fail=0
 
 # Fixture locator: #1 no plan, #2 drafting, #3 in-progress, #4 epic, #5 duplicate,
-# #6 PR, anything else (e.g. #9) simulates a gh failure.
+# #6 PR, #7 closed w/o plan, #8 unparseable status, anything else (e.g. #9) simulates a gh failure.
 cat > "$TMP/locator" <<'LOC'
 #!/usr/bin/env bash
 case "$1" in
-  1) echo "issue none";; 2) echo "issue drafting";; 3) echo "issue in-progress";;
-  4) echo "epic none";; 5) echo "issue duplicate";; 6) echo "pr none";;
+  1) echo "issue none open";; 2) echo "issue drafting open";; 3) echo "issue in-progress open";;
+  4) echo "epic none open";; 5) echo "issue duplicate open";; 6) echo "pr none open";;
+  7) echo "issue none closed";; 8) echo "issue unknown open";;
   *) echo "gh failed: offline" >&2; exit 2;;
 esac
 LOC
@@ -84,6 +85,11 @@ run: git commit -m 'Closes #1'
 EOF")"                                                                     ''
 check "commit: non-Bash tool ignored"   "$(printf '{"tool_name":"Edit","tool_input":{}}' | python3 "$GUARD")" ''
 
+check "commit: closed issue passes"     "$(commit 'git commit -m "Refs #7"')" ''
+check "commit: unknown status remedy"   "$(commit 'git commit -m "Refs #8"')" 'unparseable'
+check "commit: cross-repo ref skipped"  "$(commit 'git commit -m "Closes other/repo#1"')" ''
+check "commit: bypass text elsewhere no" "$(commit 'echo DEVKIT_SKIP_PLAN_CHECK=1; git commit -m "Refs #1"')" 'deny'
+
 # --- commit guard: bypass and fail-open
 check "commit: bypass in command"       "$(commit 'DEVKIT_SKIP_PLAN_CHECK=1 git commit -m "Refs #1"')" ''
 check "commit: bypass in env"           "$(DEVKIT_SKIP_PLAN_CHECK=1 commit 'git commit -m "Refs #1"')" ''
@@ -99,27 +105,30 @@ if command -v jq >/dev/null 2>&1; then
 # stub: `gh issue view N --json ... [--repo R] --jq PROGRAM` over $FIXTURE
 [ "${FIXTURE:-}" = "fail" ] && { echo "HTTP 403: rate limit" >&2; exit 1; }
 while [ $# -gt 0 ]; do [ "$1" = "--jq" ] && { shift; prog="$1"; }; shift; done
+echo 'gh: notice on stderr' >&2
 jq -r "$prog" < "$FIXTURE"
 GH
   chmod +x "$TMP/bin/gh"
   unset PLAN_STATUS_SCRIPT
   PLAN=$'<!-- implementation-plan-v1 -->\n\n## Implementation plan\n\n_Last updated: 2026-01-01T00:00:00Z_\n_Status: in-progress_\n\n### Approach\n\nx'
   loc() { FIXTURE="$1" PATH="$TMP/bin:$PATH" "$LOCATOR" 7 2>&1; }
-  U='"url":"https://github.com/o/r/issues/7"'
+  U='"url":"https://github.com/o/r/issues/7","state":"OPEN"'
   echo "{$U,\"labels\":[],\"comments\":[{\"body\":$(jstr "$PLAN")}]}" > "$TMP/one.json"
   echo "{$U,\"labels\":[],\"comments\":[{\"body\":\"hi\"}]}" > "$TMP/none.json"
   echo "{$U,\"labels\":[],\"comments\":[{\"body\":$(jstr "$PLAN")},{\"body\":$(jstr "$PLAN")}]}" > "$TMP/dup.json"
   echo "{$U,\"labels\":[{\"name\":\"epic\"}],\"comments\":[]}" > "$TMP/epic.json"
   echo "{$U,\"labels\":[{\"name\":\"sprint\"}],\"comments\":[]}" > "$TMP/sprint.json"
-  echo '{"url":"https://github.com/o/r/pull/7","labels":[],"comments":[]}' > "$TMP/pr.json"
+  echo '{"url":"https://github.com/o/r/pull/7","state":"OPEN","labels":[],"comments":[]}' > "$TMP/pr.json"
   # A comment that merely quotes the marker later in its body is not a plan.
   echo "{$U,\"labels\":[],\"comments\":[{\"body\":\"see\\n<!-- implementation-plan-v1 -->\\n## Implementation plan\"}]}" > "$TMP/quote.json"
-  check "locator: one plan -> status"    "$(loc "$TMP/one.json")"    'issue in-progress'
+  check "locator: one plan -> status"    "$(loc "$TMP/one.json")"    'issue in-progress open'
+  check "locator: stderr not in stdout"  "$(FIXTURE="$TMP/one.json" PATH="$TMP/bin:$PATH" "$LOCATOR" 7 2>/dev/null)" 'issue in-progress open'
   check "locator: no plan"               "$(loc "$TMP/none.json")"   'issue none'
   check "locator: duplicate"             "$(loc "$TMP/dup.json")"    'issue duplicate'
   check "locator: epic kind"             "$(loc "$TMP/epic.json")"   'epic none'
   check "locator: sprint kind"           "$(loc "$TMP/sprint.json")" 'sprint none'
   check "locator: pr kind"               "$(loc "$TMP/pr.json")"     'pr none'
+  check "locator: state emitted"         "$(loc "$TMP/one.json")"    'open'
   check "locator: quoted marker ignored" "$(loc "$TMP/quote.json")"  'issue none'
   FIXTURE=fail PATH="$TMP/bin:$PATH" "$LOCATOR" 7 >/dev/null 2>&1; check "locator: gh failure exits 2" "$?" '2'
   "$LOCATOR" abc >/dev/null 2>&1; check "locator: bad arg exits 2" "$?" '2'

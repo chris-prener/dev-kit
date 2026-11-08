@@ -63,11 +63,13 @@ Scope rules:
 - Only ordinary issues are checked. Epics, sprints and PRs carry no plan and are skipped.
 - Bare `#N` mentions in prose do not count as refs; only the keyword-qualified form does.
 - Detection is by invocation, not by text: a `git commit` that only appears inside a heredoc body or a quoted string is not a commit.
+- Closed issues are skipped: a plan can no longer come first, and historical `Refs` are common. Cross-repo refs (`owner/repo#N`) are skipped, not checked against the local repo.
+- The guard scans the whole `git commit` command text (message, heredoc, `-F` file), not only the `-m` argument. A quoted `Closes #N` elsewhere in a chained command can therefore trigger it.
 - Edits are not hooked. Nothing links an `Edit`/`Write` to an issue at that point.
 
-**Bypass.** For a deliberate `Refs #N` commit that has no plan, prefix the command with `DEVKIT_SKIP_PLAN_CHECK=1` (for example `DEVKIT_SKIP_PLAN_CHECK=1 git commit -m "Refs #N"`), or export it in the environment Claude Code runs in. The block message names this variable.
+**Bypass.** For a deliberate `Refs #N` commit that has no plan, prefix the command with `DEVKIT_SKIP_PLAN_CHECK=1` directly before `git` (for example `DEVKIT_SKIP_PLAN_CHECK=1 git commit -m "Refs #N"`), or export it in the environment Claude Code runs in. The block message names this variable. The bypass is a convenience for a human-directed exception, not a security boundary: the agent that sees the message can use it too, so treat a bypassed commit as something to mention in the PR.
 
-**Fail open.** If `gh` fails (offline, rate-limited, unauthenticated), the hooks allow the action and show a visible `failed open` warning; a network blip never blocks a commit.
+**Fail open.** If `gh` fails (offline, rate-limited, unauthenticated) or the hooks' shared ~24s budget runs out before every ref is checked, the hooks allow the action and show a visible `failed open` warning; a network blip never blocks a commit.
 
 **Scope of install.** Repo-local only. A consuming repo gets these hooks by copying `.claude/hooks/` and the `hooks` block of `.claude/settings.json`; shipping them in the plugin overlaps the packaging epic and is deferred. Tests: `bash tests/plan-hooks/run.sh`.
 

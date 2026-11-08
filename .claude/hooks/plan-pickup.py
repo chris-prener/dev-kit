@@ -22,13 +22,17 @@ def main():
         return
     refs = list(dict.fromkeys(re.findall(r"(?<![\w/])#(\d+)\b", prompt)))[:MAX_REFS]
     nudges, warnings = [], []
+    budget = _plan.Budget()
     for n in refs:
+        if budget.remaining() < 2:
+            warnings.append(f"#{n}: plan check skipped (time budget exhausted)")
+            continue
         try:
-            kind, status = _plan.plan_status(n, ev.get("cwd"))
+            kind, status, state = _plan.plan_status(n, ev.get("cwd"), timeout=min(20, budget.remaining()))
         except _plan.LocatorError as e:
             warnings.append(f"#{n}: plan check skipped ({e})")
             continue
-        if _plan.needs_plan(kind, status):
+        if _plan.needs_plan(kind, status, state):
             nudges.append(_plan.remedy(n, status) + " Do this before the first edit.")
     out = {}
     if nudges:

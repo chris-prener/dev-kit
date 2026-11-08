@@ -8,10 +8,11 @@
 # hooks under .claude/hooks/) run this instead of re-implementing the match.
 #
 # Usage:  plan-status.sh <issue-number> [owner/repo]
-# Output: one line, "<kind> <status>"
+# Output: one line, "<kind> <status> <state>"
 #           kind   = issue | epic | sprint | pr
 #           status = none | duplicate | unknown | drafting | in-progress |
 #                    blocked | ready-for-pr | shipped
+#           state  = open | closed
 # Exit:   0 on success; 2 if `gh` fails (offline, rate-limited, bad auth) or
 #         the arguments are invalid. Callers decide whether to fail open.
 set -u
@@ -23,7 +24,7 @@ if ! [[ "$N" =~ ^[0-9]+$ ]]; then
   exit 2
 fi
 
-args=(issue view "$N" --json comments,labels,url)
+args=(issue view "$N" --json comments,labels,url,state)
 [ -n "$REPO" ] && args+=(--repo "$REPO")
 
 # The jq program runs inside gh (--jq), so no standalone jq dependency.
@@ -42,11 +43,13 @@ JQ='
       else ( $plans[0].body
              | capture("(^|\n)_Status: (?<s>[a-z-]+)_")
              | .s ) // "unknown" end ) as $status
-  | "\($kind) \($status)"
+  | "\($kind) \($status) \(.state | ascii_downcase)"
 '
 
-if ! out=$(gh "${args[@]}" --jq "$JQ" 2>&1); then
-  echo "gh failed: $out" >&2
+# Keep stderr out of stdout on success: gh may print notices even when it exits 0.
+errf=$(mktemp); trap 'rm -f "$errf"' EXIT
+if ! out=$(gh "${args[@]}" --jq "$JQ" 2>"$errf"); then
+  echo "gh failed: $(cat "$errf")" >&2
   exit 2
 fi
 echo "$out"

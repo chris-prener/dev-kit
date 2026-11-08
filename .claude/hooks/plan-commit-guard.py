@@ -70,8 +70,12 @@ def message_text(command, cwd):
 def bypassed(command):
     if os.environ.get(_plan.BYPASS_VAR) == "1":
         return True
+    # Only as an assignment prefix of the git commit itself, not anywhere in the text.
     code = "\n".join(code_lines(command))
-    return re.search(rf"(?:^|[;&|\s]){_plan.BYPASS_VAR}=1\b", code) is not None
+    return re.search(
+        rf"(?:^|&&|\|\||[;|(])\s*(?:[A-Za-z_]\w*=\S*\s+)*{_plan.BYPASS_VAR}=1\s+(?:[A-Za-z_]\w*=\S*\s+)*git\b",
+        code,
+    ) is not None
 
 
 def main():
@@ -84,16 +88,21 @@ def main():
     text = message_text(command, ev.get("cwd"))
     refs = []
     for group in KEYWORD.findall(text):
-        refs += re.findall(r"#(\d+)", group)
+        # `owner/repo#N` is another repository's issue; checking local #N would be wrong.
+        refs += re.findall(r"(?<![\w/.-])#(\d+)", group)
     refs = list(dict.fromkeys(refs))
     problems, warnings = [], []
+    budget = _plan.Budget()
     for n in refs:
+        if budget.remaining() < 2:
+            warnings.append(f"#{n} (time budget exhausted)")
+            continue
         try:
-            kind, status = _plan.plan_status(n, ev.get("cwd"))
+            kind, status, state = _plan.plan_status(n, ev.get("cwd"), timeout=min(20, budget.remaining()))
         except _plan.LocatorError as e:
             warnings.append(f"#{n} ({e})")
             continue
-        if _plan.needs_plan(kind, status):
+        if _plan.needs_plan(kind, status, state):
             problems.append(_plan.remedy(n, status))
     if problems:
         _plan.emit(
