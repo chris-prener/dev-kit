@@ -129,6 +129,31 @@ echo z > "$REPO/src.txt"; git -C "$REPO" add src.txt; git -C "$REPO" -c user.ema
 check "verifier: code commit invalidates"   "$(verify)" 'is for'
 SHA="$(git -C "$REPO" rev-parse HEAD)"
 
+# --- verifier: hardening cases (symbolic head_sha, non-ancestor, rename, skip self-exemption, symlink)
+reset; for g in preflight code-review changelog qc implementation-plan; do receipt "$g" 'r["head_sha"]="HEAD"'; done
+check "verifier: symbolic head_sha rejected"  "$(verify)" 'receipt is for HEAD'
+reset; OTHER="$(git -C "$REPO" commit-tree "$SHA^{tree}" -m orphan)"
+for g in preflight code-review changelog qc implementation-plan; do receipt "$g" "r['head_sha']='$OTHER'"; done
+check "verifier: non-ancestor sha rejected"   "$(verify)" 'receipt is for'
+# a rename into CHANGELOG.md must not read as a CHANGELOG-only commit
+git -C "$REPO" rm -q CHANGELOG.md; git -C "$REPO" -c user.email=t@t -c user.name=t commit -q -m "drop changelog"
+SHA="$(git -C "$REPO" rev-parse HEAD)"; reset; all
+git -C "$REPO" mv src.txt CHANGELOG.md; git -C "$REPO" -c user.email=t@t -c user.name=t commit -q -m "rename into changelog"
+check "verifier: rename into CHANGELOG.md is not changelog-only" "$(vcode)" '1'
+SHA="$(git -C "$REPO" rev-parse HEAD)"
+reset; all; mkdir -p "$REPO/tests"
+receipt qc 'r["invoked"].remove("run-repo-qc"); r["artifacts"]=[".github/audit-reports/doc-audit-changes_x.md"]; r["skipped"]={"run-repo-qc":"no tests/"}'
+check "verifier: cannot skip run-repo-qc when tests/ exists" "$(verify)" 'has a tests/ directory'
+rmdir "$REPO/tests"
+printf '### Pre-PR QC checklist\n' > "$REPO/CLAUDE.md"
+receipt qc 'r["invoked"].remove("claude-md-checklist"); r["skipped"]={"claude-md-checklist":"none"}'
+check "verifier: cannot skip checklist when CLAUDE.md has one" "$(verify)" 'has a Pre-PR QC checklist'
+rm -f "$REPO/CLAUDE.md"
+reset; all; ln -s /etc "$D/link"
+receipt code-review 'r["artifacts"]=[".github/audit-reports/link/code-review_x.md"]'
+check "verifier: symlink out of the dir rejected" "$(verify)" 'outside the report directory'
+rm -f "$D/link"
+
 # --- hook
 guard() { printf '{"tool_name":"Bash","cwd":"%s","tool_input":{"command":%s}}' "$REPO" \
   "$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$1")" | python3 "$GUARD"; }
@@ -154,6 +179,15 @@ check "hook: path-qualified gh denies"       "$(guard '/opt/homebrew/bin/gh pr c
 check "hook: env gh denies"                  "$(guard 'env gh pr create')"               'deny'
 check "hook: inside if/then denies"          "$(guard 'if true; then gh pr create; fi')" 'deny'
 check "hook: bypass on earlier cmd denies"   "$(guard 'DEVKIT_SKIP_GATE_CHECK=1 git push && gh pr create')" 'deny'
+check "hook: \$(gh pr create) in dquotes denies" "$(guard 'PR="$(gh pr create --fill)"')"  'deny'
+check "hook: backtick in dquotes denies"     "$(guard 'echo "url: `gh pr create`"')"     'deny'
+check "hook: escaped apostrophe then create"  "$(guard "echo can\\'t && gh pr create --title x")" 'deny'
+check "hook: multi-line quoted arg passes"    "$(guard 'gh pr view 7 --comments --jq "
+then gh pr create later
+"')" ''
+check "hook: unbalanced quote is deny-safe"   "$(guard 'echo "oops && gh pr create')"       'deny'
+check "hook: single-quoted \$(...) passes"    "$(guard "echo '\$(gh pr create)'")"        ''
+check "hook: bypass covers only its own call" "$(guard 'DEVKIT_SKIP_GATE_CHECK=1 gh pr create && gh pr edit 3')" 'deny'
 check "hook: non-Bash tool ignored"          "$(printf '{"tool_name":"Edit","tool_input":{}}' | python3 "$GUARD")" ''
 all
 check "hook: create with receipts passes"    "$(guard 'gh pr create --title x')"        ''

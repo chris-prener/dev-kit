@@ -83,6 +83,12 @@ check "commit: echoed text passes"      "$(commit 'echo "git commit -m Closes #1
 check "commit: heredoc being written passes" "$(commit "cat > notes.md <<'EOF'
 run: git commit -m 'Closes #1'
 EOF")"                                                                     ''
+check "commit: \$(git commit) in dquotes"     "$(commit 'X="$(git commit -m "Closes #1")"')" 'deny'
+check "commit: then-branch commit"            "$(commit 'if true; then git commit -m "Closes #1"; fi')" 'deny'
+check "commit: env git commit"                "$(commit 'env git commit -m "Closes #1"')" 'deny'
+check "commit: path-qualified git"            "$(commit '/usr/bin/git commit -m "Closes #1"')" 'deny'
+check "commit: quoted separator passes"       "$(commit 'echo "a; git commit -m Closes #1"')" ''
+check "commit: bypass only its own commit"    "$(commit 'DEVKIT_SKIP_PLAN_CHECK=1 git commit -m "Refs #3" && git commit -m "Refs #1"')" 'deny'
 check "commit: non-Bash tool ignored"   "$(printf '{"tool_name":"Edit","tool_input":{}}' | python3 "$GUARD")" ''
 
 check "commit: closed issue passes"     "$(commit 'git commit -m "Refs #7"')" ''

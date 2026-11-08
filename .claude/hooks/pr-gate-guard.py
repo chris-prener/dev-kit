@@ -36,9 +36,9 @@ def main():
     if ev.get("tool_name") != "Bash":
         return
     command = (ev.get("tool_input") or {}).get("command", "")
-    is_create = _cmd.invokes(command, CREATE)
-    is_edit = _cmd.invokes(command, EDIT)
-    if not (is_create or is_edit) or _cmd.bypassed(command, BYPASS_VAR, GH + r"(?:create|edit)\b"):
+    is_create = _cmd.unbypassed(command, CREATE, BYPASS_VAR) > 0
+    is_edit = _cmd.unbypassed(command, EDIT, BYPASS_VAR) > 0
+    if not (is_create or is_edit):
         return
     args = [VERIFIER] + (["--edit"] if is_edit and not is_create else [])
     try:

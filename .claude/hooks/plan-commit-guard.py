@@ -20,10 +20,6 @@ import _plan  # noqa: E402
 COMMIT_TAIL = r"(?:\S*/)?git(?:\s+-[Cc]\s+\S+|\s+--\S+)*\s+commit\b"
 
 
-def is_commit(command):
-    return _cmd.invokes(command, COMMIT_TAIL)
-
-
 KEYWORD = re.compile(
     r"\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?|refs?|references?|part of|implements?|towards?)\b:?\s+"
     r"((?:[\w.-]+/[\w.-]+)?#\d+(?:\s*(?:,|and|&)\s*(?:[\w.-]+/[\w.-]+)?#\d+)*)",
@@ -45,16 +41,12 @@ def message_text(command, cwd):
     return text
 
 
-def bypassed(command):
-    return _cmd.bypassed(command, _plan.BYPASS_VAR, COMMIT_TAIL)
-
-
 def main():
     ev = _plan.read_event()
     if ev.get("tool_name") != "Bash":
         return
     command = (ev.get("tool_input") or {}).get("command", "")
-    if not is_commit(command) or bypassed(command):
+    if _cmd.unbypassed(command, COMMIT_TAIL, _plan.BYPASS_VAR) == 0:
         return
     text = message_text(command, ev.get("cwd"))
     refs = []

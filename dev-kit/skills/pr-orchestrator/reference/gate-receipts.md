@@ -20,11 +20,11 @@ One JSON file per gate, plus one `preflight` receipt for Step 1, in the gitignor
 |---|---|---|
 | `schema` | integer | Always `1`. |
 | `gate` | string | The gate name above. |
-| `head_sha` | string | Full SHA; must equal the current HEAD. |
+| `head_sha` | string | Full 40- or 64-hex SHA (never a symbolic name such as `HEAD`); must equal the current HEAD, or be a real ancestor of it with only `CHANGELOG.md` touched since (renames into `CHANGELOG.md` do not count). |
 | `signal` | integer | The gate's result: `0` clean or `1` findings. `2` (BLOCKER) is never a valid receipt: a blocked gate halts the flow. |
 | `invoked` | string[] | The skills and sub-steps that **actually ran**. A sub-step the gate describes as "invoke X" is listed only if X ran through the `Skill` tool; an inline equivalent is not listed. |
 | `artifacts` | string[] | Repo-relative paths of the reports the sub-skills wrote. Each must resolve (symlinks and `..` followed) to an existing file **inside `.github/audit-reports/`**, and the file name must carry the expected prefix for its sub-step (see below). |
-| `skipped` | object, optional | `{ "<sub-step>": "<reason>" }` for a sub-step the gate file lets be missing (`qc` only: `run-repo-qc`, `documentation-audit-changes`, `claude-md-checklist`, each "if missing: skip"). A skipped sub-step needs a non-empty reason and no artifact. |
+| `skipped` | object, optional | `{ "<sub-step>": "<reason>" }` for a sub-step the gate file lets be missing (`qc` only: `run-repo-qc`, `documentation-audit-changes`, `claude-md-checklist`, each "if missing: skip"). A skipped sub-step needs a non-empty reason and no artifact. The verifier refuses the skip where it can see the reason is false: `run-repo-qc` when the repo has a `tests/` directory, `claude-md-checklist` when `CLAUDE.md` has a "Pre-PR QC checklist". |
 | `drafted` | boolean, optional | `changelog` receipt: `true` when an entry was drafted, whether or not the `changelog` skill was used. Requires `approved_by_operator: true`. |
 | `findings` | object[] | `{ "id": string, "disposition": "fixed" \| "filed" \| "accepted" \| "n/a" }`. Every finding the gate surfaced has a disposition. |
 | `written_at` | string | ISO-8601 UTC. |
@@ -55,7 +55,7 @@ A receipt is written by the same agent it constrains, so it can be thin or forge
 
 ## Bypass and failure behaviour
 
-- **Bypass:** prefix the `gh pr create|edit` command itself with `DEVKIT_SKIP_GATE_CHECK=1` (on the same command, not an earlier one in a chain), or export it where Claude Code runs.
+- **Bypass:** prefix the `gh pr create|edit` command itself with `DEVKIT_SKIP_GATE_CHECK=1` (on that same invocation: a prefix on an earlier command in a chain does not cover a later `gh pr`), or export it where Claude Code runs.
 - **Fail open:** if the verifier itself errors (exit 2: missing `python3`, an unexpected exception, a bad argument), the hook allows the command and shows a visible `failed open` warning. A missing or incomplete receipt (exit 1) is a denial, not an error.
 
 ## Verifier

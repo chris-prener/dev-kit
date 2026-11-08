@@ -24,7 +24,7 @@ ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "not in a git repo" 
 [ -n "$DIR" ] || DIR="$ROOT/.github/audit-reports"
 
 exec python3 -I - "$ROOT" "$DIR" "$SHA" "$EDIT" <<'PY'
-import glob, json, os, subprocess, sys
+import glob, json, os, re, subprocess, sys
 
 root, d, sha, edit = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4] == "1"
 real_d = os.path.realpath(d)
@@ -47,16 +47,32 @@ DISPOSITIONS = {"fixed", "filed", "accepted", "n/a"}
 gaps = []
 
 
+FULL_SHA = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+
+
 def git(*a):
-    return subprocess.run(["git", "-C", root, *a], capture_output=True, text=True)
+    return subprocess.run(["git", "-c", "diff.renames=false", "-C", root, *a], capture_output=True, text=True)
+
+
+_history = None
+
+
+def history():
+    """Every commit reachable from HEAD, computed once: bounds the work for stale candidates."""
+    global _history
+    if _history is None:
+        r = git("rev-list", sha)
+        _history = set(r.stdout.split()) if r.returncode == 0 else set()
+    return _history
 
 
 def still_valid(old):
-    """A receipt for an earlier SHA stays valid if every commit since touched only CHANGELOG.md
-    (the changelog gate's own commit)."""
-    if git("merge-base", "--is-ancestor", old, sha).returncode != 0:
+    """A receipt for an earlier SHA stays valid if it is a real ancestor of HEAD and every commit
+    since touched only CHANGELOG.md (the changelog gate's own commit). `old` must be a full hex
+    SHA: a symbolic name such as HEAD would resolve to the current commit and always pass."""
+    if not (isinstance(old, str) and FULL_SHA.match(old)) or old not in history():
         return False
-    r = git("diff", "--name-only", old, sha)
+    r = git("diff", "--no-renames", "--name-only", old, sha)
     return r.returncode == 0 and set(r.stdout.split()) <= {"CHANGELOG.md"}
 
 
@@ -64,22 +80,34 @@ def load(gate):
     """Return (receipt, gap). Prefers an exact-HEAD receipt, else a still-valid earlier one."""
     exact = os.path.join(d, f"receipt-{gate}_{sha}.json")
     cands = [exact] if os.path.exists(exact) else sorted(glob.glob(os.path.join(d, f"receipt-{gate}_*.json")))
-    stale = None
+    stale, bad = None, None
     for p in cands:
         try:
             with open(p) as f:
                 r = json.load(f)
         except (OSError, ValueError) as e:
-            return None, f"{gate}: receipt unreadable ({e})"
+            bad = f"{gate}: receipt unreadable ({e})"
+            continue
         if not isinstance(r, dict):
-            return None, f"{gate}: malformed receipt (not a JSON object)"
+            bad = f"{gate}: malformed receipt (not a JSON object)"
+            continue
         h = r.get("head_sha")
-        if h == sha or (isinstance(h, str) and still_valid(h)):
+        if h == sha or still_valid(h):
             return r, None
         stale = h
     if stale is not None:
         return None, f"{gate}: receipt is for {str(stale)[:8]}, HEAD is {sha[:8]}"
+    if bad:
+        return None, bad
     return None, f"{gate}: no receipt for {sha[:8]} ({os.path.relpath(exact, root)})"
+
+
+def _read(p):
+    try:
+        with open(p) as f:
+            return f.read()
+    except OSError:
+        return ""
 
 
 def str_list(v):
@@ -90,7 +118,11 @@ def check_artifacts(gate, arts, art_for, skipped):
     resolved = []
     for a in arts:
         p = os.path.realpath(os.path.join(root, a))
-        if os.path.commonpath([p, real_d]) != real_d:
+        try:
+            outside = os.path.commonpath([p, real_d]) != real_d
+        except ValueError:  # different drives / mixed path kinds
+            outside = True
+        if outside:
             gaps.append(f"{gate}: artifact outside the report directory: {a}")
         elif not os.path.isfile(p):
             gaps.append(f"{gate}: artifact missing on disk: {a}")
@@ -135,6 +167,10 @@ def check_gate(gate, r, need, art_for, skippable, can_opt_out):
     for k in skipped:
         if k not in skippable:
             gaps.append(f"{gate}: sub-step {k} cannot be skipped")
+        elif k == "run-repo-qc" and os.path.isdir(os.path.join(root, "tests")):
+            gaps.append("qc: run-repo-qc cannot be skipped: this repo has a tests/ directory")
+        elif k == "claude-md-checklist" and "Pre-PR QC checklist" in _read(os.path.join(root, "CLAUDE.md")):
+            gaps.append("qc: claude-md-checklist cannot be skipped: CLAUDE.md has a Pre-PR QC checklist")
     missing = sorted(need - set(invoked) - set(skipped))
     if missing:
         gaps.append(f"{gate}: not invoked: {', '.join(missing)}")
