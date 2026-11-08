@@ -32,6 +32,7 @@ EDIT = GH + r"edit\b"
 
 
 def main():
+    """Deny `gh pr create|edit` when the gate receipts do not verify; fail open on verifier errors."""
     ev = _plan.read_event()
     if ev.get("tool_name") != "Bash":
         return
