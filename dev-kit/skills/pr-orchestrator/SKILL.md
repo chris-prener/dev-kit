@@ -83,7 +83,7 @@ For each gate in steps 3, 4, 5, 6:
 
 ### 6b. Verify the receipts
 
-Run [`scripts/verify-gate-receipts.sh`](${CLAUDE_SKILL_DIR}/scripts/verify-gate-receipts.sh) (add `--edit` in update mode). Do not reimplement its checks. If it exits non-zero, print each gap, **halt**, and do not run Step 7: go back and run the named gate properly. The `PreToolUse` hook `pr-gate-guard.py` repeats this check at the `gh` call; this step exists so the failure is caught here, with a clear message, rather than as a hook denial. Skipped in `--update --body-only` mode, where the mode receipt stands in.
+Run [`scripts/verify-gate-receipts.sh`](${CLAUDE_SKILL_DIR}/scripts/verify-gate-receipts.sh) (add `--edit` in update mode). Do not reimplement its checks. If it exits non-zero, print each gap, **halt**, and do not run Step 7: go back and run the named gate properly. The `PreToolUse` hook `pr-gate-guard.py` repeats this check at the `gh` call; this step exists so the failure is caught here, with a clear message, rather than as a hook denial. A CHANGELOG-only commit (the changelog gate's own) does not invalidate earlier receipts; any other new commit after the gates ran does, and the gates run again. Skipped in `--update --body-only` mode, where the mode receipt stands in.
 
 ### 7. Open or update the PR
 

@@ -2,7 +2,7 @@
 
 Read and followed directly by `pr-orchestrator` at its implementation-plan-gate step (fourth and final gate). Not a `Skill`-tool dispatch — per [ADR-0002](${CLAUDE_PROJECT_DIR}/docs/adr/ADR-0002-skill-decomposition.md)'s caller-class test, this gate has no independent trigger a human or the model would use to select it, so it does not earn its own listed skill.
 
-Why it exists: `session-start` surfaces in-flight work from the `in-progress` label, and that label is only set by an `implementation-plan` `Transition`. Without a check, an issue can be implemented and closed with no plan and no durable record of the approach. This gate is the last backstop at PR time; the Developer output styles are the advisory tier, and the `UserPromptSubmit` / `PreToolUse` hooks described in [`implementation-plan`'s reference](${CLAUDE_PROJECT_DIR}/dev-kit/skills/implementation-plan/reference.md) (Enforcement hooks) are the early enforcement layer that catches a missing plan at issue pickup and at commit. The gate still runs unchanged.
+Why it exists: `session-start` surfaces in-flight work from the `in-progress` label, and that label is only set by an `implementation-plan` `Transition`. Without a check, an issue can be implemented and closed with no plan and no durable record of the approach. This gate is the last backstop at PR time; the Developer output styles are the advisory tier, and the `UserPromptSubmit` / `PreToolUse` hooks described in [`implementation-plan`'s reference](${CLAUDE_SKILL_DIR}/../implementation-plan/reference.md) (Enforcement hooks) are the early enforcement layer that catches a missing plan at issue pickup and at commit. The gate still runs unchanged.
 
 The gate checks that a plan exists and has progressed past `drafting`, not that the label was set at the time: the `in-progress` label is removed again at `ready-for-pr` and `shipped`, so label history can't be read back at PR time. A plan written retroactively, after the code, also passes. That is deliberate: the Developer output styles' "Plan before you code" section is the primary mechanism, and this gate is a backstop for when that step is forgotten. It guarantees a durable record and the `in-progress` → `shipped` transition exist before an issue closes; it does not, and cannot, prove the plan came first. Say so in the plan's `### Decisions made` when posting late.
 
@@ -17,10 +17,10 @@ Gate protocol inputs per the "Gate protocol" section in [`../reference.md`](../r
 ### 1. Check opt-out
 
 If `opt_out_markers` contains key `no-plan-gate`:
-- Return `{ signal: 0, chat_output: "Implementation-plan gate skipped: _no-plan-gate_ marker present." }`
+- Write `receipt-implementation-plan_<head-sha>.json` with `opted_out` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md), then return `{ signal: 0, chat_output: "Implementation-plan gate skipped: _no-plan-gate_ marker present." }`
 
 If `issue_refs` is empty:
-- Return `{ signal: 0, chat_output: "Implementation-plan gate skipped: PR closes no issues." }`
+- Write the same receipt with `opted_out: "no closing issues"`, then return `{ signal: 0, chat_output: "Implementation-plan gate skipped: PR closes no issues." }`
 
 ### 2. Locate each plan
 

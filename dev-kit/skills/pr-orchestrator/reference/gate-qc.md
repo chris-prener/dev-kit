@@ -11,7 +11,7 @@ Gate protocol inputs per the "Gate protocol" section in [`../reference.md`](../r
 ### 1. Check opt-out
 
 If `opt_out_markers` contains key `no-prep-gate`:
-- Return `{ signal: 0, chat_output: "QC gate skipped: _no-prep-gate_ marker present." }`
+- Write `receipt-qc_<head-sha>.json` with `opted_out` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md), then return `{ signal: 0, chat_output: "QC gate skipped: _no-prep-gate_ marker present." }`
 
 ### 2. Pre-flight
 
@@ -21,19 +21,19 @@ If `opt_out_markers` contains key `no-prep-gate`:
 ### 3. Sub-step a — Repo-level QC
 
 Invoke `run-repo-qc` with `--mode=gate`.
-- If missing: log WARNING, skip to sub-step b.
+- If missing: log WARNING, record it under `skipped` with the reason in the receipt, and skip to sub-step b.
 - Signal mapping: 0 → proceed, 1 → surface findings + proceed, 2 → BLOCKER.
 
 ### 4. Sub-step b — PR-scoped doc audit
 
 Invoke `documentation-audit-changes` with `--mode=gate` and the changed-files list.
-- If missing: log WARNING, skip to sub-step c.
+- If missing: log WARNING, record it under `skipped` with the reason in the receipt, and skip to sub-step c.
 - This sub-step cannot return signal 2 (no CRITICAL band for doc findings).
 
 ### 5. Sub-step c — Repo-specific extensions
 
 Read `CLAUDE.md`'s "Pre-PR QC checklist" subsection, if present.
-- If missing: skip silently.
+- If missing: skip, and record `claude-md-checklist` under `skipped` with the reason ("no CLAUDE.md checklist") in the receipt.
 - Execute each check it names, using the gate protocol inputs (`issue_refs`, `diff_context`) and `git log <base>..HEAD` where a check calls for them. A check whose precondition isn't met (e.g. a multi-issue check on a single-issue PR) is skipped, not failed.
 - A failed check is a FINDING (signal 1) unless the checklist marks it **BLOCKER** (signal 2). Name the failing check and the offending issue or commit in `chat_output`.
 
@@ -64,7 +64,7 @@ If triggered, validate the touched skills:
 
 ### 8. Write the receipt
 
-Write `receipt-qc_<head-sha>.json` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md): `invoked` lists `run-repo-qc` and `documentation-audit-changes` (each only if it ran through the `Skill` tool), `claude-md-checklist` (sub-step c) and `xref` when sub-step d was triggered; `artifacts` are the report each of the two skills wrote; every finding carries a disposition. A `no-prep-gate` marker writes `opted_out` instead. A sub-step this file says to "invoke" counts as run only if it ran through the `Skill` tool; an inline equivalent is not recorded under `invoked` (see [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md)).
+Write `receipt-qc_<head-sha>.json` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md): `invoked` lists `run-repo-qc` and `documentation-audit-changes` (each only if it ran through the `Skill` tool), `claude-md-checklist` (sub-step c) and `xref` when sub-step d was triggered; `artifacts` are the report each of the two skills wrote; every finding carries a disposition. A `no-prep-gate` marker writes `opted_out` instead (already done in step 1). A sub-step this file says to "invoke" counts as run only if it ran through the `Skill` tool; an inline equivalent is not recorded under `invoked` (see [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md)).
 
 ### 9. Return result
 
