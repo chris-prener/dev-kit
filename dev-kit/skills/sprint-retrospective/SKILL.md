@@ -3,7 +3,7 @@ name: sprint-retrospective
 description: >
   Closes a sprint issue. Refuses while any member in the task list is
   open; on the shipped path ticks the checkboxes, sets the status line
-  to `shipped (closed DATE — see [Sprint Retrospective](url))`, posts a
+  to the `shipped` value from `_partials/sprint-status.md`, posts a
   `## Sprint Retrospective`, and closes. On the descoped path applies
   the carve-out label, sets `descoped`, and posts no retro. Never closes
   the parent area.
@@ -81,9 +81,7 @@ An empty `What shipped` halts the retro.
 The status line must link the retro comment, so the order is fixed:
 
 1. **Post the retro** (skip if Phase 0 found one): `gh issue comment <N> --body-file <tempfile>`; capture the comment URL.
-2. **Edit the body once**: tick every member checkbox whose issue is closed (`- [ ]` → `- [x]`), and set the status line to exactly
-   `**Status:** shipped (closed <YYYY-MM-DD> — see [Sprint Retrospective](<comment-url>))`.
-   Change nothing else in the body.
+2. **Edit the body once**: tick the checkbox of each **completed** member (`- [ ]` → `- [x]`); leave descoped members unticked and append ` — descoped (<label>)` to their line so they do not read as shipped work. Set the status line to the `shipped` row of [`_partials/sprint-status.md`](${CLAUDE_SKILL_DIR}/../_partials/sprint-status.md), substituting today's date for `DATE` and the retro comment URL for `url`. Change nothing else in the body.
 3. **Close**: `gh issue close <N> --reason completed` (no-op if already closed).
 4. **Do not touch the Area.** No comment, edit, label change, or close on the parent epic.
 

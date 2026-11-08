@@ -6,7 +6,7 @@ Contract and QA detail for the `sprint-retrospective` skill. `SKILL.md` holds th
 
 **Shipped path:**
 - One `## Sprint Retrospective` comment on the sprint.
-- Member checkboxes ticked for closed members; the `**Status:**` line set to `shipped (closed DATE — see [Sprint Retrospective](url))`.
+- Completed members ticked, descoped members annotated and left unticked; the `**Status:**` line set to the `shipped` value in `_partials/sprint-status.md`.
 - The sprint `CLOSED` with reason `completed`.
 
 **Descoped path:**

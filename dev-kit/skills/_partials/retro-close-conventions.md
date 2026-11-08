@@ -1,6 +1,6 @@
 # Retrospective close conventions (shared partial)
 
-Rules shared by [`backlog-retrospective`](../backlog-retrospective/SKILL.md), [`epic-retrospective`](../epic-retrospective/SKILL.md) and [`sprint-retrospective`](../sprint-retrospective/SKILL.md). Stated once here so the two skills cannot drift (ADR-0002, Rule 2: a policy value cited by more than one skill lives in exactly one canonical place).
+Rules shared by [`backlog-retrospective`](../backlog-retrospective/SKILL.md), [`epic-retrospective`](../epic-retrospective/SKILL.md) and [`sprint-retrospective`](../sprint-retrospective/SKILL.md). Stated once here so these skills cannot drift (ADR-0002, Rule 2: a policy value cited by more than one skill lives in exactly one canonical place).
 
 ## Non-completion closes carry no retrospective
 
