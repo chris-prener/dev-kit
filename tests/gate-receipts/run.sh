@@ -188,6 +188,22 @@ then gh pr create later
 check "hook: unbalanced quote is deny-safe"   "$(guard 'echo "oops && gh pr create')"       'deny'
 check "hook: single-quoted \$(...) passes"    "$(guard "echo '\$(gh pr create)'")"        ''
 check "hook: bypass covers only its own call" "$(guard 'DEVKIT_SKIP_GATE_CHECK=1 gh pr create && gh pr edit 3')" 'deny'
+check "hook: apostrophes in comments"        "$(guard "# don't do x
+gh pr create
+# it's fine")"                                                                            'deny'
+check "hook: << inside quotes opens no heredoc" "$(guard 'echo "foo <<EOF"
+gh pr create')"                                                                          'deny'
+check "hook: << in arithmetic opens no heredoc" "$(guard 'x=$((1<<2))
+gh pr create')"                                                                          'deny'
+check "hook: bash -c body denies"             "$(guard 'bash -c "gh pr create"')"        'deny'
+check "hook: sh -c single-quoted denies"      "$(guard "sh -c 'gh pr create'")"          'deny'
+check "hook: eval body denies"                "$(guard "eval 'gh pr create'")"           'deny'
+check "hook: xargs denies"                    "$(guard 'echo x | xargs -I {} gh pr create')" 'deny'
+check "hook: sudo/time/nohup/exec deny"       "$(guard 'sudo gh pr create')"             'deny'
+check "hook: unquoted backticks deny"         "$(guard 'echo `gh pr create`')"           'deny'
+check "hook: quoted subcommand denies"        "$(guard 'gh "pr" create')"                'deny'
+check "hook: comment-only mention passes"     "$(guard '# remember to gh pr create')"    ''
+check "hook: deep nesting does not crash"     "$(guard "$(python3 -c 'print("\"$(" * 3000 + "x" + ")\"" * 3000)')" | grep -c Traceback)" '0'
 check "hook: non-Bash tool ignored"          "$(printf '{"tool_name":"Edit","tool_input":{}}' | python3 "$GUARD")" ''
 all
 check "hook: create with receipts passes"    "$(guard 'gh pr create --title x')"        ''

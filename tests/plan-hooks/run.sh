@@ -89,6 +89,12 @@ check "commit: env git commit"                "$(commit 'env git commit -m "Clos
 check "commit: path-qualified git"            "$(commit '/usr/bin/git commit -m "Closes #1"')" 'deny'
 check "commit: quoted separator passes"       "$(commit 'echo "a; git commit -m Closes #1"')" ''
 check "commit: bypass only its own commit"    "$(commit 'DEVKIT_SKIP_PLAN_CHECK=1 git commit -m "Refs #3" && git commit -m "Refs #1"')" 'deny'
+check "commit: apostrophes in comments"      "$(commit "# don't
+git commit -m 'Closes #1' # it's")"                                                       'deny'
+check "commit: << in arithmetic"              "$(commit 'echo $((1 << 3))
+git commit -m "Closes #1"')"                                                              'deny'
+check "commit: sh -c body"                    "$(commit "sh -c 'git commit -m \"Closes #1\"'")" 'deny'
+check "commit: unquoted backticks"            "$(commit 'x=`git commit -m "Closes #1"`')" 'deny'
 check "commit: non-Bash tool ignored"   "$(printf '{"tool_name":"Edit","tool_input":{}}' | python3 "$GUARD")" ''
 
 check "commit: closed issue passes"     "$(commit 'git commit -m "Refs #7"')" ''
