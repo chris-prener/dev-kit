@@ -50,6 +50,8 @@ Use this skill to:
 
 ### Phase 0 — Locate (always; precedes every operation)
 
+The match rule below also exists as an executable, [`scripts/plan-status.sh`](${CLAUDE_SKILL_DIR}/scripts/plan-status.sh) `<N>`, which prints `<kind> <status>` for lookup-only callers (the enforcement hooks; see [`reference.md`](${CLAUDE_SKILL_DIR}/reference.md) → Enforcement hooks). The script and these steps must agree; change both together.
+
 1. Run `gh issue view <N> --repo "$REPO" --json comments --jq '.comments[] | {id, body, updatedAt, author: .author.login}'`.
 2. Walk comments oldest-first. A plan match requires: first non-blank line exactly `<!-- implementation-plan-v1 -->`, and the next non-blank line exactly `## Implementation plan`.
 3. Resolve match count:

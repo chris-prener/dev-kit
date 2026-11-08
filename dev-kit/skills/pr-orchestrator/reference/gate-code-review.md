@@ -33,7 +33,11 @@ Present two explicit choices (no default):
 
 This gate has no opt-out marker — it is mandatory for every non-trivial PR. The only path to CLEAN without a rubber-duck call is `code-review`'s own `--minimal` whitelist.
 
-### 5. Return result
+### 5. Write the receipt
+
+Write `receipt-code-review_<head-sha>.json` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md): `invoked: ["code-review"]`, `artifacts` = the review report `code-review` wrote under `.github/audit-reports/`, and every finding with a disposition (`fixed`, `filed`, `accepted`). A sub-step this file says to "invoke" counts as run only if it ran through the `Skill` tool; an inline equivalent is not recorded under `invoked` (see [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md)).
+
+### 6. Return result
 
 ```
 { signal: <0|1|2>, findings: [...], chat_output: "<summary>" }

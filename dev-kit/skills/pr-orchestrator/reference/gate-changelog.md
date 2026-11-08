@@ -11,10 +11,10 @@ Gate protocol inputs per the "Gate protocol" section in [`../reference.md`](../r
 ### 1. Check opt-out
 
 If `opt_out_markers` contains key `no-changelog`:
-- Return `{ signal: 0, chat_output: "Changelog gate skipped: _no-changelog_ marker present." }`
+- Write `receipt-changelog_<head-sha>.json` with `opted_out` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md), then return `{ signal: 0, chat_output: "Changelog gate skipped: _no-changelog_ marker present." }`
 
 If `mode` is `update` and the PR carries the `no-changelog` label (see [`_partials/label-vocabulary.md`](${CLAUDE_SKILL_DIR}/../_partials/label-vocabulary.md)):
-- Return `{ signal: 0, chat_output: "Changelog gate skipped: no-changelog label on PR." }`
+- Write the same `opted_out` receipt, then return `{ signal: 0, chat_output: "Changelog gate skipped: no-changelog label on PR." }`
 
 ### 2. Read [Unreleased] block
 
@@ -32,13 +32,17 @@ For PRs with no `Closes` issues: at least one net-new bullet must exist (may ref
 
 If no qualifying entry found:
 - Invoke `changelog` (add operation) to draft an entry.
-- Surface the draft to the operator for approval.
+- Surface the draft to the operator and **wait for explicit approval before committing anything**.
 - If approved: the entry is committed to the local branch — this is the tracked-file exception described below — and the gate passes.
 - If rejected: return `{ signal: 2, chat_output: "Changelog gate: operator rejected draft entry. Halting." }`
 
 **Tracked-file exception.** Every other gate in this suite writes only to gitignored `.github/audit-reports/`. This gate is the one exception: an approved draft is committed to `CHANGELOG.md`, a tracked file, and that commit can land after `pr-orchestrator`'s pre-flight push-state check already ran. This is why the push-state check re-runs immediately before `gh pr create` / `gh pr edit` (`pr-orchestrator/SKILL.md` Step 7) — it catches and pushes this commit before the PR opens, rather than relying on a claim that no gate dirties the tree.
 
-### 5. Return result
+### 5. Write the receipt
+
+Write `receipt-changelog_<head-sha>.json` per [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md) **after any changelog commit**, so the receipt carries the final HEAD: `invoked: ["changelog-check"]`, plus `"changelog"` (when the skill ran), `drafted: true` and `approved_by_operator: true` when a draft was approved and committed. Set `drafted: true` for any drafted entry, however it was written. When a `no-changelog` marker or label skipped the gate, write `opted_out` instead. A sub-step this file says to "invoke" counts as run only if it ran through the `Skill` tool; an inline equivalent is not recorded under `invoked` (see [`gate-receipts.md`](${CLAUDE_SKILL_DIR}/reference/gate-receipts.md)).
+
+### 6. Return result
 
 ```
 { signal: 0, chat_output: "Changelog gate passed: entry found referencing #<N>." }

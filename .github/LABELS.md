@@ -2,11 +2,11 @@
 
 This file is the source of truth for GitHub Issue / PR labels in this repository. `backlog` (and its Triage operation), `backlog-retrospective`, and related skills under `dev-kit/skills/` read this file when present; they fall back to the embedded baseline in [`_partials/label-vocabulary.md`](../dev-kit/skills/_partials/label-vocabulary.md) only when this file is absent.
 
-This repo *is* the canonical baseline — the vocabulary below mirrors `_partials/label-vocabulary.md` exactly. One label exists live in this repo but is deliberately *not* admitted to the baseline below — see "Known deviations". Consuming repos that vendor a copy of this file may add their own "Repo customizations" section following the pattern in the "Vendoring" note at the bottom.
+This repo *is* the canonical baseline — the vocabulary below mirrors `_partials/label-vocabulary.md` exactly. Consuming repos that vendor a copy of this file may add their own "Repo customizations" section following the pattern in the "Vendoring" note at the bottom.
 
-## Baseline (23 labels)
+## Baseline (24 labels)
 
-8 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 23 labels.
+9 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 24 labels.
 
 ### Type — what kind of work is this (every issue gets at least one)
 
@@ -17,6 +17,7 @@ This repo *is* the canonical baseline — the vocabulary below mirrors `_partial
 | `documentation` | `#0075ca` | Improvements or additions to documentation |
 | `tech-debt` | `#fbca04` | Refactoring, cleanup, robustness, scaling, or other internal-quality work |
 | `epic` | `#5319E7` | Durable, owned area of work; sub-issues linked |
+| `sprint` | `#1D76DB` | Time-boxed unit of execution under an area epic; issue-backed, membership as a body task list. Status vocabulary: `_partials/sprint-status.md` |
 | `audit-finding` | `#B60205` | Issue identified during an audit |
 | `qc` | `#D93F0B` | QC finding from automated or independent audit |
 | `spike` | `#C5DEF5` | Time-boxed discovery spike; produces artifacts, not production code |
@@ -68,10 +69,6 @@ If found, delete them as part of label migration.
 - **Most new issues should also carry a Priority label.** Skip only for low-stakes or speculative items where priority is undecided.
 - **Status labels are added/removed during the issue's lifetime**, not at creation. `blocked` and `UAT` are particularly important to keep current.
 - **Close-reason labels are required for non-completed closes.** Add the appropriate label *before* `gh issue close --reason ...`. The retro skill checks for the label, not the reason.
-
-## Known deviations
-
-- **`sprint`** (`#1D76DB`) — created live for the Epic B / Epic A area-timebox pilot (issues #49–#54). Deliberately excluded from the baseline: whether sprints are issue-backed at all is Epic A's (#13) decision, and admitting the label now would bake in an answer #13 hasn't reached. Revisit when #13 resolves. See [#4](https://github.com/chris-prener/dev-kit/issues/4).
 
 ## Vendoring
 

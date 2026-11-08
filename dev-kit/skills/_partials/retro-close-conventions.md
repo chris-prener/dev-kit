@@ -1,6 +1,6 @@
 # Retrospective close conventions (shared partial)
 
-Rules shared by [`backlog-retrospective`](../backlog-retrospective/SKILL.md) and [`epic-retrospective`](../epic-retrospective/SKILL.md). Stated once here so the two skills cannot drift (ADR-0002, Rule 2: a policy value cited by more than one skill lives in exactly one canonical place).
+Rules shared by [`backlog-retrospective`](../backlog-retrospective/SKILL.md), [`epic-retrospective`](../epic-retrospective/SKILL.md) and [`sprint-retrospective`](../sprint-retrospective/SKILL.md). Stated once here so these skills cannot drift (ADR-0002, Rule 2: a policy value cited by more than one skill lives in exactly one canonical place).
 
 ## Non-completion closes carry no retrospective
 
@@ -23,11 +23,9 @@ Each issue kind opens its retrospective comment with exactly one heading. Any do
 | Issue kind (label) | Owning skill | Heading |
 |---|---|---|
 | Ordinary issue (no `epic` / `sprint` label) | `backlog-retrospective` | `## Retrospective` |
-| Sprint (`sprint`) | `backlog-retrospective` (no dedicated sprint-retro skill exists) | `## Sprint Retrospective` |
+| Sprint (`sprint`) | `sprint-retrospective` | `## Sprint Retrospective` |
 | Epic (`epic`) | `epic-retrospective` | `## Epic Retrospective` |
 
 **Matching rule.** A comment counts as a retrospective if its first line is exactly one of the three headings above. A bare `startswith("## Retrospective")` test is wrong: it misses the other two.
 
-`backlog-retrospective` handles ordinary issues and sprints, and **refuses epics**, naming `epic-retrospective` as the owner. An issue carrying both `epic` and `sprint` is treated as an epic (the `epic` check runs first).
-
-**Provisional.** The `sprint` label is live in this repo (a pilot per ADR-0001) but is not yet in `label-vocabulary.md`, and the sprint design is still open in `docs/requirements/epic-sprint-model.md` (R2). Treat the sprint row as provisional until that lands. A sprint issue that lacks the label falls through to the ordinary `## Retrospective` heading. If a dedicated sprint-retro skill is ever added, update this table and `backlog-retrospective`'s sprint handling together.
+`backlog-retrospective` handles ordinary issues only, and **refuses epics and sprints**, naming `epic-retrospective` and `sprint-retrospective` as the owners. An issue carrying both `epic` and `sprint` is treated as an epic (the `epic` check runs first).

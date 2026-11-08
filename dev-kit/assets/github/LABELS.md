@@ -4,9 +4,9 @@ This file is the source of truth for GitHub Issue / PR labels in this repository
 
 This is the unmodified cross-repo canonical baseline, vendored from [dev-kit](https://github.com/chris-prener/dev-kit). Add repo-specific labels or specialize a Purpose column under "Repo customizations" at the end — do not edit the baseline tables in place.
 
-## Baseline (23 labels)
+## Baseline (24 labels)
 
-8 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 23 labels.
+9 Type + 6 Status + 3 Priority + 6 Meta/close-reason = 24 labels.
 
 ### Type — what kind of work is this (every issue gets at least one)
 
@@ -17,6 +17,7 @@ This is the unmodified cross-repo canonical baseline, vendored from [dev-kit](ht
 | `documentation` | `#0075ca` | Improvements or additions to documentation |
 | `tech-debt` | `#fbca04` | Refactoring, cleanup, robustness, scaling, or other internal-quality work |
 | `epic` | `#5319E7` | Durable, owned area of work; sub-issues linked |
+| `sprint` | `#1D76DB` | Time-boxed unit of execution under an area epic; issue-backed, membership as a body task list. Status vocabulary: `_partials/sprint-status.md` |
 | `audit-finding` | `#B60205` | Issue identified during an audit |
 | `qc` | `#D93F0B` | QC finding from automated or independent audit |
 | `spike` | `#C5DEF5` | Time-boxed discovery spike; produces artifacts, not production code |
